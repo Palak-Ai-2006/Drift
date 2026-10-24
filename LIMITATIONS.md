@@ -39,12 +39,24 @@ This is a research prototype for research and education only, not a medical devi
   Neither the original nor the revised (v2) model clearly beats a simple
   tuned MAP threshold (B2) on the held-out test set. Full comparison:
   `MODEL_CARD.md`.
-- Confounders not fully accounted for: anesthetic depth, vasopressor use, specific
-  surgical events.
+- **Confirmed under a second, cleaner label.** A "bleeding-flavored" label
+  (event after incision, Cohort B only, excluding events near a vasopressor
+  or anesthetic-depth change) was tried specifically to rule out label noise
+  as the explanation. Drift lost there too, by a wider and statistically
+  significant margin (-7.67pp vs. MAP alone, 95% CI entirely negative). This
+  rules out "the plain MAP<65 label is just too noisy" as the reason drift
+  doesn't show a benefit here.
+- Vasopressor/anesthetic confounding is now partially addressed (see above)
+  but not fully: bolus-only vasopressors (e.g. ephedrine push doses) aren't
+  recorded as time-resolved infusion tracks in this dataset and couldn't be
+  checked; only continuous-pump administrations are visible.
 - Reported honestly and completely, per CLAUDE.md's rule against tuning on
-  the test set: the test set was touched exactly twice (once for the
-  original model, once for the v2 revision chosen via cross-validation
-  only), and both results are kept, not just the better one.
+  the test set: for the original MAP<65 task, the test set was touched
+  exactly twice (once for the original model, once for the v2 revision
+  chosen via cross-validation only), both results kept, not just the better
+  one. The bleeding-flavored label is a separate task with its own single
+  test touch, disclosed as a post-hoc experiment and never blended with the
+  other two.
 
 ## Regulatory and deployment
 

@@ -172,13 +172,85 @@ guessed clinical cutoff):**
   than the standard alarm" is true for both the original and v2, even though
   "beats a tuned threshold" is not.
 
-**What was tried from the suggested checklist and deliberately NOT done, for
-honesty's sake:** a second "bleeding-flavored" composite label (MAP<65 +
-rising HR or high-EBL case) was not implemented — it would need its own
-leakage review and was judged lower-value than the CV protocol itself, given
-time spent. A dedicated model refit at H=5/H=10 (rather than reusing the
-H=15-tuned alert stream) was not done either. Both are reasonable next steps,
-not completed here.
+**What remains deliberately NOT done, for honesty's sake:** a dedicated model
+refit at H=5/H=10 (rather than reusing the H=15-tuned alert stream) was not
+done. The bleeding-flavored label suggested here *was* subsequently built and
+tested — see "Experiment 2" below.
+
+## Experiment 1: event-aligned traces (2026-10-24, descriptive, train+val only)
+
+For every real event in the 351 train+val cases, HR/MAP/PP/shock-index were
+extracted at 1-minute marks for the 30 minutes before onset (1,107 events
+with a usable trace), and plotted as median + bootstrap-by-case band, split
+two ways. No model, no tuning, no test-set touch — purely descriptive.
+`artifacts/phase4_event_aligned_traces_cohort.png`,
+`..._decline.png`.
+
+- **Cohort B vs. not:** Cohort B cases run a **persistently elevated** HR
+  (~86 vs ~70 bpm) and shock index (~0.83 vs ~0.65) across the *entire*
+  30-minute window — not a late-breaking rise right before the event. This
+  looks like a chronic compensating state specific to these patients, not an
+  acute dynamic signal in the minutes before collapse.
+- **Abrupt vs. gradual decline** (split at the dev event set's own median MAP
+  slope at onset, -0.237 mmHg/min — not a guessed clinical cutoff): gradual
+  events show the same persistently-elevated-shock-index pattern throughout;
+  abrupt events look comparatively unremarkable (lower, flatter shock index)
+  until a late, sharp MAP crash in the final ~10-15 minutes.
+- **Why this matters for the CV result above:** a slope/drift feature is
+  built to catch a *late, dynamic* change. If the real signal (where present)
+  is an *already-elevated, flat* baseline rather than a last-minute rise,
+  slope features have little to find — current-value features (shock index,
+  MAP) would see it instead, and they're already in the original/stacked
+  models. This is a plausible, not proven, explanation for why nothing beat
+  MAP alone in CV.
+
+## Experiment 2: bleeding-flavored label (2026-10-24, post-hoc, test touched once for this new task)
+
+Rules locked in `ACTIONS.md` *before* this was run (full definition there).
+Summary: a real primary event qualifies as "bleeding-flavored" only if it
+occurs after incision, in a Cohort B case, with no vasopressor-infusion-rate
+or volatile-anesthetic increase in the preceding 5 minutes (drug track names
+read from `track_names.csv`, not guessed; bolus-only pressors like ephedrine
+aren't time-resolved in these tracks and can't be checked — documented
+limitation). The label never references HR/PP/shock index, so those features
+can't trivially predict it. A disqualified event in a window's horizon makes
+that window's label unknown (excluded), not negative.
+
+Of 1,107 real dev-set events, **665 qualified, 442 were disqualified**
+(mostly: not Cohort B, or a vasopressor/anesthetic change nearby) — positive
+rate on this label is 5.9% (vs. 10.8% for the plain MAP<65 label).
+
+**CV result (5-fold, train+val, same protocol as the v2 screening):**
+
+| Candidate | CV sensitivity @ 1 FA/hr | CV AUPRC |
+|---|---|---|
+| `original_repro` | 46.3% | 0.256 |
+| **`b2_alone`** | **49.3%** | 0.204 |
+| `stacked_b2_drift` | 41.7% | 0.200 |
+
+**stacked_b2_drift vs. b2_alone: -7.67pp, 95% CI [-12.84, -2.56]pp — drift is
+not just "doesn't help," it is *significantly worse*, with the CI entirely on
+the negative side.** Per the pre-registered rule, this is a clear loss, not a
+marginal miss: **we stop here, no further feature engineering**, and report
+it plainly. `b2_alone` is the winner by default.
+
+**Test set, touched once for this new task, disclosed as a post-hoc
+experiment (kept separate from `metrics.json`/`metrics_v2.json`):**
+sensitivity **53.8%** (70/130 qualifying events — a noticeably smaller test
+sample than the original's 291, so this number carries more uncertainty than
+it looks), median lead time **5.0 min**, FA/hr **1.33**, AUROC/AUPRC/Brier
+**0.678 / 0.132 / 0.055**. Full numbers: `artifacts/metrics_exp2_bleeding_label.json`.
+
+**Overall reading across both experiments and both labels:** drift/slope
+features have now been tested against the plain MAP<65 label (v2 screening)
+and this cleaner, more hemorrhage-specific label (Experiment 2), under two
+independently-built CV protocols. In both, a model restricted to current MAP
+alone beat every richer alternative tried, and the stacked drift-only model
+was consistently the weakest performer. This project's central hypothesis —
+that HR/pulse-pressure/shock-index dynamics predict hypotension earlier than
+a MAP threshold — is not supported by this dataset, this feature
+engineering, at this horizon. That is reported here as the honest result,
+not reframed as a near-win.
 
 ## Leakage checklist (PLAN.md Section 8, original model — v2 follows the identical pipeline)
 

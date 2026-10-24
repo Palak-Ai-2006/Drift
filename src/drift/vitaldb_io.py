@@ -244,6 +244,7 @@ def download_case_numeric_tracks(
     dest_dir: Path = DATA_RAW,
     timeout_s: int = 60,
     skip_existing: bool = True,
+    file_suffix: str = "numeric_30s",
 ) -> tuple[Path, float, int, bool]:
     """Fetch one whole case via the vitaldb library, keep only `tracks`,
     cache the lean table, and return (path, seconds_elapsed, bytes_written,
@@ -254,9 +255,14 @@ def download_case_numeric_tracks(
     calls per case. skip_existing=True (the default) never re-downloads a
     case already cached under dest_dir, per CLAUDE.md Section 12 /
     DATA_NOTES.md: "cache downloads; never re-download a cached case."
+
+    file_suffix lets a caller fetch a DIFFERENT track set for the same
+    caseid into its own cache file (e.g. "drugs_30s" for the Experiment 2
+    vasopressor/anesthetic tracks) without colliding with or re-fetching
+    the core numeric tracks.
     """
     dest_dir.mkdir(parents=True, exist_ok=True)
-    dest = dest_dir / f"{caseid}_numeric_30s.parquet"
+    dest = dest_dir / f"{caseid}_{file_suffix}.parquet"
     if skip_existing and dest.exists():
         return dest, 0.0, dest.stat().st_size, True
 
@@ -297,6 +303,32 @@ def test_download_n_cases(caseids: list[int], dest_dir: Path = DATA_RAW) -> pd.D
     return report
 
 
+def load_drug_tracks(caseid: int, dest_dir: Path = DATA_RAW) -> pd.DataFrame:
+    """Load the cached vasopressor/anesthetic tracks (config.DRUG_TRACKS,
+    downloaded via bulk_download_numeric_tracks(..., tracks=config.DRUG_TRACKS,
+    file_suffix="drugs_30s")) and align Time the same way load_and_clean_case
+    does.
+
+    NaN -> 0 for every drug/anesthetic column: empirically verified (case
+    17: Orchestra/NEPI_RATE is NaN for ~280 minutes, then jumps straight to
+    4.8 when the infusion starts -- no intermediate "0.0 but recorded"
+    period) that these pump/gas tracks simply aren't recorded while a drug
+    isn't running, not "recorded as missing while running." Treating NaN as
+    0 is what lets Experiment 2 detect an infusion *starting* (0 -> nonzero)
+    as the "increase" it is, and is harmless for a track a case never uses
+    at all (stays 0 throughout either way). No artifact-range rejection
+    here -- rate/concentration tracks don't share HR/BP's physiological
+    bounds.
+    """
+    path = dest_dir / f"{caseid}_drugs_30s.parquet"
+    df = pd.read_parquet(path)
+    df = df.sort_values("Time").reset_index(drop=True)
+    df["Time"] = df["Time"] - df["Time"].min()
+    drug_cols = [c for c in df.columns if c in config.DRUG_TRACKS]
+    df[drug_cols] = df[drug_cols].fillna(0.0)
+    return df
+
+
 def load_and_clean_case(caseid: int, dest_dir: Path = DATA_RAW) -> pd.DataFrame:
     """Load a cached numeric-tracks parquet, align Time to the casestart=0
     clock, and apply the same cleaning used everywhere else in this project
@@ -327,16 +359,23 @@ def bulk_download_numeric_tracks(
     caseids: list[int],
     dest_dir: Path = DATA_RAW,
     progress_every: int = 25,
+    tracks: tuple[str, ...] = config.REQUIRED_NUMERIC_TRACKS,
+    file_suffix: str = "numeric_30s",
 ) -> pd.DataFrame:
     """Download (or reuse cached) numeric tracks for every caseid in the
     list. Never raises on a single case's failure -- records it and moves
     on, so one bad caseid can't abort an hours-long run. Returns a report
     DataFrame (caseid, ok, seconds, bytes, cached, path/error); callers
-    should persist it (e.g. artifacts/phase2_bulk_download_report.csv)."""
+    should persist it (e.g. artifacts/phase2_bulk_download_report.csv).
+
+    tracks/file_suffix let this fetch a different track set into its own
+    cache file (see download_case_numeric_tracks)."""
     rows = []
     for i, cid in enumerate(caseids, start=1):
         try:
-            path, elapsed_s, size_bytes, cached = download_case_numeric_tracks(cid, dest_dir=dest_dir)
+            path, elapsed_s, size_bytes, cached = download_case_numeric_tracks(
+                cid, tracks=tracks, dest_dir=dest_dir, file_suffix=file_suffix,
+            )
             rows.append({
                 "caseid": cid, "ok": True, "seconds": elapsed_s,
                 "bytes": size_bytes, "cached": cached, "path": str(path),

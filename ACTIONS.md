@@ -104,6 +104,8 @@ after seeing results.
 
 **Test set:** touched exactly once for this new task (a label/task change, not a re-look at the same task), disclosed explicitly as a post-hoc experiment, reported separately from `metrics.json`/`metrics_v2.json` — never blended with either.
 
+- [x] **RESULT (2026-10-24, `scripts/04e_bleeding_label_experiment.py`):** drift lost decisively: `stacked_b2_drift` vs. `b2_alone` CV sensitivity gain = **-7.67pp, 95% CI [-12.84, -2.56]pp** (significantly worse, not just non-significant). **Stopped per the pre-registered rule — no further feature engineering.** `b2_alone` evaluated against test once: 53.8% sensitivity (70/130 qualifying events), 5.0 min median lead, 1.33 FA/hr. 665/1,107 dev events qualified as bleeding-flavored (442 disqualified, mostly not-Cohort-B or a nearby vasopressor/anesthetic change). Full writeup: `MODEL_CARD.md` "Experiment 2."
+
 - [x] **Phase 4 iteration (v2), 2026-10-24** (`scripts/04b_model_iteration.py`, `scripts/04c_v2_diagnostics.py`): pre-registered protocol (tagged `phase4-original`, decision rule locked before any CV numbers existed), 5-fold grouped CV on train+val (351 cases) comparing 5 candidates. Winner: `b2_alone` (MAP-only logistic), +6.3pp CV sensitivity over the original, CI excludes zero. Evaluated against test exactly once more: 57.4% sensitivity (Cohort A) vs. the original's 46.4%, still short of B2's 60.1%. **Central finding: a stacked MAP+drift model scored worse than MAP alone in CV — no feature/model combination tried shows drift dynamics adding value beyond current MAP on this dataset.** Full writeup: `MODEL_CARD.md` "Phase 4 revision (v2)".
 
 **P5 — Hemorrhage simulator** (target: 8–11 h; filler during P4/P1 background jobs only, not true parallel work)

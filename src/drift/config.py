@@ -35,6 +35,25 @@ TRACK_ART_WAVEFORM = "SNUADC/ART"
 
 REQUIRED_NUMERIC_TRACKS = (TRACK_HR, TRACK_SBP, TRACK_DBP, TRACK_MAP)
 
+# Phase 4 Experiment 2 (bleeding-flavored label) -- vasopressor/anesthetic
+# tracks, confirmed present in data/manual/track_names.csv 2026-10-24 (never
+# guessed). Continuous-infusion rate tracks only: bolus-only pressors
+# (e.g. ephedrine, cases.csv's intraop_eph) are not time-resolved in
+# VitalDB's numeric tracks and can't be checked this way -- documented
+# limitation, not fixable with the tracks this project downloads.
+VASOPRESSOR_RATE_TRACKS = (
+    "Orchestra/NEPI_RATE",  # norepinephrine
+    "Orchestra/EPI_RATE",  # epinephrine
+    "Orchestra/PHEN_RATE",  # phenylephrine
+    "Orchestra/VASO_RATE",  # vasopressin
+    "Orchestra/DOPA_RATE",  # dopamine
+)
+# Expired volatile anesthetic concentration -- whichever a case actually
+# uses (sevoflurane or desflurane); not every case has non-null data for
+# both, since agent choice varies by case.
+VOLATILE_ANESTHETIC_TRACKS = ("Primus/EXP_SEVO", "Primus/EXP_DES")
+DRUG_TRACKS = VASOPRESSOR_RATE_TRACKS + VOLATILE_ANESTHETIC_TRACKS
+
 # Confirmed clinical columns (cases.csv header, 2026-10-24).
 COL_CASEID = "caseid"
 COL_SUBJECTID = "subjectid"

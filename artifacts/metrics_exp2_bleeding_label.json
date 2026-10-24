@@ -1,0 +1,71 @@
+{
+  "cv_results": {
+    "original_repro": {
+      "auprc": {
+        "auroc": 0.8306362248777569,
+        "auprc": 0.2558017091660033,
+        "brier": 0.16463824839190996,
+        "n": 47648
+      },
+      "threshold": 0.7296024502675988,
+      "fa_rate": 0.9716464931188861,
+      "sensitivity": 0.4631578947368421
+    },
+    "b2_alone": {
+      "auprc": {
+        "auroc": 0.7697972769033493,
+        "auprc": 0.204354685549714,
+        "brier": 0.2078377377366888,
+        "n": 47648
+      },
+      "threshold": 0.6634408579024049,
+      "fa_rate": 0.9948598905654124,
+      "sensitivity": 0.4932330827067669
+    },
+    "stacked_b2_drift": {
+      "auprc": {
+        "auroc": 0.7919012534070526,
+        "auprc": 0.1999740425678839,
+        "brier": 0.18444042229858534,
+        "n": 47648
+      },
+      "threshold": 0.7239469079836394,
+      "fa_rate": 0.9915436909301942,
+      "sensitivity": 0.41654135338345866
+    }
+  },
+  "decision": {
+    "gain_pp": -7.6691729323308255,
+    "ci": {
+      "point": -0.07669172932330826,
+      "ci_low": -0.1284384999058912,
+      "ci_high": -0.025579744522963202,
+      "n_valid_resamples": 1000
+    },
+    "drift_wins": false
+  },
+  "dev_label_positive_rate": 0.05891118200134318,
+  "dev_n_qualifying_events": 665,
+  "dev_n_disqualified_events": 442,
+  "winner": "b2_alone",
+  "test_results": {
+    "threshold": 0.24880382775119617,
+    "val_fa_rate": 0.9857208659603868,
+    "sensitivity": 0.5384615384615384,
+    "n_events": 130,
+    "n_detected": 70,
+    "lead_time": {
+      "median_s": 302.0,
+      "iqr_low_s": 113.0,
+      "iqr_high_s": 587.25,
+      "n": 70
+    },
+    "fa_rate_per_hour": 1.3246505717916137,
+    "secondary_metrics": {
+      "auroc": 0.6783986791980069,
+      "auprc": 0.13204475872772842,
+      "brier": 0.05495711148784775,
+      "n": 10711
+    }
+  }
+}

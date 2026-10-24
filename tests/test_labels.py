@@ -118,6 +118,44 @@ def test_first_event_time_returns_earliest_start_or_none():
     assert labels.first_event_time([e1, e2]) == 50
 
 
+def _drug_df(times_s, **tracks):
+    data = {"Time": times_s}
+    for name, vals in tracks.items():
+        data[name] = vals
+    return pd.DataFrame(data)
+
+
+def test_event_is_bleeding_flavored_false_when_not_cohort_b():
+    drug_df = _drug_df([0, 3600], **{config.DRUG_TRACKS[0]: [0.0, 0.0]})
+    assert labels.event_is_bleeding_flavored(1800, op_start_s=0, is_cohort_b=False, drug_df=drug_df) is False
+
+
+def test_event_is_bleeding_flavored_false_before_incision():
+    drug_df = _drug_df([0, 3600], **{config.DRUG_TRACKS[0]: [0.0, 0.0]})
+    assert labels.event_is_bleeding_flavored(100, op_start_s=500, is_cohort_b=True, drug_df=drug_df) is False
+
+
+def test_event_is_bleeding_flavored_true_with_flat_vasopressor():
+    track = config.VASOPRESSOR_RATE_TRACKS[0]
+    times = list(range(0, 3600, 30))
+    drug_df = _drug_df(times, **{track: [5.0] * len(times)})  # constant, no increase
+    assert labels.event_is_bleeding_flavored(1800, op_start_s=0, is_cohort_b=True, drug_df=drug_df) is True
+
+
+def test_event_is_bleeding_flavored_false_with_recent_vasopressor_increase():
+    track = config.VASOPRESSOR_RATE_TRACKS[0]
+    times = [0, 1500, 1750]  # increase happens inside the 5-min lookback before t=1800
+    drug_df = _drug_df(times, **{track: [0.0, 0.0, 8.0]})
+    assert labels.event_is_bleeding_flavored(1800, op_start_s=0, is_cohort_b=True, drug_df=drug_df) is False
+
+
+def test_event_is_bleeding_flavored_true_when_increase_is_outside_lookback():
+    track = config.VASOPRESSOR_RATE_TRACKS[0]
+    times = [0, 100, 1700]  # increase at t=100, well before the 5-min lookback window for t=1800
+    drug_df = _drug_df(times, **{track: [0.0, 8.0, 8.0]})
+    assert labels.event_is_bleeding_flavored(1800, op_start_s=0, is_cohort_b=True, drug_df=drug_df) is True
+
+
 def test_detect_events_is_generic_and_config_driven():
     # Sanity: detect_events with explicit params matches detect_primary_events.
     times = [0, 30, 60, 90, 120, 150]

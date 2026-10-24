@@ -107,3 +107,46 @@ def first_event_time(events: list[Event]) -> float | None:
     if not events:
         return None
     return min(e.start_time for e in events)
+
+
+# ---------------------------------------------------------------------------
+# Phase 4 Experiment 2: "bleeding-flavored" event qualification. Rules
+# locked in ACTIONS.md (2026-10-24) BEFORE this was written. A real primary
+# event additionally qualifies as bleeding-flavored if it occurs after
+# incision, in a Cohort B case, with no vasopressor-rate or volatile-
+# anesthetic increase in the preceding lookback_min minutes. Deliberately
+# never references HR/PP/shock_index -- only MAP (the event itself),
+# timing, cohort membership, and drug tracks -- so HR-based features can't
+# trivially predict this label.
+# ---------------------------------------------------------------------------
+def _value_at_or_before(df: pd.DataFrame, value_col: str, t_s: float, time_col: str = "Time") -> float:
+    d = df[df[time_col] <= t_s]
+    if len(d) == 0:
+        return float("nan")
+    return float(d.sort_values(time_col).iloc[-1][value_col])
+
+
+def event_is_bleeding_flavored(
+    event_start_s: float,
+    op_start_s: float,
+    is_cohort_b: bool,
+    drug_df: pd.DataFrame,
+    drug_tracks: tuple[str, ...] = config.DRUG_TRACKS,
+    lookback_min: float = config.EXCLUDE_IF_RECENT_MAP_LOW_LOOKBACK_MIN,
+    time_col: str = "Time",
+) -> bool:
+    """True if a real primary event qualifies as bleeding-flavored per the
+    ACTIONS.md Experiment 2 rules. drug_df is vitaldb_io.load_drug_tracks()'s
+    output (NaN already filled with 0 -- "not currently running")."""
+    if not is_cohort_b:
+        return False
+    if event_start_s <= op_start_s:
+        return False
+    for track in drug_tracks:
+        if track not in drug_df.columns:
+            continue
+        now = _value_at_or_before(drug_df, track, event_start_s, time_col)
+        before = _value_at_or_before(drug_df, track, event_start_s - lookback_min * 60.0, time_col)
+        if pd.notna(now) and pd.notna(before) and now > before:
+            return False  # a vasopressor/anesthetic increase in the lookback window disqualifies it
+    return True
