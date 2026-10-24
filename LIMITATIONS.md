@@ -29,11 +29,22 @@ This is a research prototype for research and education only, not a medical devi
 
 ## Model limitations
 
-- TODO (Phase 4/7): fill in once real performance numbers exist. If the model does
-  not beat the baselines at matched false-alarm rates, that result is reported
-  plainly here, not hidden.
+- **The central hypothesis is not supported by this run.** Phase 4 tried five
+  feature/model combinations (original 29-feature logistic, that plus
+  closeness-to-threshold features, that with boosting, a stacked
+  MAP+drift-only model, and MAP alone) under 5-fold cross-validation. The
+  winner, by a pre-registered margin, was a single-feature model: current
+  MAP alone. A model built specifically to test whether HR/pulse-pressure/
+  shock-index drift adds value beyond MAP scored *worse* than MAP alone.
+  Neither the original nor the revised (v2) model clearly beats a simple
+  tuned MAP threshold (B2) on the held-out test set. Full comparison:
+  `MODEL_CARD.md`.
 - Confounders not fully accounted for: anesthetic depth, vasopressor use, specific
   surgical events.
+- Reported honestly and completely, per CLAUDE.md's rule against tuning on
+  the test set: the test set was touched exactly twice (once for the
+  original model, once for the v2 revision chosen via cross-validation
+  only), and both results are kept, not just the better one.
 
 ## Regulatory and deployment
 

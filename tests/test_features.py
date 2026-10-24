@@ -165,6 +165,56 @@ def test_has_recent_map_low_is_unaffected_by_future_rows():
 # ---------------------------------------------------------------------------
 # build_case_windows: labeling and exclusion end to end
 # ---------------------------------------------------------------------------
+def test_v2_closeness_to_threshold_features_on_flat_region():
+    df = _toy_case_df()
+    baseline = features.compute_patient_baseline(df, anesthesia_start_s=0.0)
+    feat = features.compute_window_features(df, 2000.0, baseline, anesthesia_start_s=0.0, op_start_s=0.0)
+    assert feat["map_minus_65"] == pytest.approx(BASELINE_MAP - 65.0)
+    assert feat["map_below_65_hinge"] == 0.0  # MAP (90) is above 65
+    assert feat["map_min_5"] == BASELINE_MAP
+    assert feat["projected_min_to_cross_65"] != feat["projected_min_to_cross_65"]  # NaN: flat, not trending down
+    assert feat["time_since_anesthesia_min"] == pytest.approx(2000.0 / 60.0)
+    assert feat["time_since_opstart_min"] == pytest.approx(2000.0 / 60.0)
+
+
+def test_v2_projected_time_to_cross_65_on_a_known_linear_decline():
+    # MAP declines linearly from 90 at t=0 to 60 at t=1800 (1 mmHg/min), well
+    # before the event window, so the slope feature sees a clean trend.
+    times = np.arange(0.0, 1800.0, 30.0)
+    map_vals = 90.0 - times / 60.0
+    df = pd.DataFrame({
+        "Time": times,
+        config.TRACK_HR: np.full_like(times, BASELINE_HR),
+        config.TRACK_SBP: np.full_like(times, BASELINE_SBP),
+        config.TRACK_DBP: np.full_like(times, BASELINE_DBP),
+        config.TRACK_MAP: map_vals,
+    })
+    baseline = features.compute_patient_baseline(df, anesthesia_start_s=0.0)
+    t_s = 1700.0  # MAP = 90 - 1700/60 = ~61.67, slope = -1 mmHg/min
+    feat = features.compute_window_features(df, t_s, baseline)
+    map_now = 90.0 - t_s / 60.0
+    expected_projected = (map_now - 65.0) / 1.0  # slope magnitude 1 mmHg/min
+    assert feat["map_slope_5"] == pytest.approx(-1.0, abs=0.05)
+    assert feat["projected_min_to_cross_65"] == pytest.approx(expected_projected, rel=0.1)
+
+
+def test_v2_features_remain_causal_under_future_corruption():
+    df = _toy_case_df()
+    baseline = features.compute_patient_baseline(df, anesthesia_start_s=0.0)
+    t_s = 2500.0
+    feat_before = features.compute_window_features(df, t_s, baseline, anesthesia_start_s=0.0, op_start_s=0.0)
+
+    corrupted = df.copy()
+    corrupted.loc[corrupted["Time"] > t_s, config.TRACK_MAP] = 1.0
+    feat_after = features.compute_window_features(corrupted, t_s, baseline, anesthesia_start_s=0.0, op_start_s=0.0)
+
+    for k in ("map_minus_65", "map_below_65_hinge", "map_min_5", "projected_min_to_cross_65"):
+        a, b = feat_before[k], feat_after[k]
+        if pd.isna(a) and pd.isna(b):
+            continue
+        assert a == pytest.approx(b), f"v2 feature {k} leaked future data"
+
+
 def test_build_case_windows_labels_primary_horizon_correctly_before_event():
     df = _toy_case_df()
     row = _toy_case_row()

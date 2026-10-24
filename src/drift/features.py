@@ -123,6 +123,8 @@ def compute_window_features(
     slope_windows_min: tuple[float, ...] = config.FEATURE_SLOPE_WINDOWS_MIN,
     current_window_min: float = config.FEATURE_SLOPE_WINDOWS_MIN[-1],
     time_col: str = "Time",
+    anesthesia_start_s: float | None = None,
+    op_start_s: float | None = None,
 ) -> dict | None:
     """The causal feature vector at one prediction time t. df_upto_t may
     contain rows after t -- this function always re-filters to Time <= t
@@ -169,6 +171,26 @@ def compute_window_features(
             if t_s >= baseline["baseline_end_s"] else float("nan")
         )
 
+    # --- v2 closeness-to-threshold / context / nonlinearity features (Phase 4
+    # iteration, requested explicitly: "MAP - 65", "projected minutes to
+    # cross 65", "min MAP in the last 5 min", time-since-anesthesia/op-start,
+    # a hinge term for nonlinearity). Purely additive -- none of this changes
+    # any feature already used by the original (phase4-original) model. ---
+    feat["map_minus_65"] = map_ - config.EVENT_MAP_THRESHOLD_MMHG if pd.notna(map_) else float("nan")
+    feat["map_below_65_hinge"] = max(0.0, config.EVENT_MAP_THRESHOLD_MMHG - map_) if pd.notna(map_) else float("nan")
+
+    window_5min = d[d[time_col] > t_s - 5.0 * 60.0]
+    feat["map_min_5"] = _derived_series(window_5min)["map"].min()
+
+    map_slope_5 = feat.get("map_slope_5", float("nan"))
+    if pd.notna(map_) and pd.notna(map_slope_5) and map_slope_5 < 0:
+        feat["projected_min_to_cross_65"] = (map_ - config.EVENT_MAP_THRESHOLD_MMHG) / (-map_slope_5)
+    else:
+        feat["projected_min_to_cross_65"] = float("nan")  # not currently trending toward the threshold
+
+    feat["time_since_anesthesia_min"] = (t_s - anesthesia_start_s) / 60.0 if anesthesia_start_s is not None else float("nan")
+    feat["time_since_opstart_min"] = (t_s - op_start_s) / 60.0 if op_start_s is not None else float("nan")
+
     return feat
 
 
@@ -201,7 +223,10 @@ def build_case_windows(
         if has_recent_map_low(df_upto_t, t_s):
             continue  # PLAN.md 7.2: excluded, not kept-and-flagged
 
-        feat = compute_window_features(df_upto_t, t_s, baseline)
+        feat = compute_window_features(
+            df_upto_t, t_s, baseline,
+            anesthesia_start_s=anesthesia_start_s, op_start_s=op_start_s,
+        )
         if feat is None:
             continue
 

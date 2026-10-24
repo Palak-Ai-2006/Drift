@@ -63,6 +63,40 @@ def test_split_cases_different_seed_gives_different_split():
     assert a != b
 
 
+def test_grouped_kfold_covers_every_caseid_exactly_once():
+    cases_df = _toy_cases_df(100)
+    caseids = list(cases_df[config.COL_CASEID])
+    folds = models.grouped_kfold_by_subject(cases_df, caseids, n_folds=5)
+    assert len(folds) == 5
+    all_ids = [c for fold in folds for c in fold]
+    assert sorted(all_ids) == sorted(caseids)
+
+
+def test_grouped_kfold_keeps_shared_subject_cases_in_the_same_fold():
+    cases_df = _toy_cases_df(100, shared_subject_pairs=[(5, 95)])
+    caseids = list(cases_df[config.COL_CASEID])
+    folds = models.grouped_kfold_by_subject(cases_df, caseids, n_folds=5)
+    fold_of_5 = next(i for i, f in enumerate(folds) if 5 in f)
+    fold_of_95 = next(i for i, f in enumerate(folds) if 95 in f)
+    assert fold_of_5 == fold_of_95
+
+
+def test_grouped_kfold_is_reasonably_balanced():
+    cases_df = _toy_cases_df(500)
+    caseids = list(cases_df[config.COL_CASEID])
+    folds = models.grouped_kfold_by_subject(cases_df, caseids, n_folds=5)
+    sizes = [len(f) for f in folds]
+    assert max(sizes) - min(sizes) <= 5  # one-subject-per-case here, so balance should be tight
+
+
+def test_grouped_kfold_is_deterministic():
+    cases_df = _toy_cases_df(200)
+    caseids = list(cases_df[config.COL_CASEID])
+    a = models.grouped_kfold_by_subject(cases_df, caseids, n_folds=4)
+    b = models.grouped_kfold_by_subject(cases_df, caseids, n_folds=4)
+    assert a == b
+
+
 def test_encode_sex_maps_known_values_and_leaves_unknown_as_nan():
     out = models.encode_sex(pd.Series(["M", "F", "U"]))
     assert out.iloc[0] == 1.0

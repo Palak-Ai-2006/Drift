@@ -79,6 +79,37 @@ def split_cases(
     return assignment
 
 
+def grouped_kfold_by_subject(
+    cases_df: pd.DataFrame,
+    caseids: list[int],
+    n_folds: int = 5,
+    seed: int = config.RANDOM_SEED,
+) -> list[list[int]]:
+    """n_folds roughly-equal, subject-disjoint partitions of caseids (a
+    subject's cases never split across folds, same reasoning as
+    split_cases). Used for cross-validated model/feature selection on
+    train+val only -- Phase 4 iteration step 1: "your validation set is
+    only 88 cases, so choices made on it will be noisy."
+
+    Deterministic greedy balancing: subject-groups are shuffled, then each
+    whole group goes to whichever fold currently has the fewest cases
+    (ties broken by fold index) -- not a perfect balance when group sizes
+    vary, but close, and never splits a subject.
+    """
+    subset = cases_df.loc[cases_df[config.COL_CASEID].isin(caseids), [config.COL_CASEID, config.COL_SUBJECTID]]
+    groups = subset.groupby(config.COL_SUBJECTID)[config.COL_CASEID].apply(list).to_dict()
+
+    subject_ids = list(groups.keys())
+    rng = np.random.RandomState(seed)
+    rng.shuffle(subject_ids)
+
+    folds: list[list[int]] = [[] for _ in range(n_folds)]
+    for sid in subject_ids:
+        target_fold = min(range(n_folds), key=lambda i: (len(folds[i]), i))
+        folds[target_fold].extend(groups[sid])
+    return folds
+
+
 def encode_sex(sex: pd.Series) -> pd.Series:
     """M -> 1, F -> 0, anything else -> NaN (imputed downstream)."""
     return sex.map({"M": 1.0, "F": 0.0})

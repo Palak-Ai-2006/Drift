@@ -1,0 +1,104 @@
+{
+  "cv_results": {
+    "original_repro": {
+      "auprc": {
+        "auroc": 0.7848295736629727,
+        "auprc": 0.3045197079311025,
+        "brier": 0.1899093816823093,
+        "n": 49991
+      },
+      "threshold": 0.6958672761361245,
+      "fa_rate": 0.9871220914165703,
+      "sensitivity": 0.5058717253839206
+    },
+    "threshold_features": {
+      "auprc": {
+        "auroc": 0.7916145786309036,
+        "auprc": 0.3219807830199196,
+        "brier": 0.18771903097664114,
+        "n": 49991
+      },
+      "threshold": 0.6997281795332586,
+      "fa_rate": 0.9871220914165703,
+      "sensitivity": 0.5221318879855466
+    },
+    "threshold_features_boosted": {
+      "auprc": {
+        "auroc": 0.7826348848996767,
+        "auprc": 0.3054569863942002,
+        "brier": 0.12854701526147658,
+        "n": 49991
+      },
+      "threshold": 0.6331505050437554,
+      "fa_rate": 0.97054109324048,
+      "sensitivity": 0.5230352303523035
+    },
+    "stacked_b2_drift": {
+      "auprc": {
+        "auroc": 0.7439488133151374,
+        "auprc": 0.25884869759459167,
+        "brier": 0.20521193857804257,
+        "n": 49991
+      },
+      "threshold": 0.6814705387744185,
+      "fa_rate": 0.9815950920245401,
+      "sensitivity": 0.46070460704607047
+    },
+    "b2_alone": {
+      "auprc": {
+        "auroc": 0.7424904132681971,
+        "auprc": 0.2936207024214261,
+        "brier": 0.21678447065442816,
+        "n": 49991
+      },
+      "threshold": 0.6284249812970318,
+      "fa_rate": 0.9827004919029462,
+      "sensitivity": 0.5691056910569106
+    }
+  },
+  "decisions": {
+    "threshold_features": {
+      "gain_pp": 1.6260162601625994,
+      "ci": {
+        "point": 0.016260162601625994,
+        "ci_low": -0.0017356058151606199,
+        "ci_high": 0.03744621737655443,
+        "n_valid_resamples": 1000
+      },
+      "adopt_eligible": false
+    },
+    "threshold_features_boosted": {
+      "gain_pp": 1.7163504968382925,
+      "ci": {
+        "point": 0.017163504968382925,
+        "ci_low": -0.00979575526883845,
+        "ci_high": 0.04652383720930239,
+        "n_valid_resamples": 1000
+      },
+      "adopt_eligible": false
+    },
+    "stacked_b2_drift": {
+      "gain_pp": -4.516711833785009,
+      "ci": {
+        "point": -0.04516711833785009,
+        "ci_low": -0.0840443350516262,
+        "ci_high": -0.009993981419415187,
+        "n_valid_resamples": 1000
+      },
+      "adopt_eligible": false
+    },
+    "b2_alone": {
+      "gain_pp": 6.323396567299,
+      "ci": {
+        "point": 0.06323396567299,
+        "ci_low": 0.03019918234933874,
+        "ci_high": 0.0960975398475398,
+        "n_valid_resamples": 1000
+      },
+      "adopt_eligible": true
+    }
+  },
+  "winner": "b2_alone",
+  "decision_margin_pp": 3.0,
+  "n_folds": 5
+}

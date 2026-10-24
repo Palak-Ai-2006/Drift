@@ -1,0 +1,197 @@
+{
+  "v2_winner": "b2_alone",
+  "v2_feature_spec": {
+    "features": [
+      "map"
+    ],
+    "model": "logistic"
+  },
+  "val_operating_point": {
+    "threshold": 0.35390946502057613,
+    "val_fa_rate": 0.7323813910640257,
+    "target_fa": 1.0
+  },
+  "test_results_by_cohort": {
+    "A": {
+      "n_events": 291,
+      "n_detected": 167,
+      "sensitivity": 0.5738831615120275,
+      "lead_time": {
+        "median_s": 261.0,
+        "iqr_low_s": 97.0,
+        "iqr_high_s": 562.0,
+        "n": 167
+      },
+      "fa_rate_per_hour": 0.9720457433290978
+    },
+    "B": {
+      "n_events": 161,
+      "n_detected": 87,
+      "sensitivity": 0.5403726708074534,
+      "lead_time": {
+        "median_s": 286.0,
+        "iqr_low_s": 101.5,
+        "iqr_high_s": 586.5,
+        "n": 87
+      },
+      "fa_rate_per_hour": 1.0016207455429498
+    }
+  },
+  "test_secondary_metrics": {
+    "auroc": 0.7050939182492701,
+    "auprc": 0.288122705249674,
+    "brier": 0.10348015371339656,
+    "n": 11570
+  },
+  "compared_against": "artifacts/metrics.json (phase4-original)",
+  "reliability_curve": {
+    "bins": [
+      {
+        "bin_low": 0.0,
+        "bin_high": 0.1,
+        "n": 7598,
+        "mean_predicted": 0.05091469551060397,
+        "observed_fraction": 0.0744932877072914
+      },
+      {
+        "bin_low": 0.1,
+        "bin_high": 0.2,
+        "n": 1757,
+        "mean_predicted": 0.13617328743371,
+        "observed_fraction": 0.15651678998292545
+      },
+      {
+        "bin_low": 0.2,
+        "bin_high": 0.30000000000000004,
+        "n": 994,
+        "mean_predicted": 0.2384660637920761,
+        "observed_fraction": 0.2022132796780684
+      },
+      {
+        "bin_low": 0.30000000000000004,
+        "bin_high": 0.4,
+        "n": 505,
+        "mean_predicted": 0.3666201481466864,
+        "observed_fraction": 0.2732673267326733
+      },
+      {
+        "bin_low": 0.4,
+        "bin_high": 0.5,
+        "n": 465,
+        "mean_predicted": 0.43531359379434303,
+        "observed_fraction": 0.3720430107526882
+      },
+      {
+        "bin_low": 0.5,
+        "bin_high": 0.6000000000000001,
+        "n": 156,
+        "mean_predicted": 0.5862068965517241,
+        "observed_fraction": 0.41025641025641024
+      },
+      {
+        "bin_low": 0.6000000000000001,
+        "bin_high": 0.7000000000000001,
+        "n": 0,
+        "mean_predicted": null,
+        "observed_fraction": null
+      },
+      {
+        "bin_low": 0.7000000000000001,
+        "bin_high": 0.8,
+        "n": 95,
+        "mean_predicted": 0.7058823529411764,
+        "observed_fraction": 0.6631578947368421
+      },
+      {
+        "bin_low": 0.8,
+        "bin_high": 0.9,
+        "n": 0,
+        "mean_predicted": null,
+        "observed_fraction": null
+      },
+      {
+        "bin_low": 0.9,
+        "bin_high": 1.0,
+        "n": 0,
+        "mean_predicted": null,
+        "observed_fraction": null
+      }
+    ]
+  },
+  "horizon_sweep": {
+    "5": {
+      "sensitivity": 0.3024054982817869,
+      "n_events": 291,
+      "n_detected": 88,
+      "lead_time": {
+        "median_s": 105.5,
+        "iqr_low_s": 46.0,
+        "iqr_high_s": 174.75,
+        "n": 88
+      }
+    },
+    "10": {
+      "sensitivity": 0.4536082474226804,
+      "n_events": 291,
+      "n_detected": 132,
+      "lead_time": {
+        "median_s": 176.5,
+        "iqr_low_s": 78.0,
+        "iqr_high_s": 381.0,
+        "n": 132
+      }
+    },
+    "15": {
+      "sensitivity": 0.5738831615120275,
+      "n_events": 291,
+      "n_detected": 167,
+      "lead_time": {
+        "median_s": 261.0,
+        "iqr_low_s": 97.0,
+        "iqr_high_s": 562.0,
+        "n": 167
+      }
+    },
+    "30": {
+      "sensitivity": 0.7353951890034365,
+      "n_events": 291,
+      "n_detected": 214,
+      "lead_time": {
+        "median_s": 961.0,
+        "iqr_low_s": 378.0,
+        "iqr_high_s": 1415.0,
+        "n": 214
+      }
+    }
+  },
+  "subgroup_decline_steepness": {
+    "median_split_mmhg_per_min": -0.251390433815349,
+    "groups": [
+      {
+        "decline_group": "abrupt(steeper half)",
+        "mean": 0.6620689655172414,
+        "count": 145
+      },
+      {
+        "decline_group": "gradual(shallower half)",
+        "mean": 0.4896551724137931,
+        "count": 145
+      }
+    ]
+  },
+  "subgroup_timing_in_op": {
+    "median_split_fraction": 0.5092846768336965,
+    "groups": [
+      {
+        "timing_group": "early(first half)",
+        "mean": 0.5517241379310345,
+        "count": 145
+      },
+      {
+        "timing_group": "late(second half)",
+        "mean": 0.6,
+        "count": 145
+      }
+    ]
+  }
+}
