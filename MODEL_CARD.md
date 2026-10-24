@@ -1,8 +1,15 @@
 # MODEL_CARD
 
-**Status: Phase 4 complete, FINAL (2026-10-24).** Generated from
-`artifacts/metrics.json` (`scripts/04_train_eval.py`). Numbers below are real,
-not placeholders.
+**Status: Phase 4 original complete (2026-10-24), tagged `phase4-original`.**
+Generated from `artifacts/metrics.json` (`scripts/04_train_eval.py`). Numbers
+below are real, not placeholders.
+
+**Test-evaluation protocol:** the test set was evaluated once, here, on this
+original model. Any revision (v2) is selected using only validation /
+cross-validation on train+val; the test set is then evaluated exactly one
+more time for the chosen v2, and that result is reported **next to** this one
+below, never replacing it (see "Phase 4 revision (v2)" below, added only
+after this original section was committed and tagged).
 
 ## Model
 
