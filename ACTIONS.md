@@ -65,14 +65,15 @@ A checklist to work through before and during the event.
 - [x] Positive rates by cohort and horizon printed — **DONE**: H15 (primary) overall 10.77%, Cohort B 14.36%, non-Cohort-B 7.81%. Full table in `DATA_CARD.md`.
 - [x] Accept: `windows.parquet`; causality unit test passes; leakage checklist (Section 8) reviewed — **DONE**: 66,871 windows from 438/442 cases (4 excluded, no usable baseline data); `data/processed/windows.parquet`; 64/64 tests passing; leakage checklist printed by `scripts/03_build_windows.py` (remaining unchecked items are explicitly Phase 4's: scaling/calibration on train/val only, test-set-once, bootstrap CIs).
 
-**P4 — Baselines, models, evaluation** (target: 6–10 h; hard deadline — if not done by hour 10, stop P5 and finish this first)
-- [ ] Baselines B1–B4; logistic regression; HistGradientBoosting; calibration on validation
-- [ ] Alarm logic with refractory period; operating-point selection at 1 FA/patient-hour (also 0.5, 2)
-- [ ] Metrics with bootstrap CIs by case; logistic coefficients + scaling saved for the web "why" panel
-- [ ] Model choice per Oct 24 decision: ship logistic unless boosted beats it on **validation only** by both (a) bootstrap-by-case AUPRC-difference 95% CI excluding zero, and (b) ≥5 pp more sensitivity at 1 FA/patient-hour
-- [ ] Insufficient-data threshold finalized at 30% missing fraction; check it excludes ≤10% of validation windows and report the actual share
-- [ ] Leakage checklist (Section 8) run and reported item by item
-- [ ] Accept: `metrics.json` and plots regenerate with one command
+**P4 — Baselines, models, evaluation** — **DONE 2026-10-24** (`scripts/04_train_eval.py`)
+- [x] Baselines B1–B4; logistic regression; HistGradientBoosting; calibration on validation — all implemented (`baselines.py`, `models.py`), run for real.
+- [x] Alarm logic with refractory period; operating-point selection at 1 FA/patient-hour (also 0.5, 2) — `alarms.py`, thresholds in `MODEL_CARD.md`.
+- [x] Metrics with bootstrap CIs by case; logistic coefficients + scaling saved for the web "why" panel — `metrics.json`'s `logistic_coefficients_for_why_panel`.
+- [x] Model choice per Oct 24 decision: ship logistic unless boosted beats it on **validation only** by both (a) bootstrap-by-case AUPRC-difference 95% CI excluding zero, and (b) ≥5 pp more sensitivity at 1 FA/patient-hour — **shipped logistic**: boosted failed both bars (sensitivity gain -0.86pp, AUPRC diff CI [-0.096, +0.085] includes zero).
+- [x] Insufficient-data threshold finalized at 30% missing fraction; check it excludes ≤10% of validation windows and report the actual share — **0.73% of validation windows excluded**, well under the 10% cap.
+- [x] Leakage checklist (Section 8) run and reported item by item — see `MODEL_CARD.md`, all items checked.
+- [x] Accept: `metrics.json` and plots regenerate with one command — `python scripts/04_train_eval.py` regenerates `artifacts/metrics.json` and `artifacts/phase4_reliability_plot.png`.
+- **Honest result (CLAUDE.md: report unfavorable results plainly):** the shipped logistic model does **not** clearly beat the simplest baseline (B2, tuned early-MAP threshold) on the test set — B2 matches or beats it at every FA budget tested. Full comparison in `MODEL_CARD.md`.
 
 **P5 — Hemorrhage simulator** (target: 8–11 h; filler during P4/P1 background jobs only, not true parallel work)
 - [ ] `simulator.py`: ATLS-inspired curves, per-patient variability, three bleed profiles, blunted-response switch, transparent drift score

@@ -1,0 +1,1614 @@
+{
+  "chosen_model": "logistic",
+  "model_selection": {
+    "sensitivity_logistic": 0.49137931034482757,
+    "sensitivity_boosted": 0.4827586206896552,
+    "sensitivity_gain_pp": -0.8620689655172376,
+    "auprc_diff_ci": {
+      "point": 0.003318271093553926,
+      "ci_low": -0.09627844308856137,
+      "ci_high": 0.08543991205426893,
+      "n_valid_resamples": 1000
+    },
+    "auprc_ci_excludes_zero": false
+  },
+  "operating_points": {
+    "model": {
+      "1.0": {
+        "threshold": 0.29457364341085274,
+        "val_fa_rate": 0.8797789037309994
+      },
+      "0.5": {
+        "threshold": 0.31443298969072164,
+        "val_fa_rate": 0.29018885306310455
+      },
+      "2.0": {
+        "threshold": 0.1791044776119403,
+        "val_fa_rate": 1.4140948871487793
+      }
+    },
+    "b2": {
+      "1.0": {
+        "threshold": -71.0,
+        "val_fa_rate": 0.907415937356057
+      },
+      "0.5": {
+        "threshold": -68.0,
+        "val_fa_rate": 0.46522339935513585
+      },
+      "2.0": {
+        "threshold": -77.0,
+        "val_fa_rate": 1.9299861814831873
+      }
+    },
+    "b3": {
+      "1.0": {
+        "threshold": 0.7692307692307693,
+        "val_fa_rate": 0.9903270382312297
+      },
+      "0.5": {
+        "threshold": 0.9047619047619048,
+        "val_fa_rate": 0.4790419161676646
+      },
+      "2.0": {
+        "threshold": 0.6519619029123068,
+        "val_fa_rate": 1.9852602487333024
+      }
+    },
+    "b4": {
+      "1.0": {
+        "threshold": 3.5515151515151517,
+        "val_fa_rate": 0.9350529709811146
+      },
+      "0.5": {
+        "threshold": 6.978833561748115,
+        "val_fa_rate": 0.46982957162597877
+      },
+      "2.0": {
+        "threshold": 1.696969696969698,
+        "val_fa_rate": 1.9806540764624594
+      }
+    }
+  },
+  "test_results": {
+    "methods": {
+      "model": {
+        "1.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 57,
+              "sensitivity": 0.1958762886597938,
+              "lead_time": {
+                "median_s": 126.0,
+                "iqr_low_s": 58.0,
+                "iqr_high_s": 223.0,
+                "n": 57
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 32,
+              "sensitivity": 0.19875776397515527,
+              "lead_time": {
+                "median_s": 136.0,
+                "iqr_low_s": 77.25,
+                "iqr_high_s": 224.25,
+                "n": 32
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 98,
+              "sensitivity": 0.33676975945017185,
+              "lead_time": {
+                "median_s": 261.0,
+                "iqr_low_s": 110.25,
+                "iqr_high_s": 375.0,
+                "n": 98
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 57,
+              "sensitivity": 0.35403726708074534,
+              "lead_time": {
+                "median_s": 261.0,
+                "iqr_low_s": 133.0,
+                "iqr_high_s": 428.0,
+                "n": 57
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 135,
+              "sensitivity": 0.4639175257731959,
+              "lead_time": {
+                "median_s": 338.0,
+                "iqr_low_s": 148.0,
+                "iqr_high_s": 645.5,
+                "n": 135
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 72,
+              "sensitivity": 0.4472049689440994,
+              "lead_time": {
+                "median_s": 343.0,
+                "iqr_low_s": 179.0,
+                "iqr_high_s": 553.75,
+                "n": 72
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 186,
+              "sensitivity": 0.6391752577319587,
+              "lead_time": {
+                "median_s": 1002.0,
+                "iqr_low_s": 557.75,
+                "iqr_high_s": 1400.25,
+                "n": 186
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 108,
+              "sensitivity": 0.6708074534161491,
+              "lead_time": {
+                "median_s": 1056.5,
+                "iqr_low_s": 551.25,
+                "iqr_high_s": 1433.0,
+                "n": 108
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 1.1721728081321474,
+            "B": 1.380875202593193
+          }
+        },
+        "0.5": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 30,
+              "sensitivity": 0.10309278350515463,
+              "lead_time": {
+                "median_s": 130.5,
+                "iqr_low_s": 31.5,
+                "iqr_high_s": 192.5,
+                "n": 30
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 19,
+              "sensitivity": 0.11801242236024845,
+              "lead_time": {
+                "median_s": 133.0,
+                "iqr_low_s": 49.5,
+                "iqr_high_s": 208.5,
+                "n": 19
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 40,
+              "sensitivity": 0.13745704467353953,
+              "lead_time": {
+                "median_s": 187.0,
+                "iqr_low_s": 56.25,
+                "iqr_high_s": 305.25,
+                "n": 40
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 26,
+              "sensitivity": 0.16149068322981366,
+              "lead_time": {
+                "median_s": 191.0,
+                "iqr_low_s": 88.25,
+                "iqr_high_s": 332.5,
+                "n": 26
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 54,
+              "sensitivity": 0.18556701030927836,
+              "lead_time": {
+                "median_s": 282.0,
+                "iqr_low_s": 128.0,
+                "iqr_high_s": 600.5,
+                "n": 54
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 33,
+              "sensitivity": 0.20496894409937888,
+              "lead_time": {
+                "median_s": 258.0,
+                "iqr_low_s": 128.0,
+                "iqr_high_s": 553.0,
+                "n": 33
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 91,
+              "sensitivity": 0.3127147766323024,
+              "lead_time": {
+                "median_s": 990.0,
+                "iqr_low_s": 445.0,
+                "iqr_high_s": 1294.5,
+                "n": 91
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 59,
+              "sensitivity": 0.36645962732919257,
+              "lead_time": {
+                "median_s": 1011.0,
+                "iqr_low_s": 529.5,
+                "iqr_high_s": 1412.5,
+                "n": 59
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 0.3240152477763659,
+            "B": 0.4473257698541329
+          }
+        },
+        "2.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 69,
+              "sensitivity": 0.23711340206185566,
+              "lead_time": {
+                "median_s": 134.0,
+                "iqr_low_s": 66.0,
+                "iqr_high_s": 228.0,
+                "n": 69
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 40,
+              "sensitivity": 0.2484472049689441,
+              "lead_time": {
+                "median_s": 132.5,
+                "iqr_low_s": 65.0,
+                "iqr_high_s": 217.75,
+                "n": 40
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 131,
+              "sensitivity": 0.45017182130584193,
+              "lead_time": {
+                "median_s": 287.0,
+                "iqr_low_s": 129.5,
+                "iqr_high_s": 406.0,
+                "n": 131
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 77,
+              "sensitivity": 0.4782608695652174,
+              "lead_time": {
+                "median_s": 276.0,
+                "iqr_low_s": 131.0,
+                "iqr_high_s": 441.0,
+                "n": 77
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 178,
+              "sensitivity": 0.6116838487972509,
+              "lead_time": {
+                "median_s": 368.5,
+                "iqr_low_s": 198.0,
+                "iqr_high_s": 617.5,
+                "n": 178
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 104,
+              "sensitivity": 0.6459627329192547,
+              "lead_time": {
+                "median_s": 373.0,
+                "iqr_low_s": 193.75,
+                "iqr_high_s": 608.5,
+                "n": 104
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 217,
+              "sensitivity": 0.7457044673539519,
+              "lead_time": {
+                "median_s": 1011.0,
+                "iqr_low_s": 558.0,
+                "iqr_high_s": 1388.0,
+                "n": 217
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 128,
+              "sensitivity": 0.7950310559006211,
+              "lead_time": {
+                "median_s": 1083.0,
+                "iqr_low_s": 561.0,
+                "iqr_high_s": 1450.5,
+                "n": 128
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 1.7534942820838626,
+            "B": 2.0032414910858996
+          }
+        }
+      },
+      "b2": {
+        "1.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 93,
+              "sensitivity": 0.31958762886597936,
+              "lead_time": {
+                "median_s": 105.0,
+                "iqr_low_s": 48.0,
+                "iqr_high_s": 194.0,
+                "n": 93
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 47,
+              "sensitivity": 0.2919254658385093,
+              "lead_time": {
+                "median_s": 98.0,
+                "iqr_low_s": 34.5,
+                "iqr_high_s": 194.0,
+                "n": 47
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 140,
+              "sensitivity": 0.48109965635738833,
+              "lead_time": {
+                "median_s": 195.0,
+                "iqr_low_s": 78.0,
+                "iqr_high_s": 373.25,
+                "n": 140
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 71,
+              "sensitivity": 0.4409937888198758,
+              "lead_time": {
+                "median_s": 194.0,
+                "iqr_low_s": 74.5,
+                "iqr_high_s": 357.0,
+                "n": 71
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 175,
+              "sensitivity": 0.6013745704467354,
+              "lead_time": {
+                "median_s": 262.0,
+                "iqr_low_s": 96.0,
+                "iqr_high_s": 558.0,
+                "n": 175
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 91,
+              "sensitivity": 0.5652173913043478,
+              "lead_time": {
+                "median_s": 273.0,
+                "iqr_low_s": 97.0,
+                "iqr_high_s": 562.0,
+                "n": 91
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 219,
+              "sensitivity": 0.7525773195876289,
+              "lead_time": {
+                "median_s": 951.0,
+                "iqr_low_s": 374.5,
+                "iqr_high_s": 1408.0,
+                "n": 219
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 123,
+              "sensitivity": 0.7639751552795031,
+              "lead_time": {
+                "median_s": 951.0,
+                "iqr_low_s": 327.0,
+                "iqr_high_s": 1364.5,
+                "n": 123
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 1.1483481575603558,
+            "B": 1.1572123176661264
+          }
+        },
+        "0.5": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 94,
+              "sensitivity": 0.3230240549828179,
+              "lead_time": {
+                "median_s": 96.0,
+                "iqr_low_s": 45.25,
+                "iqr_high_s": 156.0,
+                "n": 94
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 44,
+              "sensitivity": 0.2732919254658385,
+              "lead_time": {
+                "median_s": 97.0,
+                "iqr_low_s": 25.25,
+                "iqr_high_s": 147.5,
+                "n": 44
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 121,
+              "sensitivity": 0.41580756013745707,
+              "lead_time": {
+                "median_s": 128.0,
+                "iqr_low_s": 58.0,
+                "iqr_high_s": 286.0,
+                "n": 121
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 59,
+              "sensitivity": 0.36645962732919257,
+              "lead_time": {
+                "median_s": 131.0,
+                "iqr_low_s": 57.0,
+                "iqr_high_s": 314.5,
+                "n": 59
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 153,
+              "sensitivity": 0.5257731958762887,
+              "lead_time": {
+                "median_s": 194.0,
+                "iqr_low_s": 78.0,
+                "iqr_high_s": 552.0,
+                "n": 153
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 78,
+              "sensitivity": 0.484472049689441,
+              "lead_time": {
+                "median_s": 252.0,
+                "iqr_low_s": 78.75,
+                "iqr_high_s": 585.5,
+                "n": 78
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 200,
+              "sensitivity": 0.6872852233676976,
+              "lead_time": {
+                "median_s": 856.0,
+                "iqr_low_s": 262.5,
+                "iqr_high_s": 1418.75,
+                "n": 200
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 108,
+              "sensitivity": 0.6708074534161491,
+              "lead_time": {
+                "median_s": 858.0,
+                "iqr_low_s": 254.25,
+                "iqr_high_s": 1389.5,
+                "n": 108
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 0.6575603557814486,
+            "B": 0.6904376012965965
+          }
+        },
+        "2.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 84,
+              "sensitivity": 0.28865979381443296,
+              "lead_time": {
+                "median_s": 141.0,
+                "iqr_low_s": 67.5,
+                "iqr_high_s": 204.0,
+                "n": 84
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 47,
+              "sensitivity": 0.2919254658385093,
+              "lead_time": {
+                "median_s": 128.0,
+                "iqr_low_s": 57.0,
+                "iqr_high_s": 194.5,
+                "n": 47
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 154,
+              "sensitivity": 0.5292096219931272,
+              "lead_time": {
+                "median_s": 286.5,
+                "iqr_low_s": 129.25,
+                "iqr_high_s": 407.5,
+                "n": 154
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 84,
+              "sensitivity": 0.5217391304347826,
+              "lead_time": {
+                "median_s": 256.0,
+                "iqr_low_s": 111.0,
+                "iqr_high_s": 428.0,
+                "n": 84
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 188,
+              "sensitivity": 0.6460481099656358,
+              "lead_time": {
+                "median_s": 332.0,
+                "iqr_low_s": 160.25,
+                "iqr_high_s": 557.25,
+                "n": 188
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 103,
+              "sensitivity": 0.639751552795031,
+              "lead_time": {
+                "median_s": 348.0,
+                "iqr_low_s": 135.0,
+                "iqr_high_s": 562.0,
+                "n": 103
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 233,
+              "sensitivity": 0.8006872852233677,
+              "lead_time": {
+                "median_s": 1056.0,
+                "iqr_low_s": 552.0,
+                "iqr_high_s": 1401.0,
+                "n": 233
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 133,
+              "sensitivity": 0.8260869565217391,
+              "lead_time": {
+                "median_s": 1058.0,
+                "iqr_low_s": 553.0,
+                "iqr_high_s": 1398.0,
+                "n": 133
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 1.9822109275730622,
+            "B": 1.9837925445705025
+          }
+        }
+      },
+      "b3": {
+        "1.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 41,
+              "sensitivity": 0.140893470790378,
+              "lead_time": {
+                "median_s": 134.0,
+                "iqr_low_s": 76.0,
+                "iqr_high_s": 248.0,
+                "n": 41
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 24,
+              "sensitivity": 0.14906832298136646,
+              "lead_time": {
+                "median_s": 128.0,
+                "iqr_low_s": 50.25,
+                "iqr_high_s": 229.25,
+                "n": 24
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 75,
+              "sensitivity": 0.25773195876288657,
+              "lead_time": {
+                "median_s": 286.0,
+                "iqr_low_s": 128.0,
+                "iqr_high_s": 406.0,
+                "n": 75
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 43,
+              "sensitivity": 0.2670807453416149,
+              "lead_time": {
+                "median_s": 286.0,
+                "iqr_low_s": 119.5,
+                "iqr_high_s": 394.5,
+                "n": 43
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 96,
+              "sensitivity": 0.32989690721649484,
+              "lead_time": {
+                "median_s": 349.5,
+                "iqr_low_s": 167.5,
+                "iqr_high_s": 566.25,
+                "n": 96
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 55,
+              "sensitivity": 0.3416149068322981,
+              "lead_time": {
+                "median_s": 338.0,
+                "iqr_low_s": 140.0,
+                "iqr_high_s": 572.0,
+                "n": 55
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 129,
+              "sensitivity": 0.44329896907216493,
+              "lead_time": {
+                "median_s": 1058.0,
+                "iqr_low_s": 558.0,
+                "iqr_high_s": 1366.0,
+                "n": 129
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 75,
+              "sensitivity": 0.4658385093167702,
+              "lead_time": {
+                "median_s": 1088.0,
+                "iqr_low_s": 698.5,
+                "iqr_high_s": 1353.5,
+                "n": 75
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 1.3103557814485387,
+            "B": 1.86709886547812
+          }
+        },
+        "0.5": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 17,
+              "sensitivity": 0.058419243986254296,
+              "lead_time": {
+                "median_s": 146.0,
+                "iqr_low_s": 81.0,
+                "iqr_high_s": 223.0,
+                "n": 17
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 12,
+              "sensitivity": 0.07453416149068323,
+              "lead_time": {
+                "median_s": 164.5,
+                "iqr_low_s": 120.75,
+                "iqr_high_s": 232.5,
+                "n": 12
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 28,
+              "sensitivity": 0.09621993127147767,
+              "lead_time": {
+                "median_s": 258.5,
+                "iqr_low_s": 135.5,
+                "iqr_high_s": 375.0,
+                "n": 28
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 18,
+              "sensitivity": 0.11180124223602485,
+              "lead_time": {
+                "median_s": 242.0,
+                "iqr_low_s": 149.0,
+                "iqr_high_s": 356.75,
+                "n": 18
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 41,
+              "sensitivity": 0.140893470790378,
+              "lead_time": {
+                "median_s": 373.0,
+                "iqr_low_s": 171.0,
+                "iqr_high_s": 716.0,
+                "n": 41
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 28,
+              "sensitivity": 0.17391304347826086,
+              "lead_time": {
+                "median_s": 377.0,
+                "iqr_low_s": 188.25,
+                "iqr_high_s": 716.0,
+                "n": 28
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 52,
+              "sensitivity": 0.17869415807560138,
+              "lead_time": {
+                "median_s": 989.5,
+                "iqr_low_s": 375.75,
+                "iqr_high_s": 1434.25,
+                "n": 52
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 37,
+              "sensitivity": 0.22981366459627328,
+              "lead_time": {
+                "median_s": 1111.0,
+                "iqr_low_s": 510.0,
+                "iqr_high_s": 1543.0,
+                "n": 37
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 0.6385006353240152,
+            "B": 0.9821717990275527
+          }
+        },
+        "2.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 51,
+              "sensitivity": 0.17525773195876287,
+              "lead_time": {
+                "median_s": 146.0,
+                "iqr_low_s": 61.5,
+                "iqr_high_s": 221.5,
+                "n": 51
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 25,
+              "sensitivity": 0.15527950310559005,
+              "lead_time": {
+                "median_s": 136.0,
+                "iqr_low_s": 48.0,
+                "iqr_high_s": 171.0,
+                "n": 25
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 100,
+              "sensitivity": 0.3436426116838488,
+              "lead_time": {
+                "median_s": 295.5,
+                "iqr_low_s": 144.0,
+                "iqr_high_s": 442.75,
+                "n": 100
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 49,
+              "sensitivity": 0.30434782608695654,
+              "lead_time": {
+                "median_s": 286.0,
+                "iqr_low_s": 136.0,
+                "iqr_high_s": 438.0,
+                "n": 49
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 129,
+              "sensitivity": 0.44329896907216493,
+              "lead_time": {
+                "median_s": 401.0,
+                "iqr_low_s": 171.0,
+                "iqr_high_s": 588.0,
+                "n": 129
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 68,
+              "sensitivity": 0.422360248447205,
+              "lead_time": {
+                "median_s": 418.0,
+                "iqr_low_s": 167.5,
+                "iqr_high_s": 617.25,
+                "n": 68
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 175,
+              "sensitivity": 0.6013745704467354,
+              "lead_time": {
+                "median_s": 1120.0,
+                "iqr_low_s": 632.0,
+                "iqr_high_s": 1431.5,
+                "n": 175
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 97,
+              "sensitivity": 0.6024844720496895,
+              "lead_time": {
+                "median_s": 1120.0,
+                "iqr_low_s": 716.0,
+                "iqr_high_s": 1433.0,
+                "n": 97
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 2.2442820838627697,
+            "B": 2.674230145867099
+          }
+        }
+      },
+      "b4": {
+        "1.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 25,
+              "sensitivity": 0.0859106529209622,
+              "lead_time": {
+                "median_s": 78.0,
+                "iqr_low_s": 48.0,
+                "iqr_high_s": 176.0,
+                "n": 25
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 14,
+              "sensitivity": 0.08695652173913043,
+              "lead_time": {
+                "median_s": 70.5,
+                "iqr_low_s": 46.5,
+                "iqr_high_s": 116.25,
+                "n": 14
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 49,
+              "sensitivity": 0.16838487972508592,
+              "lead_time": {
+                "median_s": 256.0,
+                "iqr_low_s": 78.0,
+                "iqr_high_s": 488.0,
+                "n": 49
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 26,
+              "sensitivity": 0.16149068322981366,
+              "lead_time": {
+                "median_s": 237.0,
+                "iqr_low_s": 69.25,
+                "iqr_high_s": 483.75,
+                "n": 26
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 66,
+              "sensitivity": 0.2268041237113402,
+              "lead_time": {
+                "median_s": 422.0,
+                "iqr_low_s": 137.25,
+                "iqr_high_s": 633.75,
+                "n": 66
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 38,
+              "sensitivity": 0.2360248447204969,
+              "lead_time": {
+                "median_s": 479.5,
+                "iqr_low_s": 92.75,
+                "iqr_high_s": 662.75,
+                "n": 38
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 104,
+              "sensitivity": 0.35738831615120276,
+              "lead_time": {
+                "median_s": 894.5,
+                "iqr_low_s": 346.5,
+                "iqr_high_s": 1418.75,
+                "n": 104
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 65,
+              "sensitivity": 0.40372670807453415,
+              "lead_time": {
+                "median_s": 1041.0,
+                "iqr_low_s": 556.0,
+                "iqr_high_s": 1431.0,
+                "n": 65
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 1.076874205844981,
+            "B": 1.128038897893031
+          }
+        },
+        "0.5": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 10,
+              "sensitivity": 0.03436426116838488,
+              "lead_time": {
+                "median_s": 142.0,
+                "iqr_low_s": 80.0,
+                "iqr_high_s": 189.75,
+                "n": 10
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 6,
+              "sensitivity": 0.037267080745341616,
+              "lead_time": {
+                "median_s": 103.0,
+                "iqr_low_s": 53.0,
+                "iqr_high_s": 158.25,
+                "n": 6
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 16,
+              "sensitivity": 0.054982817869415807,
+              "lead_time": {
+                "median_s": 220.5,
+                "iqr_low_s": 132.5,
+                "iqr_high_s": 513.75,
+                "n": 16
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 9,
+              "sensitivity": 0.055900621118012424,
+              "lead_time": {
+                "median_s": 165.0,
+                "iqr_low_s": 68.0,
+                "iqr_high_s": 513.0,
+                "n": 9
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 27,
+              "sensitivity": 0.09278350515463918,
+              "lead_time": {
+                "median_s": 585.0,
+                "iqr_low_s": 181.5,
+                "iqr_high_s": 678.0,
+                "n": 27
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 16,
+              "sensitivity": 0.09937888198757763,
+              "lead_time": {
+                "median_s": 589.0,
+                "iqr_low_s": 158.25,
+                "iqr_high_s": 693.0,
+                "n": 16
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 46,
+              "sensitivity": 0.15807560137457044,
+              "lead_time": {
+                "median_s": 854.5,
+                "iqr_low_s": 590.75,
+                "iqr_high_s": 1483.5,
+                "n": 46
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 27,
+              "sensitivity": 0.16770186335403728,
+              "lead_time": {
+                "median_s": 823.0,
+                "iqr_low_s": 629.5,
+                "iqr_high_s": 1474.5,
+                "n": 27
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 0.5146124523506989,
+            "B": 0.573743922204214
+          }
+        },
+        "2.0": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 57,
+              "sensitivity": 0.1958762886597938,
+              "lead_time": {
+                "median_s": 111.0,
+                "iqr_low_s": 49.0,
+                "iqr_high_s": 192.0,
+                "n": 57
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 29,
+              "sensitivity": 0.18012422360248448,
+              "lead_time": {
+                "median_s": 81.0,
+                "iqr_low_s": 43.0,
+                "iqr_high_s": 128.0,
+                "n": 29
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 102,
+              "sensitivity": 0.35051546391752575,
+              "lead_time": {
+                "median_s": 271.0,
+                "iqr_low_s": 101.75,
+                "iqr_high_s": 423.75,
+                "n": 102
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 52,
+              "sensitivity": 0.32298136645962733,
+              "lead_time": {
+                "median_s": 208.5,
+                "iqr_low_s": 78.0,
+                "iqr_high_s": 465.75,
+                "n": 52
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 133,
+              "sensitivity": 0.4570446735395189,
+              "lead_time": {
+                "median_s": 346.0,
+                "iqr_low_s": 141.0,
+                "iqr_high_s": 585.0,
+                "n": 133
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 74,
+              "sensitivity": 0.45962732919254656,
+              "lead_time": {
+                "median_s": 424.5,
+                "iqr_low_s": 111.0,
+                "iqr_high_s": 618.0,
+                "n": 74
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 183,
+              "sensitivity": 0.6288659793814433,
+              "lead_time": {
+                "median_s": 930.0,
+                "iqr_low_s": 414.0,
+                "iqr_high_s": 1426.5,
+                "n": 183
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 108,
+              "sensitivity": 0.6708074534161491,
+              "lead_time": {
+                "median_s": 988.0,
+                "iqr_low_s": 543.0,
+                "iqr_high_s": 1436.75,
+                "n": 108
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 2.0727445997458704,
+            "B": 2.0713128038897892
+          }
+        }
+      },
+      "b1": {
+        "zero_lead": {
+          "per_horizon": {
+            "H5_cohortA": {
+              "n_events": 291,
+              "n_detected": 291,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 291
+              }
+            },
+            "H5_cohortB": {
+              "n_events": 161,
+              "n_detected": 161,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 161
+              }
+            },
+            "H10_cohortA": {
+              "n_events": 291,
+              "n_detected": 291,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 291
+              }
+            },
+            "H10_cohortB": {
+              "n_events": 161,
+              "n_detected": 161,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 161
+              }
+            },
+            "H15_cohortA": {
+              "n_events": 291,
+              "n_detected": 291,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 291
+              }
+            },
+            "H15_cohortB": {
+              "n_events": 161,
+              "n_detected": 161,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 161
+              }
+            },
+            "H30_cohortA": {
+              "n_events": 291,
+              "n_detected": 291,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 291
+              }
+            },
+            "H30_cohortB": {
+              "n_events": 161,
+              "n_detected": 161,
+              "sensitivity": 1.0,
+              "lead_time": {
+                "median_s": 0.0,
+                "iqr_low_s": 0.0,
+                "iqr_high_s": 0.0,
+                "n": 161
+              }
+            }
+          },
+          "fa_rate_per_hour_by_cohort": {
+            "A": 0.0,
+            "B": 0.0
+          }
+        }
+      }
+    }
+  },
+  "test_secondary_metrics": {
+    "auroc": 0.7357126068089893,
+    "auprc": 0.25980416964300046,
+    "brier": 0.10371140664334315,
+    "n": 11570
+  },
+  "test_reliability_curve": {
+    "bins": [
+      {
+        "bin_low": 0.0,
+        "bin_high": 0.1,
+        "n": 6610,
+        "mean_predicted": 0.036235813423219486,
+        "observed_fraction": 0.053101361573373675
+      },
+      {
+        "bin_low": 0.1,
+        "bin_high": 0.2,
+        "n": 1763,
+        "mean_predicted": 0.13130157465465492,
+        "observed_fraction": 0.15484968803176405
+      },
+      {
+        "bin_low": 0.2,
+        "bin_high": 0.30000000000000004,
+        "n": 1586,
+        "mean_predicted": 0.2577708449380223,
+        "observed_fraction": 0.2257250945775536
+      },
+      {
+        "bin_low": 0.30000000000000004,
+        "bin_high": 0.4,
+        "n": 1406,
+        "mean_predicted": 0.3124336794171515,
+        "observed_fraction": 0.3008534850640114
+      },
+      {
+        "bin_low": 0.4,
+        "bin_high": 0.5,
+        "n": 19,
+        "mean_predicted": 0.4489428699955016,
+        "observed_fraction": 0.3157894736842105
+      },
+      {
+        "bin_low": 0.5,
+        "bin_high": 0.6000000000000001,
+        "n": 80,
+        "mean_predicted": 0.511229257179467,
+        "observed_fraction": 0.4
+      },
+      {
+        "bin_low": 0.6000000000000001,
+        "bin_high": 0.7000000000000001,
+        "n": 95,
+        "mean_predicted": 0.646807584172364,
+        "observed_fraction": 0.37894736842105264
+      },
+      {
+        "bin_low": 0.7000000000000001,
+        "bin_high": 0.8,
+        "n": 8,
+        "mean_predicted": 0.7623806316800563,
+        "observed_fraction": 0.125
+      },
+      {
+        "bin_low": 0.8,
+        "bin_high": 0.9,
+        "n": 3,
+        "mean_predicted": 0.8219450574808377,
+        "observed_fraction": 0.0
+      },
+      {
+        "bin_low": 0.9,
+        "bin_high": 1.0,
+        "n": 0,
+        "mean_predicted": null,
+        "observed_fraction": null
+      }
+    ]
+  },
+  "headline_bootstrap_cis": {
+    "A": {
+      "sensitivity_ci": {
+        "point": 0.4639175257731959,
+        "ci_low": 0.3826144970623629,
+        "ci_high": 0.5457680693551529,
+        "n_valid_resamples": 1000
+      },
+      "fa_rate_ci": {
+        "point": 1.1721728081321474,
+        "ci_low": 0.933374256792414,
+        "ci_high": 1.4331638923378844,
+        "n_valid_resamples": 1000
+      }
+    },
+    "B": {
+      "sensitivity_ci": {
+        "point": 0.4472049689440994,
+        "ci_low": 0.34998015873015875,
+        "ci_high": 0.540751633986928,
+        "n_valid_resamples": 1000
+      },
+      "fa_rate_ci": {
+        "point": 1.380875202593193,
+        "ci_low": 0.9982009685867483,
+        "ci_high": 1.8162565323151107,
+        "n_valid_resamples": 1000
+      }
+    }
+  },
+  "split_sizes": {
+    "train": 263,
+    "val": 88,
+    "test": 87
+  },
+  "logistic_coefficients_for_why_panel": {
+    "feature_names": [
+      "hr",
+      "sbp",
+      "dbp",
+      "map",
+      "pp",
+      "pp_over_sbp",
+      "shock_index",
+      "map_std",
+      "map_min",
+      "missing_fraction",
+      "hr_slope_5",
+      "hr_slope_10",
+      "hr_slope_15",
+      "map_slope_5",
+      "map_slope_10",
+      "map_slope_15",
+      "pp_slope_5",
+      "pp_slope_10",
+      "pp_slope_15",
+      "shock_index_slope_5",
+      "shock_index_slope_10",
+      "shock_index_slope_15",
+      "hr_drift",
+      "map_drift",
+      "pp_drift",
+      "shock_index_drift",
+      "age",
+      "asa",
+      "emergency",
+      "sex"
+    ],
+    "impute_median": [
+      72.0,
+      119.0,
+      64.0,
+      84.0,
+      54.0,
+      0.46017699115044247,
+      0.6065573770491803,
+      5.711704050028606,
+      73.0,
+      0.0,
+      -3.508076215171389e-15,
+      -0.0030075187969921566,
+      -0.0013348164627377315,
+      -0.0969696969697123,
+      0.025563909774433614,
+      0.05428253615128101,
+      -0.07272727272727843,
+      0.0015037593984933994,
+      0.02135706340378206,
+      0.0006551598670678177,
+      -0.00010534357394941638,
+      -0.000370690993452435,
+      4.0,
+      -2.0,
+      -1.5,
+      0.043767989245626915,
+      60.0,
+      2.0,
+      0.0,
+      1.0
+    ],
+    "scale_mean": [
+      73.64937715625082,
+      120.13160043190857,
+      64.8166890521714,
+      85.64788917858365,
+      55.20235179479076,
+      0.45623805064646333,
+      0.6250044059838282,
+      8.376257974807439,
+      73.31863790787706,
+      0.009693362478382624,
+      0.023763325525573545,
+      0.023563784852042153,
+      0.02723195940676691,
+      -0.05724032701342469,
+      0.10170520037642868,
+      0.10913517282726541,
+      -0.0571469631448385,
+      0.06640773372329832,
+      0.07532365277459666,
+      0.000884919315619127,
+      -0.0007974567721614001,
+      -0.0008704364917786661,
+      5.309038476732243,
+      -1.2528508598667405,
+      -1.0232348371125333,
+      0.05139250559764005,
+      59.519975770983116,
+      2.0165389376102816,
+      0.10400042137420663,
+      0.5874219799320534
+    ],
+    "scale_std": [
+      14.504067854367019,
+      17.655429763021274,
+      10.089369575164826,
+      14.906719499165328,
+      13.797052871189086,
+      0.07085505082530213,
+      0.15166062877730505,
+      7.906136754187973,
+      11.95112618900629,
+      0.055917803671197044,
+      1.652846206546454,
+      0.8018488752884814,
+      0.5577466646355544,
+      3.468194961063244,
+      1.976450222854265,
+      1.410554660838655,
+      2.0862605646670014,
+      1.2675349426393407,
+      0.8624155571524025,
+      0.020725783850387088,
+      0.013590558110760643,
+      0.010309611664986921,
+      12.140336836968128,
+      17.62067605594857,
+      13.986960544564674,
+      0.15079814765428237,
+      12.755221606780054,
+      0.5865059167310743,
+      0.30526109108137917,
+      0.49229807781948504
+    ],
+    "coefficients": [
+      -0.44337219607532485,
+      0.300519755916253,
+      0.07350731666391999,
+      -0.36799961890605887,
+      -0.4045012538729455,
+      0.9950212782269809,
+      0.7666773821513119,
+      0.10950280001461048,
+      -0.5363244367031568,
+      0.009447184370247165,
+      -0.12922360675064457,
+      0.0029043801420120955,
+      0.15601420993940784,
+      0.0633039983265665,
+      0.02877831431201381,
+      0.1162115726781494,
+      0.013359977152180243,
+      -0.08374362144384642,
+      -0.008769657756499563,
+      0.17003232387354905,
+      -0.11275354124544176,
+      0.041153986017137746,
+      -0.002786855238972816,
+      0.29081172879871886,
+      -0.24542263211681692,
+      0.1879650811719506,
+      -0.08891311329968768,
+      0.17532784838150414,
+      0.1166723173001773,
+      0.10410318222336787
+    ],
+    "intercept": -0.5652171612832851
+  },
+  "primary_horizon_min": 15
+}
