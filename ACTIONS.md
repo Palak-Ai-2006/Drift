@@ -74,6 +74,36 @@ A checklist to work through before and during the event.
 - [x] Leakage checklist (Section 8) run and reported item by item — see `MODEL_CARD.md`, all items checked.
 - [x] Accept: `metrics.json` and plots regenerate with one command — `python scripts/04_train_eval.py` regenerates `artifacts/metrics.json` and `artifacts/phase4_reliability_plot.png`.
 - **Honest result (CLAUDE.md: report unfavorable results plainly):** the shipped logistic model does **not** clearly beat the simplest baseline (B2, tuned early-MAP threshold) on the test set — B2 matches or beats it at every FA budget tested. Full comparison in `MODEL_CARD.md`.
+- [x] **Experiment 1: event-aligned traces, 2026-10-24** (`scripts/04d_event_aligned_traces.py`, train+val only, descriptive, test set untouched): `artifacts/phase4_event_aligned_traces_cohort.png`, `artifacts/phase4_event_aligned_traces_decline.png` (1,107 events). Findings: Cohort B cases run a *persistently elevated* HR (~86 vs ~70 bpm) and shock index (~0.83 vs ~0.65) across the whole 30-minute window, not a late-breaking rise before the event — more a chronic compensating state than acute drift. Gradual-decline events show the same persistently-elevated-shock-index pattern throughout; abrupt-decline events look comparatively unremarkable until a late, sharp MAP crash in the final ~10-15 minutes. This is consistent with (and helps explain) the CV finding below: slope/drift features add little because the signal, where present, is a flat elevated baseline rather than a late dynamic change a slope feature would catch.
+
+---
+
+### Experiment 2: bleeding-flavored label (rules locked 2026-10-24, BEFORE running anything)
+
+Per the user's explicit request, retrying the same CV screening (MAP alone vs.
+the stacked drift model) on a label closer to hemorrhage than plain MAP<65.
+Written here first, exactly as the user specified, so the rule can't move
+after seeing results.
+
+**Candidate "bleeding-flavored" event** (a real primary MAP<65≥60s event additionally qualifies if ALL of):
+1. Occurs after incision — proxy: `event.start_time > opstart` (same documented proxy `features.py`'s `time_since_opstart` already uses).
+2. Case is Cohort B (`cohort_b_final == True`, i.e. the already-locked RBC-transfusion-OR-EBL≥500mL rule) — "in cases with high recorded blood loss."
+3. No vasopressor infusion-rate increase in the preceding 5 minutes, across every available continuous infusion track (`Orchestra/NEPI_RATE`, `EPI_RATE`, `PHEN_RATE`, `VASO_RATE`, `DOPA_RATE` — read from `data/manual/track_names.csv`, not guessed). **Documented limitation:** bolus-only vasopressors (e.g. ephedrine pushes, recorded only as an end-of-case total `intraop_eph`) are not time-resolved in VitalDB's numeric tracks and cannot be checked this way.
+4. No volatile-anesthetic concentration increase in the preceding 5 minutes (`Primus/EXP_SEVO` or `EXP_DES`, whichever is populated for that case).
+   - Criteria 3 and 4 use "any observed increase" (rate/concentration at t > value at t-5min), not a guessed "large change" magnitude — simpler, more conservative (excludes more, keeps the positive class cleaner), and avoids inventing an unjustified clinical cutoff.
+
+**Pitfall avoided, explicitly:** the label definition never references HR, pulse pressure, or shock index — only MAP (the event itself), timing, cohort membership, and drug/anesthetic tracks. Putting HR/PP into the label would let HR-based features predict it trivially.
+
+**Window handling:** a window's label is 1 if a qualifying event falls in its horizon; 0 if no primary event (qualifying or not) falls in its horizon; **NaN (excluded, not negative)** if a real primary event falls in the horizon but fails the qualifying checks above — a disqualified (possibly confounded) event is treated as indeterminate, not as a safe negative, same logic already used for right-censored (case-ends-before-horizon) windows.
+
+**Candidates compared:** `b2_alone` (MAP only) vs. `stacked_b2_drift` (MAP + HR/MAP/PP/shock-index slopes and drift), both already implemented in `scripts/04b_model_iteration.py`. `original_repro` kept as a third reference point.
+
+**Decision rule (same as Phase 4 v2):** adopt only if a candidate beats `b2_alone`'s CV sensitivity by ≥3pp at 1 FA/patient-hour, bootstrap-by-case 95% CI excluding zero, via 5-fold grouped CV on train+val only.
+
+**If drift doesn't win: stop and report it.** No further feature engineering after this experiment regardless of outcome.
+
+**Test set:** touched exactly once for this new task (a label/task change, not a re-look at the same task), disclosed explicitly as a post-hoc experiment, reported separately from `metrics.json`/`metrics_v2.json` — never blended with either.
+
 - [x] **Phase 4 iteration (v2), 2026-10-24** (`scripts/04b_model_iteration.py`, `scripts/04c_v2_diagnostics.py`): pre-registered protocol (tagged `phase4-original`, decision rule locked before any CV numbers existed), 5-fold grouped CV on train+val (351 cases) comparing 5 candidates. Winner: `b2_alone` (MAP-only logistic), +6.3pp CV sensitivity over the original, CI excludes zero. Evaluated against test exactly once more: 57.4% sensitivity (Cohort A) vs. the original's 46.4%, still short of B2's 60.1%. **Central finding: a stacked MAP+drift model scored worse than MAP alone in CV — no feature/model combination tried shows drift dynamics adding value beyond current MAP on this dataset.** Full writeup: `MODEL_CARD.md` "Phase 4 revision (v2)".
 
 **P5 — Hemorrhage simulator** (target: 8–11 h; filler during P4/P1 background jobs only, not true parallel work)
