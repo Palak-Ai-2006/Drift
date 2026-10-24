@@ -110,55 +110,55 @@ after seeing results.
 
 ---
 
-### Phase 4 iteration, round 3 (rules locked 2026-10-24, BEFORE any code)
+### Phase 4 iteration, round 3 (rules locked 2026-10-24, BEFORE any code — superseded the earlier 5-fold draft of this section with this exact, user-specified plan)
 
 Why: the stacked drift model likely lost because adding noisy, correlated
 features on top of a strong single feature (MAP) hurts more than it helps,
 with only 351 cases to learn from — not proof that no dynamic signal exists.
-Three more targeted things to try, time-boxed, then two separate follow-ups.
 
-**Candidates (grouped 5-fold CV, train+val only, same protocol as before):**
-1. **Residual/offset model**: fix the MAP-only model's logit as an additive
-   offset, then fit a ridge-penalized logistic on the extra features (HR,
-   shock index, pulse pressure, all slopes, all drift-from-baseline) on top
-   of it, penalty strength chosen by inner grouped CV. If drift carries
-   signal beyond MAP, its coefficients survive a reasonable penalty; if not,
-   they shrink toward zero and the result matches MAP alone. Can't do
-   meaningfully worse than MAP alone by construction (the offset is MAP's
-   own prediction).
-2. **Interaction terms**: `(65 - MAP) × shock_index` and
-   `(65 - MAP) × HR drift from baseline` — the one-line physiology claim
-   ("a given MAP is more dangerous when the patient is already compensating
-   harder"), as a small plain logistic alongside MAP itself.
-3. **Level features**: already present in the original 29-feature model,
-   which already lost to MAP alone — no new work expected to help here, not
-   retried as a separate candidate.
+#### Primary task
+1. Implement offset/residual ridge logistic regression
+   - Use MAP-only model score as an offset term
+   - Add HR, shock index, pulse pressure features with L2 penalty
+   - Tune penalty strength via nested CV
+2. Implement interaction-term model
+   - Features: MAP × shock index, MAP × deviation of HR from baseline
+   - Captures hypothesis: MAP drop is riskier if patient is compensating harder
+3. Run **3-fold** grouped CV on train+val to compare:
+   - MAP-only (B2, no modifications)
+   - Offset/residual ridge model
+   - Interaction model
+4. Adopt a model only if in 3-fold CV it:
+   - Beats MAP-only by ≥3 percentage points in sensitivity @ 1 FA/hr
+   - 95% CI for the improvement entirely >0
+5. If no model meets criteria, STOP and report CV results
+6. If a model meets criteria and time remains, evaluate it once on the clean holdout (below)
 
-**Decision rule (same bar as before):** adopt a variant only if it beats
-`b2_alone`'s CV sensitivity by ≥3pp at 1 FA/patient-hour, bootstrap-by-case
-95% CI excluding zero. **Time-boxed to about 3 hours; stop at the end of that
-box regardless of outcome**, and report whatever the result is.
+#### Secondary task — NOT a hemorrhage detector, framed and reported as a compensation-state flag
+1. Label: sustained elevated shock index (rolling 5-min median shock index ≥0.9)
+2. Predict label from non-label features: age, height, weight, gender, MAP, pulse pressure
+   — explicitly excludes HR/SBP/shock-index-derived features (current value, slope, drift
+   all excluded), or the "win" would be a trivial artifact of predicting shock index from itself
+3. Run 3-fold grouped CV on train+val
+4. Report ROC AUC in CV ± 95% CI
 
-**Separate, secondary task — NOT a hemorrhage detector:** a "sustained
-elevated shock index" label (shock index > `config.BASELINE_B3_SHOCK_INDEX_THRESHOLD`
-sustained ≥60s, reusing the primary event detector's own duration logic,
-just on shock index instead of MAP) is a **compensation-state flag**, framed
-and reported as such — never as evidence of bleeding. **Pitfall avoided
-explicitly, as with Experiment 2's label**: this label is built from HR and
-shock index, so the model predicting it must **exclude** HR-, SBP-, and
-shock-index-derived features entirely (current value, slope, and drift all
-excluded) — only MAP/PP/DBP-based features are allowed as predictors, or the
-"win" would be a trivial artifact of predicting shock index from itself.
+#### Clean holdout set
+1. 5-case test to confirm new downloads <15 sec/case
+2. Bulk download 150–200 new cases never used before (excluding every caseid already
+   in the existing 500-case sample)
+3. Modify pipeline to use them as test set
+4. Evaluate any winning model from the primary task once on this set
+5. Report results in MODEL_CARD.md and commit
 
-**Fixing the used-up test set:** the 87-case test set has now been looked at
-three times (original, v2, Experiment 2) — no longer a clean holdout for
-future claims. A fresh 150–200 case sample, never previously downloaded,
-drawn from the clinical-table-eligible pool excluding every caseid already
-in the existing 500-case sample, will be bulk-downloaded as a new locked
-holdout (5-case timing test first, per the established Phase 1 pattern,
-before committing to the full download). Whatever wins (or doesn't) from
-rounds 1–3 above runs against this new holdout exactly once, giving a result
-nobody can say was tuned against it.
+#### Time management
+- 3-hour time box for all modeling
+- If any step takes >60 min, skip it and move on
+- Hard stop at 3 hrs and report whatever is done
+
+#### Commit and document
+- Commit ACTIONS.md before starting (this commit)
+- Tag commits: `round3-start`, `round3-end`
+- Update MODEL_CARD.md with all results, push final
 
 **P5 — Hemorrhage simulator** (target: 8–11 h; filler during P4/P1 background jobs only, not true parallel work)
 - [ ] `simulator.py`: ATLS-inspired curves, per-patient variability, three bleed profiles, blunted-response switch, transparent drift score
