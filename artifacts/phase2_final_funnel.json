@@ -1,0 +1,13 @@
+{
+  "n_sampled": 500,
+  "n_clinical_eligible": 500,
+  "n_vitals_eligible": 442,
+  "n_final_eligible": 442,
+  "n_cohort_b_final": 165,
+  "cohort_b_rule_used": "primary",
+  "total_primary_events_final_eligible": 1409,
+  "total_primary_events_all_sampled": 1458,
+  "decision_gate_tier": "Tier 1: proceed as planned",
+  "n_processing_errors": 0,
+  "scope_note": "Only the 500-case bulk-download sample (data/interim/bulk_download_selection.csv), not all 3,419 clinically-eligible cases in the full clinical table."
+}

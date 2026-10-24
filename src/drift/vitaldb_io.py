@@ -31,7 +31,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-from . import config
+from . import config, preprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_MANUAL = ROOT / "data" / "manual"
@@ -295,6 +295,28 @@ def test_download_n_cases(caseids: list[int], dest_dir: Path = DATA_RAW) -> pd.D
         print(f"Avg time/case: {avg_s:.2f}s -> est. for {config.DOWNLOAD_TARGET_CASES_MAX} cases: {avg_s * config.DOWNLOAD_TARGET_CASES_MAX / 60:.1f} min")
         print(f"Avg size/case: {avg_bytes / 1e6:.2f} MB -> est. for {config.DOWNLOAD_TARGET_CASES_MAX} cases: {avg_bytes * config.DOWNLOAD_TARGET_CASES_MAX / 1e9:.2f} GB")
     return report
+
+
+def load_and_clean_case(caseid: int, dest_dir: Path = DATA_RAW) -> pd.DataFrame:
+    """Load a cached numeric-tracks parquet, align Time to the casestart=0
+    clock, and apply the same cleaning used everywhere else in this project
+    (preprocess.reject_artifacts then interpolate_short_gaps).
+
+    Time alignment: clinical_parameters.csv defines casestart as "Recording
+    Start Time; Set to 0 for anonymization" -- i.e. casestart IS the first
+    sample of the downloaded file, so Time - Time.min() lands on the exact
+    same clock as cases.csv's anestart/opstart/opend (verified against a
+    real case in scripts/02c_finalize_cohort.py's development). Used by
+    both scripts/02c_finalize_cohort.py and features.py so the two phases
+    never silently diverge on cleaning.
+    """
+    path = dest_dir / f"{caseid}_numeric_30s.parquet"
+    df = pd.read_parquet(path)
+    df = df.sort_values("Time").reset_index(drop=True)
+    df["Time"] = df["Time"] - df["Time"].min()
+    cleaned = preprocess.reject_artifacts(df)
+    cleaned = preprocess.interpolate_short_gaps(cleaned, value_cols=list(config.REQUIRED_NUMERIC_TRACKS))
+    return cleaned
 
 
 # ---------------------------------------------------------------------------
