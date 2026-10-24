@@ -268,6 +268,32 @@ WORDING_SELECTED_EXAMPLES_NOTE = (
     "Results across all test cases are in Proof and method."
 )
 
+# Honest-reframing wording (Phase 4 iteration round 3 user instruction,
+# 2026-10-24): across v2, Experiment 2, and round 3, nothing beat a plain
+# MAP-only model, so the shipped alert is labeled for what it actually is
+# -- an early MAP-based alert -- never "drift-based" or implying the richer
+# HR/pulse-pressure dynamics originally hypothesized. See MODEL_CARD.md.
+WORDING_ALERT_NAME = "Early MAP-based alert"
+WORDING_MONITORING_BANNER = "Monitoring · no alert"
+WORDING_ALERT_BANNER = (
+    "EARLY MAP-BASED ALERT · Mean arterial pressure trending low. Check the patient."
+)
+WORDING_INSUFFICIENT_DATA_BANNER = "Not enough data to assess"
+WORDING_STANDARD_ALARM_NOT_TRIGGERED = "Standard alarm: not triggered"
+WORDING_STANDARD_ALARM_TRIGGERED = "STANDARD ALARM · MAP below 65"
+WORDING_METHOD_HONESTY_NOTE = (
+    "This alert is a calibrated, early MAP-based threshold, not a distinct "
+    "‘drift’ signal. We tested whether heart-rate, pulse-pressure and "
+    "shock-index dynamics add value beyond MAP alone, under a pre-registered "
+    "protocol with cross-validation and a held-out test set, across three "
+    "rounds of iteration. They did not. A simple tuned MAP-only threshold "
+    "(B2) performs similarly on our test data. Full methodology and results: "
+    "Proof and method, and MODEL_CARD.md in the project repository."
+)
+WORDING_SIMULATOR_DISCLAIMER = (
+    "Illustrative of textbook ATLS physiology. Not confirmed in our data."
+)
+
 # ---------------------------------------------------------------------------
 # Phase 7: docs/test scope (Oct 24 decision — final; PLAN.md Phase 7)
 # ---------------------------------------------------------------------------
