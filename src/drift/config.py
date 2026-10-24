@@ -60,6 +60,7 @@ COL_SUBJECTID = "subjectid"
 COL_AGE = "age"
 COL_SEX = "sex"
 COL_WEIGHT = "weight"
+COL_HEIGHT = "height"  # confirmed present in data/manual/cases.csv header, 2026-10-24
 COL_ASA = "asa"
 COL_EMOP = "emop"
 COL_OPSTART = "opstart"

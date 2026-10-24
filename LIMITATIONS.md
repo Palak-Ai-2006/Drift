@@ -46,6 +46,19 @@ This is a research prototype for research and education only, not a medical devi
   significant margin (-7.67pp vs. MAP alone, 95% CI entirely negative). This
   rules out "the plain MAP<65 label is just too noisy" as the reason drift
   doesn't show a benefit here.
+- **Confirmed a third way, with a different modeling approach.** A
+  ridge-penalized offset/residual model (MAP's own prediction as a fixed
+  baseline, extra features only allowed to adjust it under a tunable
+  penalty) and MAP/shock-index interaction terms were both tried. Neither
+  beat MAP alone; the residual model was decisively worse. This rules out
+  "a flat, uniform penalty across 29 correlated features was unfairly
+  burying the signal" as the explanation too.
+- **Generalization checked on a genuinely clean holdout.** 175 cases never
+  used in any prior split or round were downloaded and evaluated exactly
+  once, with the existing model's exact fitted weights and threshold (no
+  refitting). Performance held up (52.5% sensitivity at 0.77 FA/hour,
+  vs. 57.4%/0.97 on the original, by-then-reused test set) — the original
+  result was not an artifact of a lucky test split.
 - Vasopressor/anesthetic confounding is now partially addressed (see above)
   but not fully: bolus-only vasopressors (e.g. ephedrine push doses) aren't
   recorded as time-resolved infusion tracks in this dataset and couldn't be

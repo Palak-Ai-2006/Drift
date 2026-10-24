@@ -1,0 +1,40 @@
+{
+  "model": "b2_alone (exact v2 recipe, no refitting/re-tuning on this holdout)",
+  "threshold_used": 0.35390946502057613,
+  "n_holdout_cases_selected": 175,
+  "n_holdout_cases_eligible": 156,
+  "n_holdout_cases_cohort_b": 34,
+  "n_holdout_events": 356,
+  "results_by_cohort": {
+    "A": {
+      "n_events": 356,
+      "n_detected": 187,
+      "sensitivity": 0.5252808988764045,
+      "lead_time": {
+        "median_s": 310.0,
+        "iqr_low_s": 92.5,
+        "iqr_high_s": 549.5,
+        "n": 187
+      },
+      "fa_rate_per_hour": 0.7721849975486194
+    },
+    "B": {
+      "n_events": 164,
+      "n_detected": 79,
+      "sensitivity": 0.4817073170731707,
+      "lead_time": {
+        "median_s": 303.0,
+        "iqr_low_s": 94.0,
+        "iqr_high_s": 547.0,
+        "n": 79
+      },
+      "fa_rate_per_hour": 0.8673894912427021
+    }
+  },
+  "secondary_metrics": {
+    "auroc": 0.7334092459309254,
+    "auprc": 0.21869590495625613,
+    "brier": 0.06599524238178793,
+    "n": 22590
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "label": "rolling_5min_median_shock_index_ge_0.9",
+  "features": [
+    "age",
+    "height",
+    "weight",
+    "sex_encoded",
+    "map",
+    "pp"
+  ],
+  "dev_positive_rate": 0.07476747435232127,
+  "n_dev_windows_scored": 50102,
+  "cv_roc_auc": 0.6498151973604589,
+  "cv_roc_auc_ci": {
+    "point": 0.6498151973604589,
+    "ci_low": 0.5947722516557801,
+    "ci_high": 0.7014720392621338,
+    "n_valid_resamples": 1000
+  },
+  "note": "Compensation-state flag, NOT a hemorrhage/bleeding detector -- never to be presented as evidence of bleeding."
+}

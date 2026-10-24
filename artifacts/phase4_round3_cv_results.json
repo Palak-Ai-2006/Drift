@@ -1,0 +1,42 @@
+{
+  "cv_results": {
+    "b2_alone": {
+      "threshold": 0.6348822042052159,
+      "fa_rate": 0.9616978942132319,
+      "sensitivity": 0.5645889792231256
+    },
+    "residual_ridge": {
+      "threshold": 0.19314493498505048,
+      "fa_rate": 0.9992814900790363,
+      "sensitivity": 0.4787714543812105
+    },
+    "interaction_features": {
+      "threshold": 0.6434068772266573,
+      "fa_rate": 0.9804896921461341,
+      "sensitivity": 0.5501355013550135
+    }
+  },
+  "decisions": {
+    "residual_ridge": {
+      "gain_pp": -8.581752484191508,
+      "ci": {
+        "point": -0.08581752484191507,
+        "ci_low": -0.12230281557923636,
+        "ci_high": -0.05017103796769032,
+        "n_valid_resamples": 1000
+      },
+      "adopt_eligible": false
+    },
+    "interaction_features": {
+      "gain_pp": -1.445347786811202,
+      "ci": {
+        "point": -0.014453477868112019,
+        "ci_low": -0.035508771772472046,
+        "ci_high": 0.0030207809356136432,
+        "n_valid_resamples": 1000
+      },
+      "adopt_eligible": false
+    }
+  },
+  "winner": null
+}

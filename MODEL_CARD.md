@@ -252,6 +252,80 @@ a MAP threshold — is not supported by this dataset, this feature
 engineering, at this horizon. That is reported here as the honest result,
 not reframed as a near-win.
 
+## Phase 4 iteration, round 3 (2026-10-24, tagged `round3-start`/`round3-end`)
+
+Rules locked in `ACTIONS.md` before any code (see there for the full plan):
+3-fold grouped CV on train+val for two targeted primary-task candidates
+against `b2_alone`, a separate secondary compensation-flag task, and a
+fresh never-touched holdout to replace the now three-times-looked-at test
+set. Time-boxed to ~3 hours.
+
+### Primary task: residual/offset model + interaction terms
+
+| Candidate | What it is | CV sensitivity @ 1 FA/hr | Gain vs. b2_alone | Adopt? |
+|---|---|---|---|---|
+| `b2_alone` | MAP only (reference) | 56.5% | — | baseline |
+| `residual_ridge` | MAP-only logit as a fixed offset + ridge-penalized logistic on HR/shock-index/PP/all-slopes/all-drift, penalty chosen by inner CV | 47.9% | **-8.58pp, 95% CI [-12.23, -5.02]pp** | No — decisively worse |
+| `interaction_features` | MAP + `(65-MAP)×shock_index` + `(65-MAP)×HR-drift` | 55.0% | -1.45pp, 95% CI [-3.55, +0.30] | No — CI includes zero |
+
+**Neither candidate cleared the pre-registered bar (≥3pp, CI excludes
+zero). Stopped here, per the rule, with no further feature engineering.**
+`residual_ridge`'s own toy tests (`tests/test_models.py`) confirm the
+implementation is correct — it recovers real injected signal and shrinks
+pure noise toward zero on synthetic data — so this is a real result about
+this dataset, not an implementation bug: even letting the extra features
+compete against MAP with a tunable penalty (rather than a flat, uniform
+one as in the original 29-feature model), they still don't help.
+`interaction_features` came closest of anything tried in this whole
+iteration (-1.45pp, nearly flat) but still didn't win.
+
+### Secondary task: sustained elevated shock index (compensation-state flag — NOT a hemorrhage detector)
+
+Label: the first time a trailing 5-minute rolling median of shock index
+(HR/SBP) reaches ≥0.9 within the operation window (492 episodes across
+351 dev cases, positive rate 7.5% of windows). Predicted from age, height,
+weight, sex, MAP, and pulse pressure **only** — no HR, SBP, or
+shock-index-derived feature, so the label can't be predicted from a
+disguised copy of itself.
+
+**CV ROC AUC: 0.650 (95% CI [0.595, 0.702]).** A real, if modest, signal:
+MAP/pulse-pressure dynamics and patient demographics predict an *upcoming
+compensatory state* better than chance, even with HR/shock-index itself
+excluded from the inputs. This is reported as a compensation-state flag — a
+possible second row for the demo — never as evidence of bleeding or as
+validation of the hemorrhage-detection hypothesis above.
+
+### Clean holdout: 175 never-before-downloaded cases
+
+The original 87-case test set had been looked at three times by this point
+(original, v2, Experiment 2) and could no longer support a trustworthy
+"how well does this generalize" claim. 175 cases were sampled from the
+2,914 clinical-table-eligible cases never touched by any prior round or
+test/val/train split (5-case timing test first: 0.67s/case, well under the
+15s/case stop threshold), bulk-downloaded (175/175 succeeded), and run
+through the full eligibility/Cohort-B/windows pipeline (156/175 eligible;
+Cohort B fell to the top-quartile fallback rule here — expected at this
+smaller scale, not a bug, since the fixed fallback-trigger thresholds in
+`config.py` apply the same way regardless of sample size).
+
+The standing model (`b2_alone`, undefeated through v2, Experiment 2, and
+this round's primary task) — using its **already-fitted weights and
+already-chosen threshold from v2, with no refitting or re-tuning on this
+holdout** — was evaluated on it exactly once:
+
+| | Original v2 test (87 cases, looked at 3x) | Fresh holdout (175 cases, looked at once) |
+|---|---|---|
+| Sensitivity, Cohort A | 57.4% | **52.5%** (187/356 events) |
+| Sensitivity, Cohort B | 54.0% | **48.2%** (79/164 events) |
+| FA/hr, Cohort A | 0.97 | **0.77** |
+| AUROC / AUPRC | 0.705 / 0.288 | 0.733 / 0.219 |
+
+Performance holds up on genuinely unseen data — sensitivity is a few points
+lower but the false-alarm rate is also lower (0.77 vs. target 1.0/hr, vs.
+0.97 on the old test set), so the two move together rather than one
+masking a collapse in the other. This is the most trustworthy number in the
+whole project so far, precisely because nothing was tuned against it.
+
 ## Leakage checklist (PLAN.md Section 8, original model — v2 follows the identical pipeline)
 
 - [x] Split by case (and subject), never by row.

@@ -4,6 +4,7 @@ and subject ID if present, 60/20/20, fixed seed")."""
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -102,3 +103,56 @@ def test_encode_sex_maps_known_values_and_leaves_unknown_as_nan():
     assert out.iloc[0] == 1.0
     assert out.iloc[1] == 0.0
     assert pd.isna(out.iloc[2])
+
+
+# ---------------------------------------------------------------------------
+# OffsetRidgeLogistic (Phase 4 iteration round 3: residual/offset model)
+# ---------------------------------------------------------------------------
+def _offset_logit(p):
+    return np.log(p / (1 - p))
+
+
+def test_offset_ridge_shrinks_toward_offset_when_extra_features_are_pure_noise():
+    rng = np.random.RandomState(0)
+    n = 4000
+    base_p = rng.uniform(0.05, 0.95, size=n)
+    offset = _offset_logit(base_p)
+    y = (rng.uniform(size=n) < base_p).astype(float)  # y depends ONLY on offset
+    X_extra = rng.normal(size=(n, 5))  # pure noise, unrelated to y
+
+    model = models.OffsetRidgeLogistic(alpha=10.0).fit(X_extra, y, offset)
+    # With noise-only extras and a real penalty, coefficients should be small.
+    assert np.all(np.abs(model.coef_) < 0.2)
+
+    pred_with_model = model.predict_proba_from_offset(X_extra, offset)
+    pred_offset_only = models.OffsetRidgeLogistic._sigmoid(offset)
+    assert np.corrcoef(pred_with_model, pred_offset_only)[0, 1] > 0.99
+
+
+def test_offset_ridge_recovers_real_signal_in_extra_features():
+    rng = np.random.RandomState(0)
+    n = 4000
+    offset = rng.normal(0, 0.3, size=n)  # weak/uninformative offset
+    x1 = rng.normal(size=n)
+    true_beta = 3.0
+    z = offset + true_beta * x1
+    p = 1 / (1 + np.exp(-z))
+    y = (rng.uniform(size=n) < p).astype(float)
+    X_extra = np.column_stack([x1, rng.normal(size=n)])  # x1 informative, 2nd col noise
+
+    model = models.OffsetRidgeLogistic(alpha=0.1).fit(X_extra, y, offset)
+    assert model.coef_[0] > 1.0  # recovers a meaningfully positive coefficient on the real signal
+    assert abs(model.coef_[1]) < abs(model.coef_[0])  # noise column shrinks more than the real one
+
+
+def test_fit_offset_ridge_with_inner_cv_runs_and_picks_an_alpha():
+    rng = np.random.RandomState(0)
+    n = 1000
+    groups = rng.randint(0, 100, size=n)
+    offset = rng.normal(0, 1, size=n)
+    X_extra = rng.normal(size=(n, 3))
+    y = (rng.uniform(size=n) < models.OffsetRidgeLogistic._sigmoid(offset)).astype(float)
+
+    model = models.fit_offset_ridge_with_inner_cv(X_extra, y, offset, groups, alphas=(0.1, 1.0, 10.0), n_inner_folds=3)
+    assert model.alpha in (0.1, 1.0, 10.0)
+    assert model.coef_ is not None and len(model.coef_) == 3

@@ -151,6 +151,101 @@ def calibrate_on_validation(fitted_model, X_val: pd.DataFrame, y_val: pd.Series,
     return calibrated
 
 
+class OffsetRidgeLogistic:
+    """Logistic regression with a fixed per-row additive offset (another
+    model's logit) and a ridge (L2) penalty on the extra features only --
+    the intercept and the offset are never penalized.
+
+    This is the GLM-offset construction, not sklearn's LogisticRegression
+    (which has no offset parameter): p = sigmoid(offset + intercept +
+    X @ beta). If the extra features carry no signal beyond what the
+    offset already encodes, their fitted coefficients shrink toward zero
+    under the penalty and predictions reduce to roughly the offset alone
+    (i.e. roughly the base/MAP-only model); if they do carry signal, the
+    penalty permitting, those coefficients survive.
+    """
+
+    def __init__(self, alpha: float = 1.0):
+        self.alpha = alpha
+        self.intercept_: float | None = None
+        self.coef_: np.ndarray | None = None
+
+    @staticmethod
+    def _sigmoid(z: np.ndarray) -> np.ndarray:
+        return 1.0 / (1.0 + np.exp(-np.clip(z, -30, 30)))
+
+    def _neg_log_likelihood_and_grad(self, theta: np.ndarray, X: np.ndarray, y: np.ndarray, offset: np.ndarray):
+        intercept, beta = theta[0], theta[1:]
+        z = offset + intercept + X @ beta
+        p = self._sigmoid(z)
+        eps = 1e-12
+        nll = -np.sum(y * np.log(p + eps) + (1 - y) * np.log(1 - p + eps)) + self.alpha * np.sum(beta ** 2)
+        resid = p - y
+        grad_intercept = np.sum(resid)
+        grad_beta = X.T @ resid + 2 * self.alpha * beta
+        return nll, np.concatenate([[grad_intercept], grad_beta])
+
+    def fit(self, X: np.ndarray, y: np.ndarray, offset: np.ndarray) -> "OffsetRidgeLogistic":
+        from scipy.optimize import minimize
+
+        X = np.asarray(X, dtype=float)
+        y = np.asarray(y, dtype=float)
+        offset = np.asarray(offset, dtype=float)
+        theta0 = np.zeros(X.shape[1] + 1)
+        result = minimize(
+            self._neg_log_likelihood_and_grad, theta0, args=(X, y, offset),
+            jac=True, method="L-BFGS-B",
+        )
+        self.intercept_ = float(result.x[0])
+        self.coef_ = result.x[1:]
+        return self
+
+    def predict_proba_from_offset(self, X: np.ndarray, offset: np.ndarray) -> np.ndarray:
+        X = np.asarray(X, dtype=float)
+        offset = np.asarray(offset, dtype=float)
+        z = offset + self.intercept_ + X @ self.coef_
+        return self._sigmoid(z)
+
+
+def fit_offset_ridge_with_inner_cv(
+    X_extra: np.ndarray,
+    y: np.ndarray,
+    offset: np.ndarray,
+    groups: np.ndarray,
+    alphas: tuple[float, ...] = (0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0),
+    n_inner_folds: int = 3,
+    seed: int = config.RANDOM_SEED,
+) -> OffsetRidgeLogistic:
+    """Pick alpha by inner grouped K-fold CV (by subject/caseid, via
+    `groups`), maximizing held-out log-likelihood, then refit on all of
+    X_extra/y/offset with the winning alpha."""
+    rng = np.random.RandomState(seed)
+    unique_groups = np.unique(groups)
+    rng.shuffle(unique_groups)
+    inner_folds = np.array_split(unique_groups, n_inner_folds)
+
+    best_alpha, best_score = alphas[0], -np.inf
+    for alpha in alphas:
+        scores = []
+        for fold_groups in inner_folds:
+            fold_mask = np.isin(groups, fold_groups)
+            train_mask = ~fold_mask
+            if fold_mask.sum() == 0 or train_mask.sum() == 0:
+                continue
+            model = OffsetRidgeLogistic(alpha=alpha).fit(X_extra[train_mask], y[train_mask], offset[train_mask])
+            p = model.predict_proba_from_offset(X_extra[fold_mask], offset[fold_mask])
+            eps = 1e-12
+            yf = y[fold_mask]
+            ll = np.mean(yf * np.log(p + eps) + (1 - yf) * np.log(1 - p + eps))
+            scores.append(ll)
+        if scores:
+            mean_score = float(np.mean(scores))
+            if mean_score > best_score:
+                best_score, best_alpha = mean_score, alpha
+
+    return OffsetRidgeLogistic(alpha=best_alpha).fit(X_extra, y, offset)
+
+
 def logistic_coefficients(pipeline: Pipeline, feature_names: list[str]) -> dict:
     """Coefficients on the STANDARDIZED scale, plus the imputer/scaler
     parameters needed to reproduce the same transform in the web demo's

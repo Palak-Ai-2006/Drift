@@ -160,6 +160,12 @@ with only 351 cases to learn from — not proof that no dynamic signal exists.
 - Tag commits: `round3-start`, `round3-end`
 - Update MODEL_CARD.md with all results, push final
 
+- [x] **RESULT (2026-10-24, `scripts/04f-04i`):**
+  - **Primary task:** neither candidate cleared the bar. `residual_ridge`: -8.58pp vs. `b2_alone` (95% CI [-12.23, -5.02]pp, decisively worse). `interaction_features`: -1.45pp (95% CI [-3.55, +0.30], includes zero) — closest of anything tried all iteration, still not a win. **Stopped per the rule.**
+  - **Secondary task:** sustained-elevated-shock-index compensation flag, predicted from MAP/PP/demographics only (no HR/shock-index): CV ROC AUC **0.650 [0.595, 0.702]** — a real, modest signal, reported as a compensation flag, not hemorrhage evidence.
+  - **Clean holdout:** 175 never-touched cases (5-case timing test: 0.67s/case; 175/175 downloaded). `b2_alone`, with its exact already-fitted v2 weights/threshold (no refitting), scored **52.5% sensitivity / 0.77 FA-per-hour** (Cohort A) — consistent with, not inflated relative to, the old (3x-looked-at) test set's 57.4%/0.97. Most trustworthy number in the project so far.
+  - Full writeup: `MODEL_CARD.md` "Phase 4 iteration, round 3".
+
 **P5 — Hemorrhage simulator** (target: 8–11 h; filler during P4/P1 background jobs only, not true parallel work)
 - [ ] `simulator.py`: ATLS-inspired curves, per-patient variability, three bleed profiles, blunted-response switch, transparent drift score
 - [ ] Tests for monotonic trends
