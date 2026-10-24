@@ -108,6 +108,58 @@ after seeing results.
 
 - [x] **Phase 4 iteration (v2), 2026-10-24** (`scripts/04b_model_iteration.py`, `scripts/04c_v2_diagnostics.py`): pre-registered protocol (tagged `phase4-original`, decision rule locked before any CV numbers existed), 5-fold grouped CV on train+val (351 cases) comparing 5 candidates. Winner: `b2_alone` (MAP-only logistic), +6.3pp CV sensitivity over the original, CI excludes zero. Evaluated against test exactly once more: 57.4% sensitivity (Cohort A) vs. the original's 46.4%, still short of B2's 60.1%. **Central finding: a stacked MAP+drift model scored worse than MAP alone in CV — no feature/model combination tried shows drift dynamics adding value beyond current MAP on this dataset.** Full writeup: `MODEL_CARD.md` "Phase 4 revision (v2)".
 
+---
+
+### Phase 4 iteration, round 3 (rules locked 2026-10-24, BEFORE any code)
+
+Why: the stacked drift model likely lost because adding noisy, correlated
+features on top of a strong single feature (MAP) hurts more than it helps,
+with only 351 cases to learn from — not proof that no dynamic signal exists.
+Three more targeted things to try, time-boxed, then two separate follow-ups.
+
+**Candidates (grouped 5-fold CV, train+val only, same protocol as before):**
+1. **Residual/offset model**: fix the MAP-only model's logit as an additive
+   offset, then fit a ridge-penalized logistic on the extra features (HR,
+   shock index, pulse pressure, all slopes, all drift-from-baseline) on top
+   of it, penalty strength chosen by inner grouped CV. If drift carries
+   signal beyond MAP, its coefficients survive a reasonable penalty; if not,
+   they shrink toward zero and the result matches MAP alone. Can't do
+   meaningfully worse than MAP alone by construction (the offset is MAP's
+   own prediction).
+2. **Interaction terms**: `(65 - MAP) × shock_index` and
+   `(65 - MAP) × HR drift from baseline` — the one-line physiology claim
+   ("a given MAP is more dangerous when the patient is already compensating
+   harder"), as a small plain logistic alongside MAP itself.
+3. **Level features**: already present in the original 29-feature model,
+   which already lost to MAP alone — no new work expected to help here, not
+   retried as a separate candidate.
+
+**Decision rule (same bar as before):** adopt a variant only if it beats
+`b2_alone`'s CV sensitivity by ≥3pp at 1 FA/patient-hour, bootstrap-by-case
+95% CI excluding zero. **Time-boxed to about 3 hours; stop at the end of that
+box regardless of outcome**, and report whatever the result is.
+
+**Separate, secondary task — NOT a hemorrhage detector:** a "sustained
+elevated shock index" label (shock index > `config.BASELINE_B3_SHOCK_INDEX_THRESHOLD`
+sustained ≥60s, reusing the primary event detector's own duration logic,
+just on shock index instead of MAP) is a **compensation-state flag**, framed
+and reported as such — never as evidence of bleeding. **Pitfall avoided
+explicitly, as with Experiment 2's label**: this label is built from HR and
+shock index, so the model predicting it must **exclude** HR-, SBP-, and
+shock-index-derived features entirely (current value, slope, and drift all
+excluded) — only MAP/PP/DBP-based features are allowed as predictors, or the
+"win" would be a trivial artifact of predicting shock index from itself.
+
+**Fixing the used-up test set:** the 87-case test set has now been looked at
+three times (original, v2, Experiment 2) — no longer a clean holdout for
+future claims. A fresh 150–200 case sample, never previously downloaded,
+drawn from the clinical-table-eligible pool excluding every caseid already
+in the existing 500-case sample, will be bulk-downloaded as a new locked
+holdout (5-case timing test first, per the established Phase 1 pattern,
+before committing to the full download). Whatever wins (or doesn't) from
+rounds 1–3 above runs against this new holdout exactly once, giving a result
+nobody can say was tuned against it.
+
 **P5 — Hemorrhage simulator** (target: 8–11 h; filler during P4/P1 background jobs only, not true parallel work)
 - [ ] `simulator.py`: ATLS-inspired curves, per-patient variability, three bleed profiles, blunted-response switch, transparent drift score
 - [ ] Tests for monotonic trends
