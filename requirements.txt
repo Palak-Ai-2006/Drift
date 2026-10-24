@@ -1,0 +1,10 @@
+numpy
+pandas
+pyarrow
+requests
+scikit-learn
+scipy
+matplotlib
+vitaldb>=1.7
+joblib
+pytest

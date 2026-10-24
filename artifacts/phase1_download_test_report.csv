@@ -1,0 +1,6 @@
+caseid,ok,seconds,bytes,path
+6269,True,0.4799114160705358,8855,/Users/palakchouhan/Desktop/Drift/data/raw/6269_numeric_30s.parquet
+757,True,1.6757176669780165,7356,/Users/palakchouhan/Desktop/Drift/data/raw/757_numeric_30s.parquet
+6293,True,0.7395701250061393,7475,/Users/palakchouhan/Desktop/Drift/data/raw/6293_numeric_30s.parquet
+2911,True,0.34920062497258186,17336,/Users/palakchouhan/Desktop/Drift/data/raw/2911_numeric_30s.parquet
+2349,True,0.1836226669838652,11819,/Users/palakchouhan/Desktop/Drift/data/raw/2349_numeric_30s.parquet
