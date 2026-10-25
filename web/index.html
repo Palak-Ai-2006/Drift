@@ -37,9 +37,9 @@
           <label class="field">
             Speed
             <select id="replay-speed">
-              <option value="10">10&times;</option>
-              <option value="30" selected>30&times;</option>
+              <option value="30">30&times;</option>
               <option value="60">60&times;</option>
+              <option value="90" selected>90&times;</option>
             </select>
           </label>
           <input id="replay-scrubber" type="range" min="0" max="1000" value="0" class="scrubber">
@@ -51,7 +51,7 @@
             <span>Case · <span id="case-examples-note">selected examples, not average performance</span></span>
             <select id="case-picker"></select>
           </label>
-          <span id="replay-banner" class="replay-banner">Recorded patient, sped up 30&times;. Not live.</span>
+          <span id="replay-banner" class="replay-banner">Recorded patient, sped up 90&times;. Not live.</span>
           <button id="replay-note-btn" class="icon-btn icon-btn-sm" aria-expanded="false" aria-controls="selected-examples-note" title="About this recording" aria-label="About this recording">&#9432;</button>
         </div>
         <p class="selected-examples-note note-popover" id="selected-examples-note" hidden></p>

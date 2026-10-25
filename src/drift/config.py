@@ -410,8 +410,8 @@ REPLAY_WEB_DATA_MAX_SIZE_MB = 10
 # Phase 6.2: website (PLAN.md Section 6.2) — colors, speeds, thresholds the
 # web demo reads from generated .js files, not hand-typed.
 # ---------------------------------------------------------------------------
-WEB_PLAYBACK_SPEED_OPTIONS_X = (10, 30, 60)
-WEB_PLAYBACK_SPEED_DEFAULT_X = 30
+WEB_PLAYBACK_SPEED_OPTIONS_X = (30, 60, 90)  # 2026-10-25: was (10, 30, 60); user found 30x too slow for a demo
+WEB_PLAYBACK_SPEED_DEFAULT_X = 90
 WEB_HEART_PULSE_MAX_RATE_HZ = 3  # cap on-screen pulse rate so it never strobes
 
 WEB_COLOR_BG = "#0E1116"

@@ -18,7 +18,7 @@ Every number you say comes from the generated block below (filled by `scripts/11
 "Bleeding is the leading cause of preventable death after trauma. Monitors alarm when blood pressure itself drops, which is the collapse, not the warning. And real hospital data can't tell you which pressure drops were bleeding, because nobody records when bleeding started."
 
 ### 0:40–1:20 · Replay of a real patient
-*(Replay tab, Best example 1, 30×. Open with `web/index.html#case=0&t=1400` and press space.)*
+*(Replay tab, Best example 1, 90× (the default). Open with `web/index.html#case=0&t=1400` and press space.)*
 - Point at the banner: "This is a recorded surgical patient, sped up. Not live."
 - When the amber banner appears: "Our early alert fires here."
 - When the standard alarm turns red: "The standard alarm fires here." Read the verdict line.
@@ -43,7 +43,7 @@ Every number you say comes from the generated block below (filled by `scripts/11
 ---
 
 ## Shot list
-- [ ] Replay: Best example 1, full play-through at 30×
+- [ ] Replay: Best example 1, full play-through at 90×
 - [ ] Replay: Miss or False alarm example (optional)
 - [ ] Simulated bleed: slider drag, then blunted toggle
 - [ ] Proof drawer, scrolled through both tables
