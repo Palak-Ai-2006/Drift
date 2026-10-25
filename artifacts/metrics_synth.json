@@ -1,0 +1,1614 @@
+{
+  "SIMULATION": true,
+  "chosen_model": "logistic",
+  "horizon_min": 15,
+  "thresholds_from_val": {
+    "model": {
+      "0.5": {
+        "threshold": 0.37362637362637363,
+        "val_fa": 0.4904024767801857,
+        "val_sensitivity": 0.9566666666666667,
+        "val_median_lead_min": 7.9
+      },
+      "1.0": {
+        "threshold": 0.10740740740740741,
+        "val_fa": 0.8619195046439628,
+        "val_sensitivity": 0.9766666666666667,
+        "val_median_lead_min": 8.266666666666667
+      },
+      "2.0": {
+        "threshold": 0.028089887640449437,
+        "val_fa": 1.9578947368421051,
+        "val_sensitivity": 0.9766666666666667,
+        "val_median_lead_min": 6.983333333333333
+      }
+    },
+    "b2": {
+      "0.5": {
+        "threshold": -73.43554184664607,
+        "val_fa": 0.4959752321981424,
+        "val_sensitivity": 0.9466666666666667,
+        "val_median_lead_min": 2.283333333333333
+      },
+      "1.0": {
+        "threshold": -77.8087860491753,
+        "val_fa": 0.9380804953560371,
+        "val_sensitivity": 0.9733333333333334,
+        "val_median_lead_min": 3.875
+      },
+      "2.0": {
+        "threshold": -82.88707129805896,
+        "val_fa": 1.9095975232198141,
+        "val_sensitivity": 0.9933333333333333,
+        "val_median_lead_min": 5.45
+      }
+    }
+  },
+  "sets": {
+    "test": {
+      "per_tier": {
+        "T1": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 85
+          },
+          "standard_monitor": {
+            "n_collapses": 85,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.35418236623963834,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 5.283333333333333,
+              "iqr_low_s": 1.8666666666666667,
+              "iqr_high_s": 10.05,
+              "n": 85
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 85,
+            "n_detected": 85,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.5124340617935192,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 5.766666666666667,
+              "iqr_low_s": 2.3833333333333333,
+              "iqr_high_s": 9.633333333333333,
+              "n": 85
+            },
+            "monitored_hours": 132.7
+          },
+          "b2@0.5FA": {
+            "n_collapses": 85,
+            "n_detected": 85,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.5199698568198945,
+            "fa_per_hour_bleed_aware": 0.43707611152976644,
+            "lead_time": {
+              "median_s": 2.0833333333333335,
+              "iqr_low_s": 1.5833333333333333,
+              "iqr_high_s": 2.8833333333333333,
+              "n": 85
+            },
+            "monitored_hours": 132.7
+          },
+          "model@1.0FA": {
+            "n_collapses": 85,
+            "n_detected": 83,
+            "sensitivity": 0.9764705882352941,
+            "fa_per_hour": 0.6480783722682744,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 6.666666666666667,
+              "iqr_low_s": 3.875,
+              "iqr_high_s": 10.908333333333333,
+              "n": 83
+            },
+            "monitored_hours": 132.7,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9425287356321839,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.5682763600046573,
+                0.7373096080086324
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 85,
+            "n_detected": 85,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.79879427279578,
+            "fa_per_hour_bleed_aware": 0.6932931424265261,
+            "lead_time": {
+              "median_s": 3.4,
+              "iqr_low_s": 2.55,
+              "iqr_high_s": 5.25,
+              "n": 85
+            },
+            "monitored_hours": 132.7,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                1.0,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.34344417895152424,
+                1.381092699055933
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 85,
+            "n_detected": 85,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.2434061793519218,
+            "fa_per_hour_bleed_aware": 0.39186134137151474,
+            "lead_time": {
+              "median_s": 8.516666666666667,
+              "iqr_low_s": 2.3666666666666667,
+              "iqr_high_s": 10.8,
+              "n": 85
+            },
+            "monitored_hours": 132.7
+          },
+          "b2@2.0FA": {
+            "n_collapses": 85,
+            "n_detected": 85,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.5523737754333085,
+            "fa_per_hour_bleed_aware": 1.2961567445365487,
+            "lead_time": {
+              "median_s": 5.283333333333333,
+              "iqr_low_s": 3.55,
+              "iqr_high_s": 6.633333333333334,
+              "n": 85
+            },
+            "monitored_hours": 132.7
+          },
+          "model_minus_standard_monitor_lead_min_median": 2.0,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.9702318025142825,
+            "auprc": 0.767286444957601,
+            "brier": 0.0414802433263477,
+            "n": 6119
+          }
+        },
+        "T2": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 67
+          },
+          "standard_monitor": {
+            "n_collapses": 67,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.20845396641574984,
+            "fa_per_hour_bleed_aware": 0.06948465547191661,
+            "lead_time": {
+              "median_s": 7.1,
+              "iqr_low_s": 1.7833333333333334,
+              "iqr_high_s": 10.191666666666666,
+              "n": 67
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 67,
+            "n_detected": 63,
+            "sensitivity": 0.9402985074626866,
+            "fa_per_hour": 0.23451071221771858,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 9.1,
+              "iqr_low_s": 5.175,
+              "iqr_high_s": 12.3,
+              "n": 63
+            },
+            "monitored_hours": 115.13333333333334
+          },
+          "b2@0.5FA": {
+            "n_collapses": 67,
+            "n_detected": 64,
+            "sensitivity": 0.9552238805970149,
+            "fa_per_hour": 0.6427330631152287,
+            "fa_per_hour_bleed_aware": 0.6253618992472495,
+            "lead_time": {
+              "median_s": 1.7666666666666666,
+              "iqr_low_s": 1.0041666666666667,
+              "iqr_high_s": 4.354166666666667,
+              "n": 64
+            },
+            "monitored_hours": 115.13333333333334
+          },
+          "model@1.0FA": {
+            "n_collapses": 67,
+            "n_detected": 64,
+            "sensitivity": 0.9552238805970149,
+            "fa_per_hour": 0.6601042269832078,
+            "fa_per_hour_bleed_aware": 0.2605674580196873,
+            "lead_time": {
+              "median_s": 8.283333333333333,
+              "iqr_low_s": 4.379166666666666,
+              "iqr_high_s": 12.5875,
+              "n": 64
+            },
+            "monitored_hours": 115.13333333333334,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9016393442622951,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.47283987252834125,
+                0.8381923557984305
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 67,
+            "n_detected": 66,
+            "sensitivity": 0.9850746268656716,
+            "fa_per_hour": 1.1204400694846555,
+            "fa_per_hour_bleed_aware": 1.0248986682107701,
+            "lead_time": {
+              "median_s": 3.2916666666666665,
+              "iqr_low_s": 1.8041666666666667,
+              "iqr_high_s": 5.791666666666667,
+              "n": 66
+            },
+            "monitored_hours": 115.13333333333334,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9463789682539683,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.5936740619000178,
+                1.662532997760713
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 67,
+            "n_detected": 63,
+            "sensitivity": 0.9402985074626866,
+            "fa_per_hour": 1.8413433700057902,
+            "fa_per_hour_bleed_aware": 1.2680949623624782,
+            "lead_time": {
+              "median_s": 6.816666666666666,
+              "iqr_low_s": 2.7916666666666665,
+              "iqr_high_s": 10.25,
+              "n": 63
+            },
+            "monitored_hours": 115.13333333333334
+          },
+          "b2@2.0FA": {
+            "n_collapses": 67,
+            "n_detected": 66,
+            "sensitivity": 0.9850746268656716,
+            "fa_per_hour": 1.806601042269832,
+            "fa_per_hour_bleed_aware": 1.6242038216560508,
+            "lead_time": {
+              "median_s": 4.508333333333334,
+              "iqr_low_s": 2.558333333333333,
+              "iqr_high_s": 7.820833333333334,
+              "n": 66
+            },
+            "monitored_hours": 115.13333333333334
+          },
+          "model_minus_standard_monitor_lead_min_median": 2.5,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.9150618204132105,
+            "auprc": 0.5705735790258648,
+            "brier": 0.04911672487873569,
+            "n": 5899
+          }
+        },
+        "T3": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 36
+          },
+          "standard_monitor": {
+            "n_collapses": 36,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.11635423400129281,
+            "fa_per_hour_bleed_aware": 0.08726567550096961,
+            "lead_time": {
+              "median_s": 0.9916666666666667,
+              "iqr_low_s": 0.0,
+              "iqr_high_s": 3.4166666666666665,
+              "n": 36
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 36,
+            "n_detected": 31,
+            "sensitivity": 0.8611111111111112,
+            "fa_per_hour": 0.0775694893341952,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 5.083333333333333,
+              "iqr_low_s": 2.7583333333333333,
+              "iqr_high_s": 7.741666666666666,
+              "n": 31
+            },
+            "monitored_hours": 103.13333333333334
+          },
+          "b2@0.5FA": {
+            "n_collapses": 36,
+            "n_detected": 33,
+            "sensitivity": 0.9166666666666666,
+            "fa_per_hour": 0.7272139625080801,
+            "fa_per_hour_bleed_aware": 0.6496444731738849,
+            "lead_time": {
+              "median_s": 2.6333333333333333,
+              "iqr_low_s": 1.0833333333333333,
+              "iqr_high_s": 4.383333333333334,
+              "n": 33
+            },
+            "monitored_hours": 103.13333333333334
+          },
+          "model@1.0FA": {
+            "n_collapses": 36,
+            "n_detected": 34,
+            "sensitivity": 0.9444444444444444,
+            "fa_per_hour": 0.4751131221719457,
+            "fa_per_hour_bleed_aware": 0.2617970265029088,
+            "lead_time": {
+              "median_s": 7.2,
+              "iqr_low_s": 5.041666666666667,
+              "iqr_high_s": 10.129166666666666,
+              "n": 34
+            },
+            "monitored_hours": 103.13333333333334,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.8484848484848485,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.2848003302077202,
+                0.6766883012653635
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 36,
+            "n_detected": 34,
+            "sensitivity": 0.9444444444444444,
+            "fa_per_hour": 1.182934712346477,
+            "fa_per_hour_bleed_aware": 1.0471881060116353,
+            "lead_time": {
+              "median_s": 4.008333333333334,
+              "iqr_low_s": 2.0416666666666665,
+              "iqr_high_s": 7.120833333333334,
+              "n": 34
+            },
+            "monitored_hours": 103.13333333333334,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.8683771929824562,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.6179682311470504,
+                1.768944177241145
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 36,
+            "n_detected": 33,
+            "sensitivity": 0.9166666666666666,
+            "fa_per_hour": 1.7744020685197155,
+            "fa_per_hour_bleed_aware": 1.3865546218487395,
+            "lead_time": {
+              "median_s": 8.55,
+              "iqr_low_s": 4.8,
+              "iqr_high_s": 10.633333333333333,
+              "n": 33
+            },
+            "monitored_hours": 103.13333333333334
+          },
+          "b2@2.0FA": {
+            "n_collapses": 36,
+            "n_detected": 34,
+            "sensitivity": 0.9444444444444444,
+            "fa_per_hour": 1.9392372333548802,
+            "fa_per_hour_bleed_aware": 1.7453135100193922,
+            "lead_time": {
+              "median_s": 6.166666666666667,
+              "iqr_low_s": 3.9291666666666667,
+              "iqr_high_s": 9.054166666666667,
+              "n": 34
+            },
+            "monitored_hours": 103.13333333333334
+          },
+          "model_minus_standard_monitor_lead_min_median": 5.95,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.8854026778953358,
+            "auprc": 0.3517653339128151,
+            "brier": 0.037300185419430004,
+            "n": 6441
+          }
+        },
+        "T4": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 69
+          },
+          "standard_monitor": {
+            "n_collapses": 69,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.3333847816020991,
+            "fa_per_hour_bleed_aware": 0.08334619540052478,
+            "lead_time": {
+              "median_s": 5.9,
+              "iqr_low_s": 1.25,
+              "iqr_high_s": 10.733333333333333,
+              "n": 69
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 69,
+            "n_detected": 66,
+            "sensitivity": 0.9565217391304348,
+            "fa_per_hour": 0.34264546997993517,
+            "fa_per_hour_bleed_aware": 0.027782065133508258,
+            "lead_time": {
+              "median_s": 8.566666666666666,
+              "iqr_low_s": 4.6875,
+              "iqr_high_s": 11.55,
+              "n": 66
+            },
+            "monitored_hours": 107.98333333333333
+          },
+          "b2@0.5FA": {
+            "n_collapses": 69,
+            "n_detected": 63,
+            "sensitivity": 0.9130434782608695,
+            "fa_per_hour": 0.7038123167155426,
+            "fa_per_hour_bleed_aware": 0.6575088748263621,
+            "lead_time": {
+              "median_s": 1.8833333333333333,
+              "iqr_low_s": 0.8166666666666667,
+              "iqr_high_s": 4.15,
+              "n": 63
+            },
+            "monitored_hours": 107.98333333333333
+          },
+          "model@1.0FA": {
+            "n_collapses": 69,
+            "n_detected": 66,
+            "sensitivity": 0.9565217391304348,
+            "fa_per_hour": 0.7408550702268869,
+            "fa_per_hour_bleed_aware": 0.27782065133508255,
+            "lead_time": {
+              "median_s": 9.158333333333333,
+              "iqr_low_s": 5.370833333333334,
+              "iqr_high_s": 12.233333333333333,
+              "n": 66
+            },
+            "monitored_hours": 107.98333333333333,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.8955027494108405,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.556825058877571,
+                0.9294192994973124
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 69,
+            "n_detected": 67,
+            "sensitivity": 0.9710144927536232,
+            "fa_per_hour": 1.1112826053403302,
+            "fa_per_hour_bleed_aware": 1.0094150331841334,
+            "lead_time": {
+              "median_s": 3.5833333333333335,
+              "iqr_low_s": 1.8166666666666667,
+              "iqr_high_s": 6.7,
+              "n": 67
+            },
+            "monitored_hours": 107.98333333333333,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9264705882352942,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.7340970148888963,
+                1.4834807760819437
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 69,
+            "n_detected": 66,
+            "sensitivity": 0.9565217391304348,
+            "fa_per_hour": 1.8984411174563975,
+            "fa_per_hour_bleed_aware": 1.3335391264083964,
+            "lead_time": {
+              "median_s": 7.591666666666667,
+              "iqr_low_s": 4.591666666666667,
+              "iqr_high_s": 11.708333333333334,
+              "n": 66
+            },
+            "monitored_hours": 107.98333333333333
+          },
+          "b2@2.0FA": {
+            "n_collapses": 69,
+            "n_detected": 68,
+            "sensitivity": 0.9855072463768116,
+            "fa_per_hour": 1.8613983639450533,
+            "fa_per_hour_bleed_aware": 1.6669239080104954,
+            "lead_time": {
+              "median_s": 5.325,
+              "iqr_low_s": 3.05,
+              "iqr_high_s": 7.804166666666666,
+              "n": 68
+            },
+            "monitored_hours": 107.98333333333333
+          },
+          "model_minus_standard_monitor_lead_min_median": 2.0,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.7877130995379378,
+            "auprc": 0.46635308826285526,
+            "brier": 0.09190058065411683,
+            "n": 5754
+          }
+        },
+        "ALL": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 257
+          },
+          "standard_monitor": {
+            "n_collapses": 257,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.25928750408541235,
+            "fa_per_hour_bleed_aware": 0.05665105131277917,
+            "lead_time": {
+              "median_s": 4.966666666666667,
+              "iqr_low_s": 1.25,
+              "iqr_high_s": 9.766666666666667,
+              "n": 257
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 257,
+            "n_detected": 245,
+            "sensitivity": 0.953307392996109,
+            "fa_per_hour": 0.3050441224534263,
+            "fa_per_hour_bleed_aware": 0.0065366597668591354,
+            "lead_time": {
+              "median_s": 7.4,
+              "iqr_low_s": 3.6333333333333333,
+              "iqr_high_s": 11.133333333333333,
+              "n": 245
+            },
+            "monitored_hours": 458.95
+          },
+          "b2@0.5FA": {
+            "n_collapses": 257,
+            "n_detected": 245,
+            "sensitivity": 0.953307392996109,
+            "fa_per_hour": 0.6405926571521953,
+            "fa_per_hour_bleed_aware": 0.5839416058394161,
+            "lead_time": {
+              "median_s": 1.9,
+              "iqr_low_s": 1.0833333333333333,
+              "iqr_high_s": 3.75,
+              "n": 245
+            },
+            "monitored_hours": 458.95
+          },
+          "model@1.0FA": {
+            "n_collapses": 257,
+            "n_detected": 247,
+            "sensitivity": 0.9610894941634242,
+            "fa_per_hour": 0.6340559973853361,
+            "fa_per_hour_bleed_aware": 0.1895631332389149,
+            "lead_time": {
+              "median_s": 7.9,
+              "iqr_low_s": 4.808333333333334,
+              "iqr_high_s": 11.7,
+              "n": 247
+            },
+            "monitored_hours": 458.95,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9304926573485526,
+                0.9888090681279947
+              ],
+              "fa_per_hour_ci95": [
+                0.5049656178482357,
+                0.7645623327797175
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 257,
+            "n_detected": 252,
+            "sensitivity": 0.980544747081712,
+            "fa_per_hour": 1.0393289029306025,
+            "fa_per_hour_bleed_aware": 0.9303845734829502,
+            "lead_time": {
+              "median_s": 3.433333333333333,
+              "iqr_low_s": 2.0166666666666666,
+              "iqr_high_s": 5.808333333333334,
+              "n": 252
+            },
+            "monitored_hours": 458.95,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9595141700404858,
+                0.9961977186311787
+              ],
+              "fa_per_hour_ci95": [
+                0.5735329884015098,
+                1.5567852343465398
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 257,
+            "n_detected": 247,
+            "sensitivity": 0.9610894941634242,
+            "fa_per_hour": 1.6668482405490794,
+            "fa_per_hour_bleed_aware": 1.056759995642227,
+            "lead_time": {
+              "median_s": 7.9,
+              "iqr_low_s": 3.6666666666666665,
+              "iqr_high_s": 11.05,
+              "n": 247
+            },
+            "monitored_hours": 458.95
+          },
+          "b2@2.0FA": {
+            "n_collapses": 257,
+            "n_detected": 253,
+            "sensitivity": 0.9844357976653697,
+            "fa_per_hour": 1.7757925699967316,
+            "fa_per_hour_bleed_aware": 1.5666194574572394,
+            "lead_time": {
+              "median_s": 5.283333333333333,
+              "iqr_low_s": 3.0833333333333335,
+              "iqr_high_s": 7.75,
+              "n": 253
+            },
+            "monitored_hours": 458.95
+          },
+          "model_minus_standard_monitor_lead_min_median": 2.0,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.8849927785366498,
+            "auprc": 0.5590119465416619,
+            "brier": 0.05421069691256434,
+            "n": 24213
+          }
+        }
+      },
+      "non_bleed_hypotension_descriptive": {
+        "n_events": 20,
+        "n_detected_model@1FA": 3,
+        "median_lead_min": 8.3,
+        "note": "No HR/PP precursor by design; early warning is not expected."
+      },
+      "bleed_no_collapse_descriptive": {
+        "n_streams": 159,
+        "median_risk_by_blood_loss": {
+          "before onset": 0.014741172437435722,
+          "0-10% lost": 0.016726656785941138,
+          "10-20% lost": 0.19030520646319568,
+          ">20% lost": 0.416
+        },
+        "fraction_alerted_after_onset_at_1FA": 0.89937106918239,
+        "fraction_alerted_before_onset_at_1FA": 0.018867924528301886,
+        "note": "Descriptive only, not graded. Bleed underway, MAP never < 65 in window."
+      },
+      "reliability_all": {
+        "bins": [
+          {
+            "bin_low": 0.0,
+            "bin_high": 0.1,
+            "n": 19042,
+            "mean_predicted": 0.017721170056833956,
+            "observed_fraction": 0.023526940447431994
+          },
+          {
+            "bin_low": 0.1,
+            "bin_high": 0.2,
+            "n": 1973,
+            "mean_predicted": 0.1307910239642494,
+            "observed_fraction": 0.11809427268119614
+          },
+          {
+            "bin_low": 0.2,
+            "bin_high": 0.30000000000000004,
+            "n": 616,
+            "mean_predicted": 0.23355775035255932,
+            "observed_fraction": 0.23214285714285715
+          },
+          {
+            "bin_low": 0.30000000000000004,
+            "bin_high": 0.4,
+            "n": 637,
+            "mean_predicted": 0.37896114085376903,
+            "observed_fraction": 0.3249607535321821
+          },
+          {
+            "bin_low": 0.4,
+            "bin_high": 0.5,
+            "n": 471,
+            "mean_predicted": 0.4482527495782911,
+            "observed_fraction": 0.39490445859872614
+          },
+          {
+            "bin_low": 0.5,
+            "bin_high": 0.6000000000000001,
+            "n": 550,
+            "mean_predicted": 0.5380693599518862,
+            "observed_fraction": 0.4909090909090909
+          },
+          {
+            "bin_low": 0.6000000000000001,
+            "bin_high": 0.7000000000000001,
+            "n": 240,
+            "mean_predicted": 0.6628895004309989,
+            "observed_fraction": 0.5833333333333334
+          },
+          {
+            "bin_low": 0.7000000000000001,
+            "bin_high": 0.8,
+            "n": 176,
+            "mean_predicted": 0.7643053939989728,
+            "observed_fraction": 0.7045454545454546
+          },
+          {
+            "bin_low": 0.8,
+            "bin_high": 0.9,
+            "n": 503,
+            "mean_predicted": 0.8235018732149167,
+            "observed_fraction": 0.8250497017892644
+          },
+          {
+            "bin_low": 0.9,
+            "bin_high": 1.0,
+            "n": 5,
+            "mean_predicted": 1.0,
+            "observed_fraction": 1.0
+          }
+        ]
+      },
+      "stream_counts": {
+        "clean": 343,
+        "bleed_collapse": 257,
+        "bleed_no_collapse": 159,
+        "non_bleed_hypotension": 40,
+        "stimulation_spike": 33
+      }
+    },
+    "test_shifted": {
+      "per_tier": {
+        "T1": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 59
+          },
+          "standard_monitor": {
+            "n_collapses": 59,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.16627407510045725,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 3.1166666666666667,
+              "iqr_low_s": 0.44166666666666665,
+              "iqr_high_s": 6.3,
+              "n": 59
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 59,
+            "n_detected": 59,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.32423444644589167,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 7.4,
+              "iqr_low_s": 4.383333333333334,
+              "iqr_high_s": 11.658333333333333,
+              "n": 59
+            },
+            "monitored_hours": 120.28333333333333
+          },
+          "b2@0.5FA": {
+            "n_collapses": 59,
+            "n_detected": 55,
+            "sensitivity": 0.9322033898305084,
+            "fa_per_hour": 0.5320770403214632,
+            "fa_per_hour_bleed_aware": 0.4655674102812803,
+            "lead_time": {
+              "median_s": 2.783333333333333,
+              "iqr_low_s": 2.05,
+              "iqr_high_s": 4.633333333333334,
+              "n": 55
+            },
+            "monitored_hours": 120.28333333333333
+          },
+          "model@1.0FA": {
+            "n_collapses": 59,
+            "n_detected": 59,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.5071359290563946,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 7.05,
+              "iqr_low_s": 3.2583333333333333,
+              "iqr_high_s": 11.441666666666666,
+              "n": 59
+            },
+            "monitored_hours": 120.28333333333333,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                1.0,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.38267693341842807,
+                0.6085396085106648
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 59,
+            "n_detected": 59,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.847997783012332,
+            "fa_per_hour_bleed_aware": 0.7232922266869891,
+            "lead_time": {
+              "median_s": 4.05,
+              "iqr_low_s": 3.0833333333333335,
+              "iqr_high_s": 7.091666666666667,
+              "n": 59
+            },
+            "monitored_hours": 120.28333333333333,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                1.0,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.33432034744848915,
+                1.4584764886305563
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 59,
+            "n_detected": 59,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.1888596369682694,
+            "fa_per_hour_bleed_aware": 0.43231259526118887,
+            "lead_time": {
+              "median_s": 7.516666666666667,
+              "iqr_low_s": 3.4,
+              "iqr_high_s": 11.008333333333333,
+              "n": 59
+            },
+            "monitored_hours": 120.28333333333333
+          },
+          "b2@2.0FA": {
+            "n_collapses": 59,
+            "n_detected": 59,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.6045448247194125,
+            "fa_per_hour_bleed_aware": 1.3634474158237495,
+            "lead_time": {
+              "median_s": 6.466666666666667,
+              "iqr_low_s": 4.425,
+              "iqr_high_s": 8.116666666666667,
+              "n": 59
+            },
+            "monitored_hours": 120.28333333333333
+          },
+          "model_minus_standard_monitor_lead_min_median": 3.0,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.9559186674875163,
+            "auprc": 0.6597237348890156,
+            "brier": 0.03727045458712663,
+            "n": 6383
+          }
+        },
+        "T2": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 53
+          },
+          "standard_monitor": {
+            "n_collapses": 53,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.21739130434782608,
+            "fa_per_hour_bleed_aware": 0.08152173913043478,
+            "lead_time": {
+              "median_s": 1.9,
+              "iqr_low_s": 0.016666666666666666,
+              "iqr_high_s": 5.866666666666666,
+              "n": 53
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 53,
+            "n_detected": 51,
+            "sensitivity": 0.9622641509433962,
+            "fa_per_hour": 0.19927536231884058,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 7.55,
+              "iqr_low_s": 4.141666666666667,
+              "iqr_high_s": 11.116666666666667,
+              "n": 51
+            },
+            "monitored_hours": 110.4
+          },
+          "b2@0.5FA": {
+            "n_collapses": 53,
+            "n_detected": 51,
+            "sensitivity": 0.9622641509433962,
+            "fa_per_hour": 0.625,
+            "fa_per_hour_bleed_aware": 0.5887681159420289,
+            "lead_time": {
+              "median_s": 2.05,
+              "iqr_low_s": 0.9916666666666667,
+              "iqr_high_s": 3.4,
+              "n": 51
+            },
+            "monitored_hours": 110.4
+          },
+          "model@1.0FA": {
+            "n_collapses": 53,
+            "n_detected": 49,
+            "sensitivity": 0.9245283018867925,
+            "fa_per_hour": 0.6068840579710144,
+            "fa_per_hour_bleed_aware": 0.2717391304347826,
+            "lead_time": {
+              "median_s": 9.766666666666667,
+              "iqr_low_s": 5.7,
+              "iqr_high_s": 12.966666666666667,
+              "n": 49
+            },
+            "monitored_hours": 110.4,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.8268849206349206,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.4289933662355307,
+                0.8018418031133804
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 53,
+            "n_detected": 53,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.0688405797101448,
+            "fa_per_hour_bleed_aware": 0.9873188405797101,
+            "lead_time": {
+              "median_s": 3.55,
+              "iqr_low_s": 2.05,
+              "iqr_high_s": 5.75,
+              "n": 53
+            },
+            "monitored_hours": 110.4,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                1.0,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.5419514416310148,
+                1.6334649772354493
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 53,
+            "n_detected": 49,
+            "sensitivity": 0.9245283018867925,
+            "fa_per_hour": 1.8568840579710144,
+            "fa_per_hour_bleed_aware": 1.2952898550724636,
+            "lead_time": {
+              "median_s": 5.8,
+              "iqr_low_s": 1.8666666666666667,
+              "iqr_high_s": 8.9,
+              "n": 49
+            },
+            "monitored_hours": 110.4
+          },
+          "b2@2.0FA": {
+            "n_collapses": 53,
+            "n_detected": 53,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.8115942028985506,
+            "fa_per_hour_bleed_aware": 1.6666666666666665,
+            "lead_time": {
+              "median_s": 5.316666666666666,
+              "iqr_low_s": 3.966666666666667,
+              "iqr_high_s": 8.733333333333333,
+              "n": 53
+            },
+            "monitored_hours": 110.4
+          },
+          "model_minus_standard_monitor_lead_min_median": 6.283333333333333,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.9508325456329985,
+            "auprc": 0.6078634044104934,
+            "brier": 0.035120333394638444,
+            "n": 6145
+          }
+        },
+        "T3": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 13
+          },
+          "standard_monitor": {
+            "n_collapses": 13,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.09087466868610375,
+            "fa_per_hour_bleed_aware": 0.09087466868610375,
+            "lead_time": {
+              "median_s": 0.0,
+              "iqr_low_s": 0.0,
+              "iqr_high_s": 1.3833333333333333,
+              "n": 13
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 13,
+            "n_detected": 8,
+            "sensitivity": 0.6153846153846154,
+            "fa_per_hour": 0.0,
+            "fa_per_hour_bleed_aware": 0.0,
+            "lead_time": {
+              "median_s": 4.633333333333334,
+              "iqr_low_s": 2.75,
+              "iqr_high_s": 6.720833333333333,
+              "n": 8
+            },
+            "monitored_hours": 88.03333333333333
+          },
+          "b2@0.5FA": {
+            "n_collapses": 13,
+            "n_detected": 12,
+            "sensitivity": 0.9230769230769231,
+            "fa_per_hour": 0.72699734948883,
+            "fa_per_hour_bleed_aware": 0.7156380159030671,
+            "lead_time": {
+              "median_s": 2.6333333333333333,
+              "iqr_low_s": 1.75,
+              "iqr_high_s": 5.966666666666667,
+              "n": 12
+            },
+            "monitored_hours": 88.03333333333333
+          },
+          "model@1.0FA": {
+            "n_collapses": 13,
+            "n_detected": 13,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.35213934115865203,
+            "fa_per_hour_bleed_aware": 0.3294206739871261,
+            "lead_time": {
+              "median_s": 7.7,
+              "iqr_low_s": 3.966666666666667,
+              "iqr_high_s": 10.883333333333333,
+              "n": 13
+            },
+            "monitored_hours": 88.03333333333333,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                1.0,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.14688632676309157,
+                0.5706867034430283
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 13,
+            "n_detected": 13,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.1927300265051117,
+            "fa_per_hour_bleed_aware": 1.1700113593335857,
+            "lead_time": {
+              "median_s": 3.8833333333333333,
+              "iqr_low_s": 2.816666666666667,
+              "iqr_high_s": 6.666666666666667,
+              "n": 13
+            },
+            "monitored_hours": 88.03333333333333,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                1.0,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.6307449793061304,
+                1.7970251493144582
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 13,
+            "n_detected": 13,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.5903067020068156,
+            "fa_per_hour_bleed_aware": 1.5107913669064748,
+            "lead_time": {
+              "median_s": 8.883333333333333,
+              "iqr_low_s": 7.883333333333334,
+              "iqr_high_s": 12.666666666666666,
+              "n": 13
+            },
+            "monitored_hours": 88.03333333333333
+          },
+          "b2@2.0FA": {
+            "n_collapses": 13,
+            "n_detected": 13,
+            "sensitivity": 1.0,
+            "fa_per_hour": 1.9992427110942825,
+            "fa_per_hour_bleed_aware": 1.9765240439227565,
+            "lead_time": {
+              "median_s": 8.55,
+              "iqr_low_s": 3.8833333333333333,
+              "iqr_high_s": 8.733333333333333,
+              "n": 13
+            },
+            "monitored_hours": 88.03333333333333
+          },
+          "model_minus_standard_monitor_lead_min_median": 5.883333333333334,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.8742973779243209,
+            "auprc": 0.209905194024015,
+            "brier": 0.014405369706221072,
+            "n": 6474
+          }
+        },
+        "T4": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 50
+          },
+          "standard_monitor": {
+            "n_collapses": 50,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.22704837117472854,
+            "fa_per_hour_bleed_aware": 0.10858835143139191,
+            "lead_time": {
+              "median_s": 2.9916666666666667,
+              "iqr_low_s": 0.0,
+              "iqr_high_s": 7.375,
+              "n": 50
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 50,
+            "n_detected": 48,
+            "sensitivity": 0.96,
+            "fa_per_hour": 0.19743336623889438,
+            "fa_per_hour_bleed_aware": 0.019743336623889437,
+            "lead_time": {
+              "median_s": 8.475,
+              "iqr_low_s": 4.85,
+              "iqr_high_s": 10.820833333333333,
+              "n": 48
+            },
+            "monitored_hours": 101.3
+          },
+          "b2@0.5FA": {
+            "n_collapses": 50,
+            "n_detected": 45,
+            "sensitivity": 0.9,
+            "fa_per_hour": 0.9081934846989141,
+            "fa_per_hour_bleed_aware": 0.8292201382033564,
+            "lead_time": {
+              "median_s": 2.6333333333333333,
+              "iqr_low_s": 1.55,
+              "iqr_high_s": 3.966666666666667,
+              "n": 45
+            },
+            "monitored_hours": 101.3
+          },
+          "model@1.0FA": {
+            "n_collapses": 50,
+            "n_detected": 46,
+            "sensitivity": 0.92,
+            "fa_per_hour": 0.6811451135241856,
+            "fa_per_hour_bleed_aware": 0.3060217176702863,
+            "lead_time": {
+              "median_s": 7.783333333333333,
+              "iqr_low_s": 3.7333333333333334,
+              "iqr_high_s": 12.45,
+              "n": 46
+            },
+            "monitored_hours": 101.3,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.8490566037735849,
+                0.9811320754716981
+              ],
+              "fa_per_hour_ci95": [
+                0.4505780946844732,
+                0.9096347445382618
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 50,
+            "n_detected": 48,
+            "sensitivity": 0.96,
+            "fa_per_hour": 1.40177690029615,
+            "fa_per_hour_bleed_aware": 1.263573543928924,
+            "lead_time": {
+              "median_s": 3.7416666666666667,
+              "iqr_low_s": 2.55,
+              "iqr_high_s": 5.929166666666666,
+              "n": 48
+            },
+            "monitored_hours": 101.3,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.8918772032902468,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.9629070921587355,
+                1.8730398457877173
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 50,
+            "n_detected": 48,
+            "sensitivity": 0.96,
+            "fa_per_hour": 1.9743336623889438,
+            "fa_per_hour_bleed_aware": 1.441263573543929,
+            "lead_time": {
+              "median_s": 6.983333333333333,
+              "iqr_low_s": 3.8833333333333333,
+              "iqr_high_s": 11.825,
+              "n": 48
+            },
+            "monitored_hours": 101.3
+          },
+          "b2@2.0FA": {
+            "n_collapses": 50,
+            "n_detected": 48,
+            "sensitivity": 0.96,
+            "fa_per_hour": 2.0927936821322803,
+            "fa_per_hour_bleed_aware": 1.8756169792694966,
+            "lead_time": {
+              "median_s": 5.966666666666667,
+              "iqr_low_s": 3.379166666666667,
+              "iqr_high_s": 8.0875,
+              "n": 48
+            },
+            "monitored_hours": 101.3
+          },
+          "model_minus_standard_monitor_lead_min_median": 5.0,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.7916414402703055,
+            "auprc": 0.44089654868224043,
+            "brier": 0.06273083648951253,
+            "n": 6055
+          }
+        },
+        "ALL": {
+          "B1_map_below_65": {
+            "sensitivity": 1.0,
+            "lead_time_median_min": 0.0,
+            "fa_per_hour": 0.0,
+            "n_collapses": 175
+          },
+          "standard_monitor": {
+            "n_collapses": 175,
+            "sensitivity": 1.0,
+            "fa_per_hour": 0.1785643426848141,
+            "fa_per_hour_bleed_aware": 0.06666402126899726,
+            "lead_time": {
+              "median_s": 2.1666666666666665,
+              "iqr_low_s": 0.0,
+              "iqr_high_s": 6.5,
+              "n": 175
+            },
+            "note": "MAP<65 OR HR>120 OR SBP<90; typical settings, not a verified factory default."
+          },
+          "model@0.5FA": {
+            "n_collapses": 175,
+            "n_detected": 166,
+            "sensitivity": 0.9485714285714286,
+            "fa_per_hour": 0.19284949009959923,
+            "fa_per_hour_bleed_aware": 0.004761715804928376,
+            "lead_time": {
+              "median_s": 7.475,
+              "iqr_low_s": 4.333333333333333,
+              "iqr_high_s": 11.320833333333333,
+              "n": 166
+            },
+            "monitored_hours": 420.01666666666665
+          },
+          "b2@0.5FA": {
+            "n_collapses": 175,
+            "n_detected": 163,
+            "sensitivity": 0.9314285714285714,
+            "fa_per_hour": 0.6880679338121504,
+            "fa_per_hour_bleed_aware": 0.6380699178604023,
+            "lead_time": {
+              "median_s": 2.466666666666667,
+              "iqr_low_s": 1.55,
+              "iqr_high_s": 4.383333333333334,
+              "n": 163
+            },
+            "monitored_hours": 420.01666666666665
+          },
+          "model@1.0FA": {
+            "n_collapses": 175,
+            "n_detected": 167,
+            "sensitivity": 0.9542857142857143,
+            "fa_per_hour": 0.5428356017618349,
+            "fa_per_hour_bleed_aware": 0.21427721122177693,
+            "lead_time": {
+              "median_s": 7.7,
+              "iqr_low_s": 3.933333333333333,
+              "iqr_high_s": 11.816666666666666,
+              "n": 167
+            },
+            "monitored_hours": 420.01666666666665,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9157184345838888,
+                0.9871815286624204
+              ],
+              "fa_per_hour_ci95": [
+                0.3956525730256105,
+                0.6906819877582073
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "b2@1.0FA": {
+            "n_collapses": 175,
+            "n_detected": 173,
+            "sensitivity": 0.9885714285714285,
+            "fa_per_hour": 1.1118606404507758,
+            "fa_per_hour_bleed_aware": 1.0166263243522082,
+            "lead_time": {
+              "median_s": 3.816666666666667,
+              "iqr_low_s": 2.7333333333333334,
+              "iqr_high_s": 6.283333333333333,
+              "n": 173
+            },
+            "monitored_hours": 420.01666666666665,
+            "bootstrap": {
+              "sensitivity_ci95": [
+                0.9710940650625084,
+                1.0
+              ],
+              "fa_per_hour_ci95": [
+                0.6238073158811513,
+                1.6620866336892495
+              ],
+              "n_source_cases": 26
+            }
+          },
+          "model@2.0FA": {
+            "n_collapses": 175,
+            "n_detected": 169,
+            "sensitivity": 0.9657142857142857,
+            "fa_per_hour": 1.6380302368953614,
+            "fa_per_hour_bleed_aware": 1.1285266457680252,
+            "lead_time": {
+              "median_s": 7.366666666666666,
+              "iqr_low_s": 3.2666666666666666,
+              "iqr_high_s": 11.25,
+              "n": 169
+            },
+            "monitored_hours": 420.01666666666665
+          },
+          "b2@2.0FA": {
+            "n_collapses": 175,
+            "n_detected": 173,
+            "sensitivity": 0.9885714285714285,
+            "fa_per_hour": 1.859450021824531,
+            "fa_per_hour_bleed_aware": 1.6951708265545018,
+            "lead_time": {
+              "median_s": 5.966666666666667,
+              "iqr_low_s": 4.05,
+              "iqr_high_s": 8.583333333333334,
+              "n": 173
+            },
+            "monitored_hours": 420.01666666666665
+          },
+          "model_minus_standard_monitor_lead_min_median": 5.0,
+          "secondary_auroc_auprc_brier": {
+            "auroc": 0.8933433649106527,
+            "auprc": 0.5308878691729304,
+            "brier": 0.03698796099939163,
+            "n": 25057
+          }
+        }
+      },
+      "non_bleed_hypotension_descriptive": {
+        "n_events": 14,
+        "n_detected_model@1FA": 1,
+        "median_lead_min": 3.2333333333333334,
+        "note": "No HR/PP precursor by design; early warning is not expected."
+      },
+      "bleed_no_collapse_descriptive": {
+        "n_streams": 241,
+        "median_risk_by_blood_loss": {
+          "before onset": 0.014741172437435722,
+          "0-10% lost": 0.016726656785941138,
+          "10-20% lost": 0.10740740740740741,
+          ">20% lost": 0.3783783783783784
+        },
+        "fraction_alerted_after_onset_at_1FA": 0.8589211618257261,
+        "fraction_alerted_before_onset_at_1FA": 0.029045643153526972,
+        "note": "Descriptive only, not graded. Bleed underway, MAP never < 65 in window."
+      },
+      "reliability_all": {
+        "bins": [
+          {
+            "bin_low": 0.0,
+            "bin_high": 0.1,
+            "n": 20764,
+            "mean_predicted": 0.01786009198520516,
+            "observed_fraction": 0.013147755731073012
+          },
+          {
+            "bin_low": 0.1,
+            "bin_high": 0.2,
+            "n": 2031,
+            "mean_predicted": 0.13187247005360678,
+            "observed_fraction": 0.10536681437715412
+          },
+          {
+            "bin_low": 0.2,
+            "bin_high": 0.30000000000000004,
+            "n": 594,
+            "mean_predicted": 0.23376191941790844,
+            "observed_fraction": 0.2138047138047138
+          },
+          {
+            "bin_low": 0.30000000000000004,
+            "bin_high": 0.4,
+            "n": 580,
+            "mean_predicted": 0.3785308195946262,
+            "observed_fraction": 0.36724137931034484
+          },
+          {
+            "bin_low": 0.4,
+            "bin_high": 0.5,
+            "n": 390,
+            "mean_predicted": 0.4475698087448779,
+            "observed_fraction": 0.4
+          },
+          {
+            "bin_low": 0.5,
+            "bin_high": 0.6000000000000001,
+            "n": 377,
+            "mean_predicted": 0.5365416192357311,
+            "observed_fraction": 0.5782493368700266
+          },
+          {
+            "bin_low": 0.6000000000000001,
+            "bin_high": 0.7000000000000001,
+            "n": 151,
+            "mean_predicted": 0.6627450980392158,
+            "observed_fraction": 0.7350993377483444
+          },
+          {
+            "bin_low": 0.7000000000000001,
+            "bin_high": 0.8,
+            "n": 59,
+            "mean_predicted": 0.763072961133116,
+            "observed_fraction": 0.8305084745762712
+          },
+          {
+            "bin_low": 0.8,
+            "bin_high": 0.9,
+            "n": 111,
+            "mean_predicted": 0.8142565365289709,
+            "observed_fraction": 0.963963963963964
+          },
+          {
+            "bin_low": 0.9,
+            "bin_high": 1.0,
+            "n": 0,
+            "mean_predicted": null,
+            "observed_fraction": null
+          }
+        ]
+      },
+      "stream_counts": {
+        "clean": 342,
+        "bleed_no_collapse": 241,
+        "bleed_collapse": 175,
+        "stimulation_spike": 40,
+        "non_bleed_hypotension": 34
+      }
+    }
+  },
+  "preregistered_target_check": {
+    "T1": {
+      "sensitivity": 0.9764705882352941,
+      "fa_per_hour": 0.6480783722682744,
+      "target_met": true
+    },
+    "T2": {
+      "sensitivity": 0.9552238805970149,
+      "fa_per_hour": 0.6601042269832078,
+      "target_met": true
+    }
+  },
+  "misses_by_cause": {
+    "other": 5,
+    "artifact": 2,
+    "blunted": 2,
+    "fast": 1
+  },
+  "rerun_reason": null
+}
