@@ -1,7 +1,6 @@
 # LIMITATIONS
 
-**Status: pre-event scaffold (Phase 0).** Required doc (Oct 24 decision); expanded with
-real numbers in Phase 7.
+Every number below is generated in [MODEL_CARD.md](MODEL_CARD.md) or [SYNTHETIC_PLAN.md](SYNTHETIC_PLAN.md); this file explains what the results can and can't support.
 
 ## What we do not claim
 
@@ -70,6 +69,23 @@ This is a research prototype for research and education only, not a medical devi
   one. The bleeding-flavored label is a separate task with its own single
   test touch, disclosed as a post-hoc experiment and never blended with the
   other two.
+
+## Simulation limitations (Round 4)
+
+- **Circular by design.** The simulator assumes bleeding causes textbook compensation (heart rate up, pulse pressure down, then collapse). A model that reads heart rate and pulse pressure will do well when that's true. The simulation shows the method works *if* real bleeding looks like this; it cannot show that it does. Studies of real trauma patients (Mutschler et al., *Critical Care* 2013; *Emergency Medicine Journal* 2014) found many don't follow the textbook classes, especially for heart rate.
+- **A simple two-number rule nearly matches the model in simulation** (checked on validation data). That's expected for the same reason, and it means the simulation can't tell a clever model from a simple one.
+- **It doesn't catch more collapses than a tuned MAP cutoff.** Both are near the ceiling. The model's gains are earlier warning and fewer false alarms.
+- **Small source population.** The test baselines come from a few dozen real patients, so the confidence intervals are wide. For T2 and T4, the lower bound sits below the 95% target. Several misses trace back to a single baseline patient.
+- **Baselines aren't flat.** "Stable" windows exclude drug changes and low pressure but not slow drift, and real baseline MAP wanders noticeably within a window. That's realistic, but it means only the injected part holds MAP steady during compensation.
+- **Conservative scoring.** An alert more than 15 minutes before collapse counts as a false alarm, and lead time is capped at 15 minutes.
+- **The simulated-bleed mode in the web demo uses the earlier Phase 5 curves and a transparent rule score,** not the Round 4 model. It's illustrative only. Its alert threshold assumes a textbook baseline (HR 72, pulse pressure 42) and is too strict for real anesthetized patients, whose pulse pressure is typically wider.
+
+## Web demo limitations
+
+- **Replays are recorded and sped up, and labeled so.** Nothing is live.
+- **The examples are selected by written rules, not random.** The page says so.
+- **The two "Miss" examples are weak demonstrations.** They come from one case where the model produced almost no risk scores before the event, so they mostly display "Not enough data to assess" rather than showing a confident-but-wrong model.
+- **There is no live device input.** The page has a documented `DeviceSource` interface for a future bedside-monitor feed, but it is not implemented and throws if called.
 
 ## Regulatory and deployment
 

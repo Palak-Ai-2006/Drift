@@ -124,13 +124,21 @@ for the full access details and citations.
   rather than a new undocumented window length; drift-from-baseline is computed
   for HR, MAP, PP and shock index.
 
-## Replay case selection (Phase 6.1) — TODO
+## Replay case selection (Phase 6.1)
 
-Selection rules (best / typical / miss / false-alarm / insufficient-data, from the
-test set only) are written in `src/drift/config.py` / `src/drift/replay.py` and
-documented here once Phase 6.1 runs. Includes the A4 "selected examples, not
-average performance" note and, if no miss or false-alarm case exists in the test
-set, a statement to that effect plus the closest examples shown instead.
+The web demo's replay examples come **from the real test set only**, chosen by fixed rules in `src/drift/replay.py` (`select_replay_cases`). Up to `REPLAY_CASES_PER_TYPE_TARGET` are taken per type, preferring a case not already used:
+
+| Type | Rule |
+|---|---|
+| Best | Detected events, longest lead time first (ties: less missing data, then lower case id) |
+| Typical | Detected events whose lead time is closest to the median lead |
+| Miss | Events with no qualifying alert, lowest case id first |
+| False alarm | Alerts with no event within the horizon, lowest case id first |
+| Insufficient data | The case with the most windows over the missing-data cutoff. No test case had persistently insufficient data, so the closest one is shown and the page says so. |
+
+Each excerpt runs `REPLAY_EXCERPT_BEFORE_EVENT_MIN` before and `REPLAY_EXCERPT_AFTER_EVENT_MIN` after its anchor. The page always shows the A4 note: "Selected examples, not average performance."
+
+**Known weakness:** "lowest case id first" made both Miss examples come from one case (28) and both False-alarm examples from one case (50). Case 28 had almost no prediction times before its events, so its "miss" mostly shows "Not enough data to assess" instead of a confident-but-wrong model. A rule like "the miss with the most risk scores before the event" would show a more informative failure. Changing it means re-selecting from the test set, so it's left as is and disclosed here.
 
 ## Known caveats
 

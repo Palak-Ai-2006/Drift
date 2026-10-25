@@ -85,6 +85,116 @@ window.DRIFT_PROOF = {
     "val": 88,
     "test": 87
   },
+  "simulation_round4": {
+    "label": "SIMULATION: real VitalDB baselines with injected (synthetic) bleeds",
+    "rows": [
+      {
+        "tier": "T1 textbook",
+        "n_collapses": 85,
+        "model_sensitivity": 0.9764705882352941,
+        "model_sensitivity_ci95": [
+          0.9425287356321839,
+          1.0
+        ],
+        "model_fa_per_hour": 0.6480783722682744,
+        "model_lead_median_min": 6.666666666666667,
+        "b2_sensitivity": 1.0,
+        "b2_fa_per_hour": 0.79879427279578,
+        "b2_lead_median_min": 3.4,
+        "standard_monitor_fa_per_hour": 0.35418236623963834,
+        "standard_monitor_lead_median_min": 5.283333333333333
+      },
+      {
+        "tier": "T2 realistic",
+        "n_collapses": 67,
+        "model_sensitivity": 0.9552238805970149,
+        "model_sensitivity_ci95": [
+          0.9016393442622951,
+          1.0
+        ],
+        "model_fa_per_hour": 0.6601042269832078,
+        "model_lead_median_min": 8.283333333333333,
+        "b2_sensitivity": 0.9850746268656716,
+        "b2_fa_per_hour": 1.1204400694846555,
+        "b2_lead_median_min": 3.2916666666666665,
+        "standard_monitor_fa_per_hour": 0.20845396641574984,
+        "standard_monitor_lead_median_min": 7.1
+      },
+      {
+        "tier": "T3 blunted",
+        "n_collapses": 36,
+        "model_sensitivity": 0.9444444444444444,
+        "model_sensitivity_ci95": [
+          0.8484848484848485,
+          1.0
+        ],
+        "model_fa_per_hour": 0.4751131221719457,
+        "model_lead_median_min": 7.2,
+        "b2_sensitivity": 0.9444444444444444,
+        "b2_fa_per_hour": 1.182934712346477,
+        "b2_lead_median_min": 4.008333333333334,
+        "standard_monitor_fa_per_hour": 0.11635423400129281,
+        "standard_monitor_lead_median_min": 0.9916666666666667
+      },
+      {
+        "tier": "T4 confounded",
+        "n_collapses": 69,
+        "model_sensitivity": 0.9565217391304348,
+        "model_sensitivity_ci95": [
+          0.8955027494108405,
+          1.0
+        ],
+        "model_fa_per_hour": 0.7408550702268869,
+        "model_lead_median_min": 9.158333333333333,
+        "b2_sensitivity": 0.9710144927536232,
+        "b2_fa_per_hour": 1.1112826053403302,
+        "b2_lead_median_min": 3.5833333333333335,
+        "standard_monitor_fa_per_hour": 0.3333847816020991,
+        "standard_monitor_lead_median_min": 5.9
+      },
+      {
+        "tier": "All tiers",
+        "n_collapses": 257,
+        "model_sensitivity": 0.9610894941634242,
+        "model_sensitivity_ci95": [
+          0.9304926573485526,
+          0.9888090681279947
+        ],
+        "model_fa_per_hour": 0.6340559973853361,
+        "model_lead_median_min": 7.9,
+        "b2_sensitivity": 0.980544747081712,
+        "b2_fa_per_hour": 1.0393289029306025,
+        "b2_lead_median_min": 3.433333333333333,
+        "standard_monitor_fa_per_hour": 0.25928750408541235,
+        "standard_monitor_lead_median_min": 4.966666666666667
+      }
+    ],
+    "target_check": {
+      "T1": {
+        "sensitivity": 0.9764705882352941,
+        "fa_per_hour": 0.6480783722682744,
+        "target_met": true
+      },
+      "T2": {
+        "sensitivity": 0.9552238805970149,
+        "fa_per_hour": 0.6601042269832078,
+        "target_met": true
+      }
+    },
+    "target_sensitivity": 0.95,
+    "shifted_all": {
+      "sensitivity": 0.9542857142857143,
+      "fa_per_hour": 0.5428356017618349,
+      "lead_median_min": 7.7
+    },
+    "no_collapse_risk_by_blood_loss": {
+      "before onset": 0.014741172437435722,
+      "0-10% lost": 0.016726656785941138,
+      "10-20% lost": 0.19030520646319568,
+      ">20% lost": 0.416
+    },
+    "note": "Shows the method works when bleeding follows textbook compensation; it cannot show that real patients do. It warns earlier than a MAP cutoff but does not catch more collapses. Lead time is capped at the 15-min horizon."
+  },
   "cohort_counts": {
     "n_eligible_sample": 442,
     "n_cohort_b": 165,

@@ -508,6 +508,19 @@
   $("tab-sim").addEventListener("click", () => setMode("sim"));
 
   const pctS = (x) => (x === null || x === undefined ? "—" : `${(x * 100).toFixed(1)}%`);
+  function simulationSection(s) {
+    if (!s) return "";
+    const rows = s.rows.map((r) =>
+      `<tr><td>${r.tier}</td><td>${pctS(r.model_sensitivity)}</td><td>${r.model_fa_per_hour.toFixed(2)}</td><td>${r.model_lead_median_min.toFixed(1)}</td>` +
+      `<td>${r.b2_lead_median_min.toFixed(1)}</td><td>${r.standard_monitor_lead_median_min.toFixed(1)}</td></tr>`).join("");
+    const target = Object.entries(s.target_check).map(([t, v]) =>
+      `${t}: ${pctS(v.sensitivity)} at ${v.fa_per_hour.toFixed(2)} false alarms/hr (${v.target_met ? "met" : "not met"})`).join(" · ");
+    return `
+      <h3><span class="badge badge-synthetic">Simulation</span> Injected bleeds on real baselines</h3>
+      <p class="muted">${s.label}. Pre-registered target ≥ ${pctS(s.target_sensitivity)} at ≤ 1 false alarm/hr on T1–T2: ${target}.</p>
+      <table><thead><tr><th>Tier</th><th>Sensitivity</th><th>FA/hr</th><th>Lead, model (min)</th><th>Lead, MAP cutoff</th><th>Lead, standard monitor</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="muted">Unseen bleed settings (shifted test), all tiers: ${pctS(s.shifted_all.sensitivity)} at ${s.shifted_all.fa_per_hour.toFixed(2)} FA/hr, median lead ${s.shifted_all.lead_median_min.toFixed(1)} min. ${s.note}</p>`;
+  }
   function renderProof() {
     const rows = PROOF.operating_points_table.map((r) =>
       `<tr><td>${r.method}</td><td>${pctS(r.sensitivity)}</td><td>${(r.lead_time_median_s / 60).toFixed(1)} min</td><td>${r.fa_per_hour.toFixed(2)}</td></tr>
@@ -521,6 +534,7 @@
       <p>Brier score ${PROOF.brier_score.toFixed(3)} · AUROC ${PROOF.auroc.toFixed(3)} · AUPRC ${PROOF.auprc.toFixed(3)}</p>
       <h3>Cohorts</h3>
       <p>Split by patient: ${sp.train} train / ${sp.val} validation / ${sp.test} test cases. Eligible sample ${cc.n_eligible_sample} (high blood loss: ${cc.n_cohort_b}); fresh never-touched holdout ${cc.n_eligible_fresh_holdout} (high blood loss: ${cc.n_cohort_b_fresh_holdout}).</p>
+      ${simulationSection(PROOF.simulation_round4)}
       <h3>How it works</h3>
       <ul>
         <li>Every 30 seconds the monitor's numbers (heart rate, blood pressure) are summarized from the recent past only.</li>

@@ -13,6 +13,8 @@ import json
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from drift import config  # noqa: E402
@@ -25,6 +27,40 @@ ROUND3_CV_JSON = ROOT / "artifacts" / "phase4_round3_cv_results.json"
 ROUND3_SECONDARY_JSON = ROOT / "artifacts" / "phase4_round3_secondary_shock_index.json"
 HOLDOUT_JSON = ROOT / "artifacts" / "phase4_round3_fresh_holdout_results.json"
 PROOF_JS = ROOT / "web" / "data" / "proof.js"
+EXP2_JSON = ROOT / "artifacts" / "metrics_exp2_bleeding_label.json"
+COHORT_PARQUET = ROOT / "data" / "interim" / "cohort.parquet"
+SYNTH_JSON = ROOT / "artifacts" / "metrics_synth.json"
+
+
+def simulation_block() -> dict:
+    """Round 4 semi-synthetic results for the drawer, read from
+    metrics_synth.json. Always labeled SIMULATION."""
+    m = json.loads(SYNTH_JSON.read_text())
+    rows = []
+    for tier, r in m["sets"]["test"]["per_tier"].items():
+        mm, b, s = r["model@1.0FA"], r["b2@1.0FA"], r["standard_monitor"]
+        rows.append({
+            "tier": "All tiers" if tier == "ALL" else f"{tier} {config.SYNTH_TIER_NAMES[tier]}",
+            "n_collapses": mm["n_collapses"],
+            "model_sensitivity": mm["sensitivity"], "model_sensitivity_ci95": mm["bootstrap"]["sensitivity_ci95"],
+            "model_fa_per_hour": mm["fa_per_hour"], "model_lead_median_min": mm["lead_time"]["median_s"],
+            "b2_sensitivity": b["sensitivity"], "b2_fa_per_hour": b["fa_per_hour"], "b2_lead_median_min": b["lead_time"]["median_s"],
+            "standard_monitor_fa_per_hour": s["fa_per_hour"], "standard_monitor_lead_median_min": s["lead_time"]["median_s"],
+        })
+    shifted_all = m["sets"]["test_shifted"]["per_tier"]["ALL"]["model@1.0FA"]
+    nc = m["sets"]["test"]["bleed_no_collapse_descriptive"]
+    return {
+        "label": "SIMULATION: real VitalDB baselines with injected (synthetic) bleeds",
+        "rows": rows,
+        "target_check": m["preregistered_target_check"],
+        "target_sensitivity": config.SYNTH_EVAL_TARGET_SENSITIVITY,
+        "shifted_all": {"sensitivity": shifted_all["sensitivity"], "fa_per_hour": shifted_all["fa_per_hour"],
+                        "lead_median_min": shifted_all["lead_time"]["median_s"]},
+        "no_collapse_risk_by_blood_loss": nc["median_risk_by_blood_loss"],
+        "note": ("Shows the method works when bleeding follows textbook compensation; it cannot show that real "
+                 "patients do. It warns earlier than a MAP cutoff but does not catch more collapses. "
+                 "Lead time is capped at the 15-min horizon."),
+    }
 
 
 def main() -> None:
@@ -67,6 +103,10 @@ def main() -> None:
         },
     ]
 
+    exp2 = json.loads(EXP2_JSON.read_text())
+    cohort = pd.read_parquet(COHORT_PARQUET)
+    interaction_gain = round3["decisions"]["interaction_features"]["gain_pp"]
+
     iteration_summary = {
         "round1_v2": {
             "question": "Does adding HR/pulse-pressure/shock-index drift features beat MAP alone?",
@@ -75,17 +115,17 @@ def main() -> None:
         },
         "round2_bleeding_label": {
             "question": "Same question, on a cleaner bleeding-flavored label (excludes vasopressor/anesthetic-confounded events).",
-            "finding": "Drift lost more decisively (-7.67pp, 95% CI entirely negative).",
+            "finding": f"Drift lost more decisively ({exp2['decision']['gain_pp']:+.2f}pp, 95% CI entirely negative).",
         },
         "round3_residual_interaction": {
             "question": "Does a ridge-penalized offset model or MAP x shock-index/HR-drift interaction terms beat MAP alone?",
             "decisions": round3["decisions"],
-            "finding": "Neither cleared the pre-registered bar. Closest: interaction terms at -1.45pp (CI includes zero).",
+            "finding": f"Neither cleared the pre-registered bar. Closest: interaction terms at {interaction_gain:+.2f}pp (CI includes zero).",
         },
         "round3_secondary_compensation_flag": {
             "question": "Can MAP/pulse-pressure/demographics predict an UPCOMING compensation state (elevated shock index), as a separate, non-hemorrhage task?",
             "cv_roc_auc": secondary["cv_roc_auc"], "cv_roc_auc_ci": secondary["cv_roc_auc_ci"],
-            "finding": "A real, modest signal (CV ROC AUC 0.65) -- reported as a compensation-state flag, not hemorrhage evidence.",
+            "finding": f"A real, modest signal (CV ROC AUC {secondary['cv_roc_auc']:.2f}) -- reported as a compensation-state flag, not hemorrhage evidence.",
         },
     }
 
@@ -96,8 +136,10 @@ def main() -> None:
         "auroc": v2["test_secondary_metrics"]["auroc"],
         "auprc": v2["test_secondary_metrics"]["auprc"],
         "split_sizes": original["split_sizes"],
+        "simulation_round4": simulation_block(),
         "cohort_counts": {
-            "n_eligible_sample": 442, "n_cohort_b": 165,
+            "n_eligible_sample": int(cohort["eligible_final"].sum()),
+            "n_cohort_b": int((cohort["eligible_final"] & cohort["cohort_b_final"]).sum()),
             "n_eligible_fresh_holdout": holdout["n_holdout_cases_eligible"],
             "n_cohort_b_fresh_holdout": holdout["n_holdout_cases_cohort_b"],
         },

@@ -1,5 +1,7 @@
 # Devpost outline (draft — text only, no project code)
 
+> **Superseded by [DEVPOST.md](DEVPOST.md)**, the finished submission text. Kept as the pre-event draft.
+
 Written pre-event per PLAN.md Section 1 ("writing the Devpost outline... as text" is explicitly allowed before the event) and Phase 7 / Decision 9 ("draft the Devpost text... with placeholders around hour 10, so hours 18–22 only fill numbers").
 
 **Rule for filling this in later: no number goes in here unless it's read out of a generated file (`metrics.json`, `proof.js`). Placeholders below are marked `[FROM metrics.json: ...]`.**

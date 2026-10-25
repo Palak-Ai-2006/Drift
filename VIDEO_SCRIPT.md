@@ -1,52 +1,50 @@
-# 3-minute video script (draft — text only, no project code)
+# 3-minute video script
 
-Written pre-event per PLAN.md Section 1 and Phase 7 ("Video script (3 min): hook → problem → replay with alert → standard alarm later → simulator (blunted toggle) → numbers vs baselines → limits and next steps"). Draft with placeholders now (Decision 9); fill in real numbers and record around hour 18–22.
+Every number you say comes from the generated block below (filled by `scripts/11_docs_numbers.py`). Don't say a number that isn't in it.
 
-**No number is spoken or shown on screen unless it comes from a generated file (`metrics.json` / `proof.js`).**
-
----
-
-### 0:00–0:15 — Hook
-*(on camera or voiceover over a still of a flat blood-pressure line)*
-
-"When a patient is bleeding, blood pressure is the last thing to move. The body compensates — heart rate climbs, pulse pressure narrows — until it suddenly can't anymore. We built something that watches what moves first."
-
-### 0:15–0:40 — Problem
-*(show the rubric-mapping framing, or just talk over a simple slide)*
-
-"Hemorrhage is the leading cause of preventable trauma death. Standard monitors alarm when blood pressure itself drops — but by then the patient has already decompensated. We wanted an alert that fires during the compensation phase, while pressure still looks normal."
-
-### 0:40–1:30 — Replay demo (the core proof)
-*(screen recording of `web/index.html`, Replay tab, "Best example" case, playing)*
-
-- Point out the banner: "Recorded patient, sped up 30×. Not live."
-- Let it play until the Drift alert fires (amber): "Here — heart rate's climbing, pulse pressure is narrowing. Our alert fires here."
-- Let playback continue until the standard alarm fires (red, MAP < 65): "The standard low-pressure alarm doesn't fire until here."
-- Point at the verdict strip / timeline bar: "[FROM replay_cases.js: Drift alerted ___ minutes before the standard alarm.]"
-
-### 1:30–2:00 — Simulator demo (physiology, made legible)
-*(screen recording of the Simulated bleed tab)*
-
-- Drag the "Blood lost" slider or hit Play bleed.
-- "This is synthetic — labeled SYNTHETIC throughout, built from standard ATLS blood-loss staging, just to make the physiology visible."
-- Toggle "Blunted heart-rate response": "This is what it looks like in a patient on beta-blockers, or an older patient — the compensation itself is blunted, so the warning comes later, or sometimes not at all. We show that honestly instead of hiding it."
-
-### 2:00–2:30 — Numbers vs. baselines
-*(show the Proof and method drawer, or a simple results slide generated from `proof.js`)*
-
-"Across the held-out test set — patients the model never saw during training — at the same false-alarm rate as the standard alarm: [FROM proof.js: sensitivity numbers, median lead time, Brier score]. We also show our misses and our false alarms in the case picker — not just the wins."
-
-### 2:30–2:50 — Limits and honesty
-"This is surgical data, not prehospital trauma — a real trauma version would need retraining on intermittent, ambulance-cadence vitals. It's not clinically validated, and it's not a device. It's a research prototype."
-
-### 2:50–3:00 — Close
-"The engine itself is small enough to run on a phone with no internet connection. The interface is built so a real device feed could someday replace this replay without a redesign. Honest next steps: trauma data, prehospital cadence, clinician input. Thanks for watching."
+<!-- NUMBERS:VIDEO:START -->
+- Replay, best example: the early alert fires 14.9 min before the standard alarm.
+- Real test set: 57.4% of events caught, median 4.3 min early, 0.97 false alarms per patient-hour; a plain MAP cutoff does about the same (60.1%, 4.4 min).
+- Simulation: 96.1% of collapses caught at 0.63 false alarms/hr, median 7.9 min warning vs 3.4 min for a MAP cutoff and 5.0 min for a standard monitor.
+<!-- NUMBERS:VIDEO:END -->
 
 ---
 
-## Shot list (prep before recording)
-- [ ] Screen recording, Replay tab, best-example case, full play-through (speed 30×)
-- [ ] Screen recording, Replay tab, miss or false-alarm case (optional, if time allows in the longer form / Devpost write-up)
-- [ ] Screen recording, Simulated bleed tab, slider drag + blunted toggle
-- [ ] Screen recording, Proof and method drawer open
-- [ ] Screenshots at 1440×900 and 1280×720 (Phase 6 acceptance criteria — reuse these for Devpost images)
+### 0:00–0:15 · Hook
+*(Over the replay chart, paused on a flat blood-pressure line.)*
+"When someone is bleeding, blood pressure is the last thing to move. The heart speeds up and the pulse narrows while pressure looks fine. Then it collapses. We wanted to watch what moves first."
+
+### 0:15–0:40 · Problem
+"Bleeding is the leading cause of preventable death after trauma. Monitors alarm when blood pressure itself drops, which is the collapse, not the warning. And real hospital data can't tell you which pressure drops were bleeding, because nobody records when bleeding started."
+
+### 0:40–1:20 · Replay of a real patient
+*(Replay tab, Best example 1, 30×. Open with `web/index.html#case=0&t=1400` and press space.)*
+- Point at the banner: "This is a recorded surgical patient, sped up. Not live."
+- When the amber banner appears: "Our early alert fires here."
+- When the standard alarm turns red: "The standard alarm fires here." Read the verdict line.
+- Be honest: "On real surgical data, this early alert is essentially a smart blood-pressure threshold. Heart-rate trends didn't add anything, and we tested that three ways."
+
+### 1:20–2:00 · Why we built a simulator, and what it showed
+*(Simulated bleed tab: drag the slider, then tick "Blunted".)*
+"Real surgical pressure drops are mostly anesthesia, not bleeding. So we took real patients' recordings and injected simulated bleeds, so we know exactly when each bleed starts. It's labeled synthetic everywhere."
+- Drag the slider: heart rate climbs and pulse pressure narrows while MAP holds, then the alert fires well before the standard alarm.
+- Tick blunted: "In older patients or patients on beta-blockers, the warning comes later."
+- Say the simulation numbers from the block.
+
+### 2:00–2:30 · Proof and method
+*(Open the drawer.)* "Every number here is generated from the results files. We show misses and false alarms in the case picker, not just wins. The simulator was frozen before training, and the test set was used once."
+
+### 2:30–2:50 · Limits
+"This is surgical data, not trauma. The simulation assumes textbook physiology, and real trauma patients don't always follow it. It isn't validated, and it isn't a device."
+
+### 2:50–3:00 · Close
+"The gap between our real and simulated results is exactly what to test next: trauma data with real bleeding labels. Thanks for watching."
+
+---
+
+## Shot list
+- [ ] Replay: Best example 1, full play-through at 30×
+- [ ] Replay: Miss or False alarm example (optional)
+- [ ] Simulated bleed: slider drag, then blunted toggle
+- [ ] Proof drawer, scrolled through both tables
+- [ ] Stills: already in `artifacts/web_screenshots/`
