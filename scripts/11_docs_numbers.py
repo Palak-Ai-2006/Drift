@@ -92,5 +92,5 @@ def fill(path: Path, values: dict):
 
 if __name__ == "__main__":
     v = blocks()
-    for name in ("README.md", "DEVPOST.md", "VIDEO_SCRIPT.md"):
+    for name in ("README.md", "DEVPOST.md", "VIDEO_SCRIPT.md", "PITCH_SCRIPT.md"):
         fill(ROOT / name, v)
