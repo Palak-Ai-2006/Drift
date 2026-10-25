@@ -181,6 +181,10 @@ Accept: `windows.parquet`; positive rates by cohort; causality unit test; leakag
 - Report unfavorable results plainly. Never tune on the test set.
 Accept: `metrics.json` and plots regenerate with one command.
 
+### Phase 4.5 — Synthetic track (Round 4, semi-synthetic proof of concept)
+**Source of truth: [`SYNTHETIC_PLAN.md`](SYNTHETIC_PLAN.md)** (locked at tag `round4-plan`). Not duplicated here.
+In one line: inject simulated bleeds onto real, stable VitalDB train+val segments so the cause of collapse is known, then test detection per difficulty tier. Code: `src/drift/semisynth.py`; constants: `config.py` `SYNTH_*` block. Every number is reported "in simulation". Tags: `round4-plan` → `round4-generator-frozen` → `round4-results`.
+
 ### Phase 5 — Hemorrhage simulator (2 h, parallel with Phase 4)
 Purpose: physiology-grounded, **always labeled synthetic**.
 - ATLS-inspired reference: Class I < 15% loss, vitals near normal; Class II 15–30%, heart rate up (~100–120), pulse pressure decreased, pressure still normal; Class III 30–40%, heart rate ~120–140, pressure decreased; Class IV > 40%, heart rate > 140, severely low pressure.

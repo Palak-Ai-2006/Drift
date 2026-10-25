@@ -1,0 +1,7 @@
+{
+  "semisynth_py_sha256": "3d97ca6edf69e99f9022ffa72a153b62d3d93a01661aceef41e5148976fd97fb",
+  "synth_config_sha256": "c085c3e2bf6ecf7a598ff98b089423f3a58a8a17f4c6efc3410beff69b3a9d0c",
+  "frozen_at": "2026-10-24T21:00:32",
+  "pytest": "198 passed",
+  "note": "Generator + Round 4 evaluation rules frozen BEFORE any Round 4 model was trained. Git commit/tag round4-generator-frozen pending user approval (CLAUDE.md no-commit rule); tag must point at bytes matching these hashes."
+}

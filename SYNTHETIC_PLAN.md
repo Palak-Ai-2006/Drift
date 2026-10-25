@@ -74,6 +74,8 @@ All ranges live in `config.py` under a `SYNTH` block. No magic numbers in genera
 
 "Harder and harder": training may use a curriculum (T1 to T4). Evaluation is always reported per tier, never only the best tier.
 
+**Amendment (before `round4-generator-frozen`):** For T1/T2/T4 moderate and fast bleeds, `t0` and rate are sampled jointly so the expected collapse fits in the window, and the window is trimmed to fit the bleed while staying within 40–60 min. Any injected bleed that does not reach MAP < 65 in its window is labeled **`bleed_no_collapse`**: this class is reported descriptively (how the risk score behaved as compensation progressed) and is never counted as a positive or a negative in sensitivity, false-alarm-rate or lead-time metrics.
+
 ---
 
 ## 4. Splits and integrity rules
@@ -100,6 +102,19 @@ More than 90% of time windows contain no bleed, so a model that never alerts wou
 **Target, set before running:** ≥ 95% sensitivity at ≤ 1 FA/hr on T1–T2. T3 and T4 are reported whatever they show. If the target isn't met, report that; don't adjust the generator to reach it.
 
 Outputs go to `artifacts/metrics_synth.json`. Web data is generated from that file, never typed by hand.
+
+### 5a. Evaluation details fixed before training (2026-10-24, before any Round 4 model existed)
+Constants live in `config.py` (`SYNTH_EVAL_*`, `SYNTH_FEATURE_COLUMNS`, `SYNTH_MODEL_*`, `SYNTH_STANDARD_MONITOR_*`).
+1. **Data:** one longest stable window per baseline case in each split. For each window and tier there are 4 replicates, each one bleed stream and one no-bleed stream, using separate seeds for train, val, test and shifted test.
+2. **Features:** the Phase 3 causal features computed from the stream only. Demographics and time-since-start features are left out because they don't exist or mean nothing in a synthetic window. No generator internals are used.
+3. **Labels and alarms:** exactly as for real data: an event (MAP < 65 for ≥ 60 s) within 15 min, a 15-min refractory period, and the same suppression rules. `bleed_no_collapse` streams are left out of training, threshold setting and scoring.
+4. **Model choice (synth-val only):** logistic regression and gradient boosting are trained on pooled synth-train across all tiers. The winner has the higher pooled val sensitivity at 1 FA/hr on collapsing bleeds. If they're within 2 points, the longer median lead time wins; if that's within 0.5 min too, logistic wins. The winner is then calibrated (isotonic) on synth-val.
+5. **Thresholds:** for the model and B2 (a MAP cutoff), set on pooled synth-val at 0.5 / 1 / 2 FA/hr. A deployed alarm doesn't know the tier, so there's one threshold for all tiers. B1 is the MAP < 65 event itself, with zero lead. The "standard monitor" is B1 OR HR > 120 OR SBP < 90, fixed and untuned; these are typical settings, not a verified factory default.
+6. **False alarm:** an alert counts as false if no event follows within 15 min, the same rule as real data. This is conservative because a correct alert more than 15 min before collapse counts as false. As a secondary measure only, used for no decision, a "bleed-aware" rate also counts as correct any alert at or after bleed onset in a collapsing-bleed stream.
+7. **Test:** synth-test and shifted test are each evaluated in one run, per tier, with 95% bootstrap CIs resampled by source VitalDB case.
+8. **Target check:** for T1 and T2 separately, sensitivity ≥ 0.95 and FA ≤ 1.0/hr at the 1 FA/hr operating point (point estimates, CIs shown).
+9. **Misses:** each miss gets the first cause that applies, in this order: blunted (`g_hr` < 0.5), artifact (one in the 15 min before collapse), confounder (a spike in the 15 min before collapse), fast bleed, otherwise other.
+10. **Descriptive only:** detection of non-bleed hypotension events (not expected to be early), and for `bleed_no_collapse`, how the risk score changed as blood loss accumulated.
 
 ---
 

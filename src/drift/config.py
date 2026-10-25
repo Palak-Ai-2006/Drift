@@ -188,6 +188,172 @@ BOOTSTRAP_RESAMPLE_BY = "caseid"  # bootstrap by case, not by row
 PHASE4_HARD_DEADLINE_HOUR = 10  # if not done by this hour, stop Phase 5 work
 
 # ---------------------------------------------------------------------------
+# Phase 4.5 / Round 4: semi-synthetic bleed-injection generator
+# (SYNTHETIC_PLAN.md Section 3 — the source of truth for design and
+# rationale; this is just the constants). Baseline segments are real,
+# stable stretches of VitalDB TRAIN+VAL cases only (never the Round 1-3
+# test cases, never the fresh 175-case holdout); the bleed trend and every
+# confounder/artifact below are injected on top and are SYNTHETIC
+# throughout. Frozen (no further edits) once tagged round4-generator-frozen.
+# ---------------------------------------------------------------------------
+SYNTH_GENERATOR_SEED = 4040  # separate from RANDOM_SEED so Round 4 work never silently shares draws with Phase 1-4
+
+# 3.1 Baseline segment selection
+SYNTH_WINDOW_MIN_LEN_MIN = 40
+SYNTH_WINDOW_MAX_LEN_MIN = 60
+SYNTH_WINDOW_SEARCH_STRIDE_MIN = 5  # candidate window starts, scanned at this stride
+SYNTH_MIN_BEFORE_CASE_END_MIN = 15  # window end must be >= this long before op end
+SYNTH_STABLE_LOOKAROUND_MIN = 10  # "within +-10 min" for the MAP-event / drug-change checks
+SYNTH_MISSING_FRACTION_MAX = INSUFFICIENT_DATA_MISSING_FRACTION  # reuse the existing artifact threshold
+SYNTH_DRUG_FLAT_TOLERANCE = 1e-6  # max allowed change in a drug-rate track across a "stable" window
+SYNTH_RESIDUAL_ROLLING_MEDIAN_MIN = 5.0  # slow component removed to get the real noise residual
+# Reject windows holding a real flush-type jump: any sample whose MAP or
+# pulse pressure departs from its 5-min rolling median by more than this.
+# Below the injected flush artifact's smallest size (30 mmHg), so a window
+# carrying the injected shape is always caught.
+SYNTH_FLUSH_JUMP_REJECT_MMHG = 25.0
+
+# 3.2 Bleed injection model
+SYNTH_T0_MIN_INTO_WINDOW_MIN = 10  # bleed onset at least this far into the window
+SYNTH_T0_MAX_FRACTION_OF_WINDOW = 0.4  # onset no later than this fraction of the window
+# Fraction of blood volume lost per minute (x100 = %BV/min). Chosen so that
+# reaching f_c ~0.30 takes ~12-50 min, i.e. collapse usually lands inside a
+# 40-60 min window; cases that don't collapse in-window are flagged in meta.
+SYNTH_RATE_BAND_SLOW = (0.006, 0.009)
+SYNTH_RATE_BAND_MODERATE = (0.009, 0.014)
+SYNTH_RATE_BAND_FAST = (0.014, 0.025)
+SYNTH_RATE_BANDS = {
+    "slow": SYNTH_RATE_BAND_SLOW,
+    "moderate": SYNTH_RATE_BAND_MODERATE,
+    "fast": SYNTH_RATE_BAND_FAST,
+}
+SYNTH_F_MAX = 0.55  # cap on injected blood-loss fraction
+
+# Window-to-bleed sizing (SYNTHETIC_PLAN.md 3.4 amendment, pre-freeze): the
+# window LENGTH stays within 40-60 min. For these tiers and rate bands, rate
+# and t0 are sampled jointly so the expected collapse (f reaches the level
+# that takes MAP below 65, plus a sustain margin) lands inside the
+# longest stable window available; the window is then trimmed to collapse +
+# SYNTH_POST_COLLAPSE_MIN (never below 40). Slow bleeds are not fitted.
+SYNTH_FIT_COLLAPSE_TIERS = ("T1", "T2", "T4")
+SYNTH_FIT_COLLAPSE_BANDS = ("moderate", "fast")
+SYNTH_COLLAPSE_TARGET_BELOW_MMHG = 2.0   # aim this far under 65 so real noise doesn't break the 60-s run
+SYNTH_COLLAPSE_SUSTAIN_MARGIN_MIN = 2.0  # 60-s sustain requirement plus slack
+SYNTH_POST_COLLAPSE_MIN = 5.0            # decompensation shown after the expected collapse
+SYNTH_PRE_BLEED_MAP_WINDOW_MIN = SYNTH_T0_MIN_INTO_WINDOW_MIN  # baseline MAP = median of the first 10 min
+
+# Labels. The stream decides: an injected bleed whose MAP reaches the
+# primary event (MAP < 65 for >= 60 s) inside the window is bleed_collapse;
+# one that never does is bleed_no_collapse -- reported descriptively, never
+# a positive or a negative in sensitivity / FA-rate / lead-time metrics.
+SYNTH_LABEL_BLEED_COLLAPSE = "bleed_collapse"
+SYNTH_LABEL_BLEED_NO_COLLAPSE = "bleed_no_collapse"
+SYNTH_DESCRIPTIVE_ONLY_LABELS = (SYNTH_LABEL_BLEED_NO_COLLAPSE,)
+
+SYNTH_G_HR_RANGE_NORMAL = (0.8, 1.2)         # heart-rate-gain multiplier, T2/T4
+SYNTH_G_HR_RANGE_T1 = (1.0, 1.2)             # T1: "strong HR gain"
+SYNTH_G_HR_RANGE_BLUNTED_SCALE = (0.1, 0.5)  # T3: g_hr further scaled by this (50-90% reduction)
+SYNTH_F_C_MEAN = 0.30  # compensation-failure fraction, sampled per case
+SYNTH_F_C_STD = 0.04
+SYNTH_F_C_MIN, SYNTH_F_C_MAX = 0.18, 0.42
+
+# Injected-trend curve shape -- this is the Round 4 generator's own design
+# (independent of Phase 5's simulator.py curves, which are a separate,
+# already-shipped artifact; never reused or changed here).
+# HR delta = g_hr * GAIN * (1 - exp(-RATE * f)): at g_hr=1, about +34 / +52 /
+# +60 bpm at f = 0.15 / 0.30 / 0.40 -- from a ~70 bpm anesthetized baseline
+# that lands near the older ATLS ~100 / 120 / 130-140 cutoffs.
+SYNTH_HR_GAIN_COEF = 75.0        # bpm, saturating limit at g_hr=1
+SYNTH_HR_RISE_RATE = 4.0         # per unit f
+SYNTH_PP_NARROWING_FRAC = 0.45   # fraction of the case's own pre-bleed PP lost at f -> infinity (saturating)
+SYNTH_PP_DECAY_RATE = 5.0
+SYNTH_PP_FLOOR_MMHG = 5.0        # PP must stay positive
+SYNTH_MAP_PRE_FC_SLOPE = 4.0       # mmHg drift per unit f, before f_c ("small drift only")
+SYNTH_MAP_POST_FC_SLOPE = 250.0    # mmHg drop per unit f beyond f_c ("falls steeply")
+SYNTH_MAP_HINGE_STEEPNESS = 60.0   # softplus sharpness: ~0.2 mmHg extra drop at f_c - 0.05, ~2.9 at f_c
+SYNTH_MAP_FLOOR_MMHG = 30.0        # injected collapse levels off here (smooth floor), never below
+SYNTH_MAP_FLOOR_SOFTNESS_MMHG = 3.0
+
+# 3.3 Negatives and confounders
+SYNTH_STIM_SPIKE_HR_DELTA_RANGE = (15.0, 35.0)
+SYNTH_STIM_SPIKE_DURATION_MIN_RANGE = (2.0, 6.0)
+SYNTH_NON_BLEED_MAP_DROP_RANGE_MMHG = (10.0, 25.0)  # anesthetic-like drop, no HR/PP precursor
+SYNTH_NON_BLEED_ONSET_MIN_RANGE = (10.0, 35.0)
+SYNTH_NON_BLEED_RAMP_MIN = 5.0  # minutes over which the drop ramps in
+
+SYNTH_ARTIFACT_FLATLINE_DURATION_MIN_RANGE = (1.0, 4.0)
+SYNTH_ARTIFACT_DROPOUT_DURATION_MIN_RANGE = (0.5, 3.0)
+SYNTH_ARTIFACT_FLUSH_SPIKE_DELTA_RANGE_MMHG = (30.0, 60.0)
+SYNTH_ARTIFACT_KINDS = ("flatline", "dropout", "flush_spike")
+SYNTH_NEGATIVE_KINDS = ("clean", "non_bleed_hypotension", "stimulation_spike", "artifact")
+
+# 3.4 Difficulty tiers
+SYNTH_TIERS = ("T1", "T2", "T3", "T4")
+SYNTH_TIER_NAMES = {"T1": "textbook", "T2": "realistic", "T3": "blunted", "T4": "confounded"}
+SYNTH_TIER_RESIDUAL_SCALE = {"T1": 0.3, "T2": 1.0, "T3": 1.0, "T4": 1.0}  # T1 = "light noise"
+SYNTH_T1_RATE_BANDS = ("moderate",)  # T1: "moderate rate", restricted band
+SYNTH_T3_RATE_BAND_WEIGHTS = {"slow": 0.6, "moderate": 0.3, "fast": 0.1}  # T3: "more slow bleeds"
+# Chance that ANY stream (bleed or not) gets one artifact overlay. Same rate
+# for every label within a tier, so artifacts can't hint at the label.
+SYNTH_TIER_ARTIFACT_PROB = {"T1": 0.0, "T2": 0.3, "T3": 0.3, "T4": 0.3}
+SYNTH_T4_STIM_SPIKE_PROB = 1.0  # T4 bleed streams always carry an unrelated stimulation spike
+# ...placed before decompensation so it can actually confound, and mostly before t0.
+SYNTH_T4_STIM_BEFORE_T0_PROB = 0.7
+SYNTH_T4_STIM_EARLIEST_ONSET_MIN = 2.0
+# Which negative kinds each tier's negative pool draws from (T1 has no
+# confounders). Artifacts are an overlay on every stream at
+# SYNTH_TIER_ARTIFACT_PROB, not a separate negative kind.
+SYNTH_TIER_NEGATIVE_KINDS = {
+    "T1": ("clean",),
+    "T2": ("clean",),
+    "T3": ("clean",),
+    "T4": ("clean", "stimulation_spike", "non_bleed_hypotension"),
+}
+
+# Shifted test set (SYNTHETIC_PLAN.md 4.3): parameters partly outside training ranges.
+SYNTH_SHIFTED_RATE_MULTIPLIER_RANGE = (0.6, 0.9)   # slower bleeds
+SYNTH_SHIFTED_G_HR_MULTIPLIER_RANGE = (0.6, 0.9)   # lower g_hr
+SYNTH_SHIFTED_T0_MAX_FRACTION_OF_WINDOW = 0.5      # later onset
+
+# 4. Splits (own seed; baseline segments drawn from the Phase 4 train+val
+# pool only -- see semisynth.get_baseline_pool_caseids)
+SYNTH_SPLIT_SEED = 4042
+SYNTH_SPLIT_TRAIN_FRAC, SYNTH_SPLIT_VAL_FRAC, SYNTH_SPLIT_TEST_FRAC = 0.6, 0.2, 0.2
+SYNTH_SHIFTED_TEST_SEED = 4043  # separate seed for the robustness ("shifted") test set
+
+# Round 4 evaluation rules -- fixed 2026-10-24 BEFORE any Round 4 model was
+# trained (SYNTHETIC_PLAN.md Section 5a). Changing any of these after
+# results exist must be written down and both results reported.
+SYNTH_EVAL_WINDOW_SEEDS = {"train": 5100, "val": 5200, "test": 5300}  # baseline-window draw per split
+SYNTH_EVAL_CASE_SEEDS = {"train": 6100, "val": 6200, "test": 7300, "test_shifted": SYNTH_SHIFTED_TEST_SEED}
+SYNTH_EVAL_REPLICATES = 4  # per window per tier: each replicate = 1 bleed + 1 no-bleed stream
+SYNTH_EVAL_HORIZON_MIN = HORIZON_MIN_PRIMARY  # 15 min, same label and alarm rules as real data
+SYNTH_EVAL_FA_TARGETS = (0.5, 1.0, 2.0)
+SYNTH_EVAL_PRIMARY_FA = 1.0
+SYNTH_EVAL_TARGET_SENSITIVITY = 0.95  # SYNTHETIC_PLAN.md Section 5 target ...
+SYNTH_EVAL_TARGET_TIERS = ("T1", "T2")  # ... on these tiers, at <= SYNTH_EVAL_PRIMARY_FA
+# Phase 3 causal features minus demographics (absent in synthetic windows)
+# and time-since-start features (meaningless on a re-based window).
+SYNTH_FEATURE_COLUMNS = (
+    "hr", "sbp", "dbp", "map", "pp", "pp_over_sbp", "shock_index",
+    "map_std", "map_min", "missing_fraction",
+    "hr_slope_5", "hr_slope_10", "hr_slope_15",
+    "map_slope_5", "map_slope_10", "map_slope_15",
+    "pp_slope_5", "pp_slope_10", "pp_slope_15",
+    "shock_index_slope_5", "shock_index_slope_10", "shock_index_slope_15",
+    "hr_drift", "map_drift", "pp_drift", "shock_index_drift",
+)
+SYNTH_MODEL_CANDIDATES = ("logistic", "boosted")
+SYNTH_MODEL_SELECT_TIE_PP = 2.0        # within this many points of val sensitivity -> compare lead time
+SYNTH_MODEL_SELECT_LEAD_TIE_MIN = 0.5  # within this -> logistic (simpler)
+# "Standard monitor" comparator: MAP < 65 (= B1, fires at the event) OR
+# HR > 120 OR SBP < 90. Typical bedside settings, NOT verified as any
+# specific monitor's factory default -- label as such wherever quoted.
+SYNTH_STANDARD_MONITOR_HR_HIGH = 120.0
+SYNTH_STANDARD_MONITOR_SBP_LOW = 90.0
+SYNTH_MISS_BLUNTED_G_HR = 0.5  # miss attributed to a blunted response below this g_hr
+
+# ---------------------------------------------------------------------------
 # Phase 5: hemorrhage simulator (PLAN.md Section 5) — ATLS-inspired, SYNTHETIC
 # ---------------------------------------------------------------------------
 SIM_BLOOD_LOSS_FRACTION_MIN = 0.0
