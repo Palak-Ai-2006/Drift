@@ -1045,6 +1045,12 @@ window.DRIFT_SIM = {
       "steady",
       "sudden"
     ],
+    "profile_rate_frac_per_min": {
+      "slow_ooze": 0.0075,
+      "steady": 0.0115,
+      "sudden": 0.0195
+    },
+    "web_playback_speed_x": 90,
     "map_event_threshold_mmhg": 65,
     "disclaimer": "Illustrative of textbook ATLS physiology. Not confirmed in our data: Phase 4 found the trained model does not clearly outperform a simple MAP threshold on real surgical cases. This simulator uses a transparent rule score, not the trained model, and is synthetic throughout."
   }

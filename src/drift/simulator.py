@@ -134,6 +134,10 @@ def build_sim_export() -> dict:
             "drift_score_pp_scale": config.SIM_DRIFT_SCORE_PP_SCALE,
             "drift_score_alert_threshold": config.SIM_DRIFT_SCORE_ALERT_THRESHOLD,
             "bleed_profiles": list(config.SIM_BLEED_PROFILES),
+            "profile_rate_frac_per_min": {
+                p: sum(config.SIM_PROFILE_RATE_BANDS[p]) / 2 for p in config.SIM_BLEED_PROFILES
+            },
+            "web_playback_speed_x": config.SIM_WEB_PLAYBACK_SPEED_X,
             "map_event_threshold_mmhg": config.EVENT_MAP_THRESHOLD_MMHG,
             "disclaimer": (
                 "Illustrative of textbook ATLS physiology. Not confirmed in our data: "

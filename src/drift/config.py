@@ -383,6 +383,17 @@ SIM_DRIFT_SCORE_PP_SCALE = 28
 SIM_DRIFT_SCORE_ALERT_THRESHOLD = 45
 
 SIM_BLEED_PROFILES = ("slow_ooze", "steady", "sudden")
+# Web demo time axis (2026-10-25): each profile bleeds at the midpoint of a
+# Round 4 rate band (fraction of blood volume per minute), so the demo's
+# "slow / steady / sudden" match the rates the Round 4 evaluation used. The
+# Phase 5 curves themselves are unchanged -- they depend on blood lost only;
+# the rate decides how many MINUTES that takes.
+SIM_PROFILE_RATE_BANDS = {
+    "slow_ooze": SYNTH_RATE_BAND_SLOW,
+    "steady": SYNTH_RATE_BAND_MODERATE,
+    "sudden": SYNTH_RATE_BAND_FAST,
+}
+SIM_WEB_PLAYBACK_SPEED_X = 90  # simulated minutes shown per real minute when "Play bleed" runs
 
 # ---------------------------------------------------------------------------
 # Phase 6.1: replay export (PLAN.md Section 6.1)

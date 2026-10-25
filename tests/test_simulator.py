@@ -97,6 +97,14 @@ def test_build_sim_export_includes_disclaimer_and_meta():
     assert len(export["f"]) == len(export["blunted_false"]["hr"]) == len(export["blunted_true"]["hr"])
 
 
+def test_profile_rates_come_from_round4_bands_and_are_ordered():
+    rates = simulator.build_sim_export()["meta"]["profile_rate_frac_per_min"]
+    assert set(rates) == set(config.SIM_BLEED_PROFILES)
+    for p, (lo, hi) in config.SIM_PROFILE_RATE_BANDS.items():
+        assert lo <= rates[p] <= hi
+    assert rates["slow_ooze"] < rates["steady"] < rates["sudden"]
+
+
 def test_write_sim_curves_js_produces_loadable_js(tmp_path):
     dest = tmp_path / "sim_curves.js"
     simulator.write_sim_curves_js(dest)

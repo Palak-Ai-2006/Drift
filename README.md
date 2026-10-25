@@ -47,7 +47,7 @@ Pre-registered target (≥ 95.0% at ≤ 1 false alarm/hr on T1 and T2): T1 97.6%
 Open `web/index.html` in Chrome or Safari (double-click works). It needs no server, no internet and no install.
 
 - **Keyboard:** space plays and pauses, the arrow keys scrub, Esc closes the Proof drawer.
-- **Deep links for presenting:** `web/index.html#case=0&t=1700` jumps to a replay moment; `web/index.html#mode=sim&f=0.3&blunted=1` jumps to a simulated bleed.
+- **Deep links for presenting:** `web/index.html#case=0&t=1700` jumps to a replay moment; `web/index.html#mode=sim&f=0.3&profile=sudden&blunted=1` jumps to a simulated bleed (profiles: `slow_ooze`, `steady`, `sudden`).
 
 ## How to reproduce the pipeline
 

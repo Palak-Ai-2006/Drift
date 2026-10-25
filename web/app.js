@@ -65,7 +65,8 @@
     }
   }
 
-  /** Walks the simulator curves. Position = blood-volume fraction lost. */
+  /** Walks the simulator curves. Position = blood-volume fraction lost;
+   * while playing it advances at fPerSecond (bleed rate x playback speed). */
   class SimulatedSource extends VitalsSource {
     constructor(curves) {
       super();
@@ -73,7 +74,7 @@
       this.fMax = curves.meta.f_max;
       this.pos = 0;
       this.blunted = false;
-      this.durationS = 60;
+      this.fPerSecond = 0;
       this.playing = false;
       this._last = null;
       this._tick = this._tick.bind(this);
@@ -88,7 +89,7 @@
     seek(f) { this.pos = Math.max(0, Math.min(this.fMax, f)); this._emit(this.sample()); }
     _tick(now) {
       if (!this.playing) return;
-      if (this._last !== null) this.pos += ((now - this._last) / 1000) * (this.fMax / this.durationS);
+      if (this._last !== null) this.pos += ((now - this._last) / 1000) * this.fPerSecond;
       this._last = now;
       if (this.pos >= this.fMax) { this.pos = this.fMax; this.playing = false; }
       this._emit(this.sample());
@@ -193,7 +194,8 @@
     if (opt.ref65) {
       ctx.setLineDash([5, 4]);
       ctx.strokeStyle = css("--state-alarm");
-      ctx.beginPath(); ctx.moveTo(pad.l, Y(65)); ctx.lineTo(w - pad.r, Y(65)); ctx.stroke();
+      const y65 = Math.round(Y(65)) + 0.5; // pixel-aligned so the thin dashed line stays crisp red, not a blurred grey
+      ctx.beginPath(); ctx.moveTo(pad.l, y65); ctx.lineTo(w - pad.r, y65); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = css("--state-alarm");
       ctx.fillText("MAP 65", w - pad.r - 52, Y(65) - 5);
@@ -436,9 +438,15 @@
     };
     const heart = makeHeart($("sim-heart-icon"));
     const src = new SimulatedSource(SIM);
-    // Seconds of on-screen play for the full 0..f_max range, per bleed profile.
-    const PROFILE_SECONDS = { slow_ooze: 90, steady: 60, sudden: 25 };
-    els.disclaimer.textContent = `${W.synthetic_banner} ${W.simulator_disclaimer} The alert here is a transparent rule score, not the trained model.`;
+    // Each profile bleeds at its own rate (blood-volume fraction per minute);
+    // the curves depend on blood lost only, the rate decides the minutes.
+    const RATES = m.profile_rate_frac_per_min;
+    const rate = () => RATES[els.profile.value];
+    const minsOf = (f) => Math.round(f / rate());
+    const axisMaxMin = m.f_max / Math.min(...Object.values(RATES)); // one shared minutes axis for all profiles
+    const setSpeed = () => { src.fPerSecond = rate() * m.web_playback_speed_x / 60; };
+    els.disclaimer.textContent = `${W.synthetic_banner} ${W.simulator_disclaimer} The alert here is a transparent rule score, not the trained model. ` +
+      `Simulated minutes, sped up ${m.web_playback_speed_x}× when playing.`;
     els.slider.max = String(m.f_max * 100);
 
     const score = (hr, pp) => Math.max(0, Math.min(100, 100 * (
@@ -457,7 +465,7 @@
 
     function render(sm) {
       const f = sm.pos, pct = (x) => `${Math.round(x * 100)}%`;
-      els.fOut.textContent = pct(f);
+      els.fOut.textContent = `${pct(f)} · ${minsOf(f)} min into the bleed`;
       els.slider.value = String(f * 100);
       setValue(els.hr, fmtInt(sm.hr), "bpm");
       setValue(els.map, fmtInt(sm.map), "mmHg");
@@ -481,14 +489,19 @@
       // the slider has reached that point.
       const warnedFirst = kp.alertF !== null && kp.map65F !== null && kp.alertF < kp.map65F;
       const marginPts = () => Math.round((kp.map65F - kp.alertF) * 100);
-      els.timingAlert.textContent = alertOn ? pct(kp.alertF) : "—";
-      els.timingStd.textContent = stdOn ? pct(kp.map65F) : "—";
-      els.timingSaved.textContent = !stdOn ? "—" : warnedFirst ? `${marginPts()} pts` : "None";
+      // Minutes margin = difference of the two DISPLAYED minute values, so the panel adds up.
+      const marginMin = () => minsOf(kp.map65F) - minsOf(kp.alertF);
+      els.timingAlert.textContent = alertOn ? `${pct(kp.alertF)} · ${minsOf(kp.alertF)} min` : "—";
+      els.timingStd.textContent = stdOn ? `${pct(kp.map65F)} · ${minsOf(kp.map65F)} min` : "—";
+      if (!stdOn) els.timingSaved.textContent = "—";
+      else if (warnedFirst) setValue(els.timingSaved, `${marginMin()} min`, `${marginPts()} pts`);
+      else els.timingSaved.textContent = "None";
 
       if (stdOn || f >= m.f_max - 1e-9) {
         if (warnedFirst) {
-          els.verdict.textContent = `Drift alert at ${pct(kp.alertF)} blood lost. Standard alarm at ${pct(kp.map65F)}. ` +
-            `That is ${marginPts()} percentage points of blood volume of warning.`;
+          els.verdict.textContent = `Drift alert at ${pct(kp.alertF)} blood lost (${minsOf(kp.alertF)} min in). ` +
+            `Standard alarm at ${pct(kp.map65F)} (${minsOf(kp.map65F)} min in). ` +
+            `That is ${marginMin()} minutes, or ${marginPts()} percentage points of blood volume, of warning.`;
         } else if (kp.map65F !== null) {
           els.verdict.textContent = "No warning before collapse in this setting.";
         } else {
@@ -501,12 +514,14 @@
       }
 
       const markers = [];
-      if (alertOn) markers.push({ x: kp.alertF * 100, color: css("--state-alert"), label: "Drift alert", row: 0 });
-      if (stdOn) markers.push({ x: kp.map65F * 100, color: css("--state-alarm"), label: "Standard alarm", row: 1 });
+      // x-axis: minutes since the bleed started, same scale for every profile.
+      const r = rate();
+      if (alertOn) markers.push({ x: kp.alertF / r, color: css("--state-alert"), label: "Drift alert", row: 0 });
+      if (stdOn) markers.push({ x: kp.map65F / r, color: css("--state-alarm"), label: "Standard alarm", row: 1 });
       const s = src.series();
       const ticks = [];
-      for (let p = 0; p <= m.f_max * 100 + 1e-9; p += 5) ticks.push([p, `${p}%`]);
-      drawChart(els.chart, els.chartHr, { xs: SIM.f.map((x) => x * 100), x0: 0, x1: m.f_max * 100, upto: sm.i, map: s.map, hr: s.hr, pp: s.pp, markers, xTicks: ticks, now: f * 100 });
+      for (let t = 0; t <= axisMaxMin + 1e-9; t += 10) ticks.push([t, `${t} min`]);
+      drawChart(els.chart, els.chartHr, { xs: SIM.f.map((x) => x / r), x0: 0, x1: axisMaxMin, upto: sm.i, map: s.map, hr: s.hr, pp: s.pp, markers, xTicks: ticks, now: f / r });
     }
 
     src.onSample(render);
@@ -514,7 +529,7 @@
     function toggle() {
       if (src.playing) src.pause();
       else {
-        src.durationS = PROFILE_SECONDS[els.profile.value] || 60;
+        setSpeed();
         src.start();
         const check = () => { setPlayLabel(); if (src.playing) requestAnimationFrame(check); };
         requestAnimationFrame(check);
@@ -524,10 +539,14 @@
     els.play.addEventListener("click", toggle);
     els.slider.addEventListener("input", () => { src.pause(); setPlayLabel(); src.seek(Number(els.slider.value) / 100); });
     els.blunted.addEventListener("change", () => { src.blunted = els.blunted.checked; src.seek(src.pos); });
+    els.profile.addEventListener("change", () => { setSpeed(); src.seek(src.pos); });
     els.reset.addEventListener("click", () => { src.pause(); setPlayLabel(); src.seek(0); });
     src.seek(0);
 
-    return { toggle, seek: (f, blunted) => { els.blunted.checked = blunted; src.blunted = blunted; src.seek(f); }, redraw: () => render(src.sample()), scrubBy: (d) => { src.pause(); setPlayLabel(); src.seek(src.pos + d); }, pause: () => { if (src.playing) toggle(); }, heart };
+    return { toggle, seek: (f, blunted, profile) => {
+      if (profile && RATES[profile] !== undefined) els.profile.value = profile;
+      els.blunted.checked = blunted; src.blunted = blunted; setSpeed(); src.seek(f);
+    }, redraw: () => render(src.sample()), scrubBy: (d) => { src.pause(); setPlayLabel(); src.seek(src.pos + d); }, pause: () => { if (src.playing) toggle(); }, heart };
   })();
 
   // -------------------------------------------------------------------------
@@ -623,7 +642,7 @@
   const h = new URLSearchParams(location.hash.slice(1));
   if (h.get("mode") === "sim") {
     setMode("sim");
-    sim.seek(Number(h.get("f") || 0), h.get("blunted") === "1");
+    sim.seek(Number(h.get("f") || 0), h.get("blunted") === "1", h.get("profile"));
   } else if (h.has("case") && CASES[Number(h.get("case"))]) {
     replay.select(Number(h.get("case")), Number(h.get("t") || 0));
   }
