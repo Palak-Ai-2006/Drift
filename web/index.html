@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drift — early warning for hidden bleeding</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="app-name">DRIFT</span>
+    <span class="app-tagline">early MAP-based early warning, research prototype</span>
+  </div>
+  <div class="header-right">
+    <span id="mode-badge" class="badge badge-real">REAL DATA, surgical</span>
+    <button id="info-btn" class="icon-btn" title="Proof and method" aria-label="Open proof and method">&#9432;</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" id="tab-replay" role="tab" aria-selected="true">Replay of a recorded patient</button>
+  <button class="tab" id="tab-sim" role="tab" aria-selected="false">Simulated bleed</button>
+</nav>
+
+<main class="main">
+
+  <!-- ===================== REPLAY MODE ===================== -->
+  <section id="panel-replay" class="mode-panel">
+    <div class="layout">
+      <div class="left-col">
+
+        <div class="controls-bar">
+          <button id="replay-play" class="btn btn-primary">&#9654; Play</button>
+          <button id="replay-restart" class="btn">&#8634; Restart</button>
+          <label class="field">
+            Speed
+            <select id="replay-speed">
+              <option value="10">10&times;</option>
+              <option value="30" selected>30&times;</option>
+              <option value="60">60&times;</option>
+            </select>
+          </label>
+          <input id="replay-scrubber" type="range" min="0" max="1000" value="0" class="scrubber">
+          <span id="replay-time" class="time-readout">00:00 / 00:00</span>
+        </div>
+
+        <div class="controls-bar">
+          <label class="field">
+            Case
+            <select id="case-picker"></select>
+          </label>
+          <span id="replay-banner" class="replay-banner">Recorded patient, sped up 30&times;. Not live.</span>
+        </div>
+        <p class="selected-examples-note" id="selected-examples-note"></p>
+
+        <div class="panel drift-panel">
+          <div id="drift-banner" class="status-banner status-monitoring">Monitoring · no alert</div>
+          <div class="chart-wrap">
+            <canvas id="replay-chart" width="900" height="320"></canvas>
+          </div>
+        </div>
+
+        <div class="panel standard-panel">
+          <div class="standard-header">STANDARD MONITOR <span class="muted">(same clock, simple low-pressure alarm only)</span></div>
+          <div class="standard-row">
+            <span id="standard-map" class="standard-map">MAP — mmHg</span>
+            <span id="standard-alarm-state" class="standard-alarm-state">Standard alarm: not triggered</span>
+          </div>
+        </div>
+
+        <div class="panel verdict-panel" id="verdict-panel" hidden>
+          <div id="verdict-text" class="verdict-text"></div>
+          <div class="timeline-bar">
+            <div class="timeline-track"></div>
+            <div id="timeline-alert-marker" class="timeline-marker timeline-marker-amber" hidden></div>
+            <div id="timeline-standard-marker" class="timeline-marker timeline-marker-red" hidden></div>
+          </div>
+        </div>
+
+      </div>
+
+      <aside class="right-col">
+        <div class="heart-wrap">
+          <div id="heart-icon" class="heart-icon">&#9829;</div>
+          <div id="hr-value" class="big-number">— bpm</div>
+        </div>
+        <div class="vitals-list">
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-map)">MAP</span><span id="map-value" class="vital-value">— mmHg</span></div>
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-pp)">Pulse pressure</span><span id="pp-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label">Shock index</span><span id="si-value" class="vital-value">—</span></div>
+        </div>
+        <hr class="divider">
+        <div class="risk-block">
+          <div class="risk-label">Risk of low pressure in next <span id="horizon-min">15</span> min</div>
+          <div class="gauge"><div id="risk-gauge-fill" class="gauge-fill"></div><span id="risk-gauge-text" class="gauge-text">—</span></div>
+          <div id="data-quality" class="data-quality">Data quality: —</div>
+        </div>
+        <hr class="divider">
+        <div class="why-block">
+          <div class="why-title">Why <span class="muted">(appears on alert)</span></div>
+          <ul id="why-list" class="why-list"></ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== SIMULATOR MODE ===================== -->
+  <section id="panel-sim" class="mode-panel" hidden>
+    <div class="layout">
+      <div class="left-col">
+
+        <div class="controls-bar">
+          <label class="field field-grow">
+            Blood lost <span id="sim-f-readout">0%</span>
+            <input id="sim-f-slider" type="range" min="0" max="45" step="0.5" value="0" class="scrubber">
+          </label>
+        </div>
+        <div class="controls-bar">
+          <button id="sim-play" class="btn btn-primary">&#9654; Play bleed</button>
+          <label class="field">
+            Bleed profile
+            <select id="sim-profile">
+              <option value="slow_ooze">Slow ooze</option>
+              <option value="steady" selected>Steady</option>
+              <option value="sudden">Sudden</option>
+            </select>
+          </label>
+          <label class="field field-checkbox">
+            <input id="sim-blunted" type="checkbox">
+            Blunted heart-rate response (beta-blocker or older patient)
+          </label>
+          <button id="sim-reset" class="btn">Reset</button>
+        </div>
+        <p class="selected-examples-note" id="sim-disclaimer"></p>
+
+        <div class="panel drift-panel">
+          <div id="sim-drift-banner" class="status-banner status-monitoring">Monitoring · no alert</div>
+          <div class="chart-wrap">
+            <canvas id="sim-chart" width="900" height="320"></canvas>
+          </div>
+        </div>
+
+        <div class="panel standard-panel">
+          <div class="standard-header">STANDARD MONITOR <span class="muted">(same clock, simple low-pressure alarm only)</span></div>
+          <div class="standard-row">
+            <span id="sim-standard-map" class="standard-map">MAP — mmHg</span>
+            <span id="sim-standard-alarm-state" class="standard-alarm-state">Standard alarm: not triggered</span>
+          </div>
+        </div>
+
+        <div class="panel verdict-panel" id="sim-verdict-panel">
+          <div id="sim-verdict-text" class="verdict-text">Move the slider or press Play bleed.</div>
+        </div>
+
+      </div>
+
+      <aside class="right-col">
+        <div class="heart-wrap">
+          <div id="sim-heart-icon" class="heart-icon">&#9829;</div>
+          <div id="sim-hr-value" class="big-number">— bpm</div>
+        </div>
+        <div class="vitals-list">
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-map)">MAP</span><span id="sim-map-value" class="vital-value">— mmHg</span></div>
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-pp)">Pulse pressure</span><span id="sim-pp-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label">Shock index</span><span id="sim-si-value" class="vital-value">—</span></div>
+        </div>
+        <hr class="divider">
+        <div class="risk-block">
+          <div class="risk-label">Transparent rule score <span class="muted">(not the trained model)</span></div>
+          <div class="gauge"><div id="sim-gauge-fill" class="gauge-fill"></div><span id="sim-gauge-text" class="gauge-text">—</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span class="footer-text">Research prototype · not for clinical use · no alert does not mean safe.</span>
+  <button id="proof-btn" class="link-btn">Proof and method &#9656;</button>
+</footer>
+
+<!-- ===================== PROOF DRAWER ===================== -->
+<div id="proof-drawer" class="drawer" hidden>
+  <div class="drawer-header">
+    <span>Proof and method</span>
+    <button id="drawer-close" class="icon-btn" aria-label="Close">&times;</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</div>
+<div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+
+<script src="data/sim_curves.js"></script>
+<script src="data/replay_cases.js"></script>
+<script src="data/model_meta.js"></script>
+<script src="data/proof.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
