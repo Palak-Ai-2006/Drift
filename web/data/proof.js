@@ -15,7 +15,7 @@ window.DRIFT_PROOF = {
       "note": "Simple baseline. Performs similarly to the shipped model -- see honesty_note."
     },
     {
-      "method": "Drift (shipped model, early MAP-based alert)",
+      "method": "Drift alert (shipped model, MAP only)",
       "sensitivity": 0.5738831615120275,
       "lead_time_median_s": 261.0,
       "fa_per_hour": 0.9720457433290978,
@@ -201,7 +201,7 @@ window.DRIFT_PROOF = {
     "n_eligible_fresh_holdout": 156,
     "n_cohort_b_fresh_holdout": 34
   },
-  "honesty_note": "This alert is a calibrated, early MAP-based threshold, not a distinct \u2018drift\u2019 signal. We tested whether heart-rate, pulse-pressure and shock-index dynamics add value beyond MAP alone, under a pre-registered protocol with cross-validation and a held-out test set, across three rounds of iteration. They did not. A simple tuned MAP-only threshold (B2) performs similarly on our test data. Full methodology and results: Proof and method, and MODEL_CARD.md in the project repository.",
+  "honesty_note": "Both tabs call their alert a \u2018Drift alert\u2019 for consistency. On real surgical data, it is a calibrated, early MAP-based threshold, not a distinct \u2018drift\u2019 signal. We tested whether heart-rate, pulse-pressure and shock-index dynamics add value beyond MAP alone, under a pre-registered protocol with cross-validation and a held-out test set, across three rounds of iteration. They did not. A simple tuned MAP-only threshold (B2) performs similarly on our test data. Full methodology and results: Proof and method, and MODEL_CARD.md in the project repository.",
   "what_this_is_not": [
     "Not validated on prehospital trauma data -- this is surgical (intraoperative) data.",
     "The label is low blood pressure (MAP<65), not hemorrhage specifically.",

@@ -30,7 +30,7 @@ flowchart LR
 |---|---|---|---|
 | B1 (standard alarm, MAP<65/60s) | 100.0% | 0.0 min | 0.00 |
 | B2 (tuned early-MAP threshold) | 60.1% | 4.4 min | 1.15 |
-| Drift (shipped model, early MAP-based alert) | 57.4% | 4.3 min | 0.97 |
+| Drift alert (shipped model, MAP only) | 57.4% | 4.3 min | 0.97 |
 | Drift, fresh never-touched holdout (175 cases) | 52.5% | 5.2 min | 0.77 |
 
 Calibration (shipped model, test set): Brier 0.103, AUROC 0.705.
@@ -52,7 +52,7 @@ Pre-registered target (≥ 95.0% at ≤ 1 false alarm/hr on T1 and T2): T1 97.6%
 On real surgical data, the shipped early alert caught 57.4% of low-pressure events a median 4.3 min early at 0.97 false alarms per patient-hour (52.5% on a never-touched holdout), about the same as a tuned MAP cutoff (60.1%, 4.4 min). In simulation, heart-rate and pulse-pressure trends warned a median 7.9 min before collapse versus 3.4 min for a MAP cutoff, at 0.63 vs 1.04 false alarms per hour.
 <!-- NUMBERS:CLAIM:END -->
 
-- **On real surgical data:** heart-rate and pulse-pressure trends did **not** beat blood pressure alone. We tested this under a pre-registered protocol in three rounds and on a fresh never-touched holdout, so the real-data alert is honestly named an *early MAP-based alert*. Published work found the same thing for a commercial hypotension predictor (Enevoldsen & Vistisen, *Anesthesiology* 2022; Mulder et al. 2024).
+- **On real surgical data:** heart-rate and pulse-pressure trends did **not** beat blood pressure alone. We tested this under a pre-registered protocol in three rounds and on a fresh never-touched holdout, so although the demo calls it a *Drift alert*, on real data it is a MAP-only model, and the page says so. Published work found the same thing for a commercial hypotension predictor (Enevoldsen & Vistisen, *Anesthesiology* 2022; Mulder et al. 2024).
 - **In simulation, where bleeding causes textbook compensation:** trend-based warning comes about twice as early as a blood-pressure cutoff. It doesn't catch *more* collapses.
 - **The gap between the two** is our main finding and our next step: the method needs trauma data with real bleeding labels.
 - **We do not claim** that it works in prehospital trauma, that it detects bleeding specifically on real data, that it's clinically validated, or that it's live. It is a research prototype.

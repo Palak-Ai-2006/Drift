@@ -88,7 +88,7 @@ def main() -> None:
             "fa_per_hour": b2_fa, "note": "Simple baseline. Performs similarly to the shipped model -- see honesty_note.",
         },
         {
-            "method": "Drift (shipped model, early MAP-based alert)",
+            "method": f"{config.WORDING_ALERT_NAME} (shipped model, MAP only)",
             "sensitivity": v2["test_results_by_cohort"]["A"]["sensitivity"],
             "lead_time_median_s": v2["test_results_by_cohort"]["A"]["lead_time"]["median_s"],
             "fa_per_hour": v2["test_results_by_cohort"]["A"]["fa_rate_per_hour"],

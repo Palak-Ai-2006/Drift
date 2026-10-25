@@ -45,7 +45,7 @@ def blocks():
     cases = load_js(ROOT / "web" / "data" / "replay_cases.js")
     sim = proof["simulation_round4"]
     by_method = {r["method"]: r for r in proof["operating_points_table"]}
-    model = next(r for m, r in by_method.items() if m.startswith("Drift (shipped"))
+    model = next(r for m, r in by_method.items() if "(shipped model" in m)
     b2 = next(r for m, r in by_method.items() if m.startswith("B2"))
     holdout = next(r for m, r in by_method.items() if "holdout" in m)
     all_tiers = next(r for r in sim["rows"] if r["tier"] == "All tiers")

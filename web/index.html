@@ -11,7 +11,7 @@
 <header class="header">
   <div class="header-left">
     <span class="app-name">DRIFT</span>
-    <span class="app-tagline">early MAP-based early warning, research prototype</span>
+    <span class="app-tagline">MAP-based early warning · research prototype</span>
   </div>
   <div class="header-right">
     <span id="mode-badge" class="badge badge-real">REAL DATA, surgical</span>
@@ -48,17 +48,19 @@
 
         <div class="controls-bar">
           <label class="field">
-            Case
+            <span>Case · <span id="case-examples-note">selected examples, not average performance</span></span>
             <select id="case-picker"></select>
           </label>
           <span id="replay-banner" class="replay-banner">Recorded patient, sped up 30&times;. Not live.</span>
+          <button id="replay-note-btn" class="icon-btn icon-btn-sm" aria-expanded="false" aria-controls="selected-examples-note" title="About this recording" aria-label="About this recording">&#9432;</button>
         </div>
-        <p class="selected-examples-note" id="selected-examples-note"></p>
+        <p class="selected-examples-note note-popover" id="selected-examples-note" hidden></p>
 
         <div class="panel drift-panel">
           <div id="drift-banner" class="status-banner status-monitoring">Monitoring · no alert</div>
           <div class="chart-wrap">
-            <canvas id="replay-chart" width="900" height="320"></canvas>
+            <canvas id="replay-chart" class="chart-top" aria-label="MAP and pulse pressure chart"></canvas>
+            <canvas id="replay-chart-hr" class="chart-bottom" aria-label="Heart rate chart"></canvas>
           </div>
         </div>
 
@@ -84,18 +86,26 @@
       <aside class="right-col">
         <div class="heart-wrap">
           <div id="heart-icon" class="heart-icon">&#9829;</div>
-          <div id="hr-value" class="big-number">— bpm</div>
+          <div id="hr-value" class="big-number">—</div>
         </div>
         <div class="vitals-list">
-          <div class="vital-row"><span class="vital-label" style="color:var(--trace-map)">MAP</span><span id="map-value" class="vital-value">— mmHg</span></div>
-          <div class="vital-row"><span class="vital-label" style="color:var(--trace-pp)">Pulse pressure</span><span id="pp-value" class="vital-value">—</span></div>
-          <div class="vital-row"><span class="vital-label">Shock index</span><span id="si-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-map)">MAP <button type="button" class="tip-btn" aria-label="What is MAP?" aria-describedby="tip-map">i</button><span class="tip-text" role="tooltip" id="tip-map">Mean arterial pressure: the average pressure pushing blood through the body over one heartbeat. The standard monitor alarms when it stays below the red line on the chart.</span></span><span id="map-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-pp)">Pulse pressure <button type="button" class="tip-btn" aria-label="What is pulse pressure?" aria-describedby="tip-pp">i</button><span class="tip-text" role="tooltip" id="tip-pp">The gap between the top (systolic) and bottom (diastolic) blood-pressure numbers. In bleeding it often narrows early, while MAP still looks normal.</span></span><span id="pp-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label">Shock index <button type="button" class="tip-btn" aria-label="What is shock index?" aria-describedby="tip-si">i</button><span class="tip-text" role="tooltip" id="tip-si">Heart rate divided by systolic blood pressure. It rises when the heart speeds up to make up for falling pressure.</span></span><span id="si-value" class="vital-value">—</span></div>
         </div>
         <hr class="divider">
         <div class="risk-block">
-          <div class="risk-label">Risk of low pressure in next <span id="horizon-min">15</span> min</div>
-          <div class="gauge"><div id="risk-gauge-fill" class="gauge-fill"></div><span id="risk-gauge-text" class="gauge-text">—</span></div>
+          <div class="risk-label">Risk of low pressure in next <span id="horizon-min">15</span> min <button type="button" class="tip-btn" aria-label="What is this risk?" aria-describedby="tip-risk">i</button><span class="tip-text" role="tooltip" id="tip-risk">The trained model's estimate that MAP drops below the red line soon. On this real surgical data it is calculated from MAP alone.</span></div>
+          <div id="risk-gauge-text" class="gauge-text">—</div>
+          <div class="gauge"><div id="risk-gauge-fill" class="gauge-fill"></div></div>
           <div id="data-quality" class="data-quality">Data quality: —</div>
+        </div>
+        <hr class="divider">
+        <div class="timing-block" aria-live="polite">
+          <div class="timing-title">Timing</div>
+          <div class="timing-row"><span class="timing-label">Drift alert</span><span id="timing-alert" class="timing-value">—</span></div>
+          <div class="timing-row"><span class="timing-label">Standard alarm</span><span id="timing-std" class="timing-value">—</span></div>
+          <div class="timing-row timing-row-key"><span class="timing-label">Time saved</span><span id="timing-saved" class="timing-value">—</span></div>
         </div>
         <hr class="divider">
         <div class="why-block">
@@ -138,7 +148,8 @@
         <div class="panel drift-panel">
           <div id="sim-drift-banner" class="status-banner status-monitoring">Monitoring · no alert</div>
           <div class="chart-wrap">
-            <canvas id="sim-chart" width="900" height="320"></canvas>
+            <canvas id="sim-chart" class="chart-top" aria-label="MAP and pulse pressure chart"></canvas>
+            <canvas id="sim-chart-hr" class="chart-bottom" aria-label="Heart rate chart"></canvas>
           </div>
         </div>
 
@@ -159,17 +170,25 @@
       <aside class="right-col">
         <div class="heart-wrap">
           <div id="sim-heart-icon" class="heart-icon">&#9829;</div>
-          <div id="sim-hr-value" class="big-number">— bpm</div>
+          <div id="sim-hr-value" class="big-number">—</div>
         </div>
         <div class="vitals-list">
-          <div class="vital-row"><span class="vital-label" style="color:var(--trace-map)">MAP</span><span id="sim-map-value" class="vital-value">— mmHg</span></div>
-          <div class="vital-row"><span class="vital-label" style="color:var(--trace-pp)">Pulse pressure</span><span id="sim-pp-value" class="vital-value">—</span></div>
-          <div class="vital-row"><span class="vital-label">Shock index</span><span id="sim-si-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-map)">MAP <button type="button" class="tip-btn" aria-label="What is MAP?" aria-describedby="sim-tip-map">i</button><span class="tip-text" role="tooltip" id="sim-tip-map">Mean arterial pressure: the average pressure pushing blood through the body over one heartbeat. The standard monitor alarms when it falls below the red line on the chart.</span></span><span id="sim-map-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label" style="color:var(--trace-pp)">Pulse pressure <button type="button" class="tip-btn" aria-label="What is pulse pressure?" aria-describedby="sim-tip-pp">i</button><span class="tip-text" role="tooltip" id="sim-tip-pp">The gap between the top (systolic) and bottom (diastolic) blood-pressure numbers. In bleeding it often narrows early, while MAP still looks normal.</span></span><span id="sim-pp-value" class="vital-value">—</span></div>
+          <div class="vital-row"><span class="vital-label">Shock index <button type="button" class="tip-btn" aria-label="What is shock index?" aria-describedby="sim-tip-si">i</button><span class="tip-text" role="tooltip" id="sim-tip-si">Heart rate divided by systolic blood pressure. It rises when the heart speeds up to make up for falling pressure.</span></span><span id="sim-si-value" class="vital-value">—</span></div>
         </div>
         <hr class="divider">
         <div class="risk-block">
-          <div class="risk-label">Transparent rule score <span class="muted">(not the trained model)</span></div>
-          <div class="gauge"><div id="sim-gauge-fill" class="gauge-fill"></div><span id="sim-gauge-text" class="gauge-text">—</span></div>
+          <div class="risk-label">Transparent rule score <span class="muted">(not the trained model)</span> <button type="button" class="tip-btn" aria-label="What is the rule score?" aria-describedby="sim-tip-risk">i</button><span class="tip-text" role="tooltip" id="sim-tip-risk">A simple, visible formula: how far heart rate has risen and pulse pressure has narrowed from a textbook starting point. It is not the trained model.</span></div>
+          <div id="sim-gauge-text" class="gauge-text">—</div>
+          <div class="gauge gauge-rule" title="Transparent rule score, not the trained model"><div id="sim-gauge-fill" class="gauge-fill"></div></div>
+        </div>
+        <hr class="divider">
+        <div class="timing-block" aria-live="polite">
+          <div class="timing-title">Timing</div>
+          <div class="timing-row"><span class="timing-label">Drift alert</span><span id="sim-timing-alert" class="timing-value">—</span></div>
+          <div class="timing-row"><span class="timing-label">Standard alarm</span><span id="sim-timing-std" class="timing-value">—</span></div>
+          <div class="timing-row timing-row-key"><span class="timing-label">Warning margin</span><span id="sim-timing-saved" class="timing-value">—</span></div>
         </div>
       </aside>
     </div>

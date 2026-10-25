@@ -134,11 +134,11 @@
     el.textContent = text;
   }
 
-  function setGauge(fillEl, textEl, frac, label, alerting) {
+  function setGauge(fillEl, textEl, frac, label, alerting, unit) {
     if (frac === null) { fillEl.style.width = "0%"; textEl.textContent = "—"; return; }
     fillEl.style.width = Math.max(0, Math.min(100, frac * 100)) + "%";
-    fillEl.style.background = alerting ? css("--state-alert") : css("--trace-map");
-    textEl.textContent = label;
+    fillEl.style.backgroundColor = alerting ? css("--state-alert") : css("--trace-map");
+    setValue(textEl, label, unit);
   }
 
   /** Heartbeat paced by the HR number (Adjustment A2), at the real heart rate, capped. */
@@ -174,67 +174,88 @@
    * Draws MAP / HR / pulse pressure against x. `upto` is the last index to
    * draw (inclusive) -- nothing beyond it is ever drawn.
    */
-  function drawChart(canvas, opt) {
+  function drawPanel(canvas, opt) {
     const { ctx, w, h } = prepCanvas(canvas);
-    const pad = { l: 44, r: 12, t: 26, b: 28 };
-    const yMin = 0, yMax = 180;
+    const pad = { l: 44, r: 12, t: 24, b: opt.xTicks ? 26 : 10 };
     const X = (x) => pad.l + ((x - opt.x0) / (opt.x1 - opt.x0)) * (w - pad.l - pad.r);
-    const Y = (y) => pad.t + (1 - (y - yMin) / (yMax - yMin)) * (h - pad.t - pad.b);
+    const Y = (y) => pad.t + (1 - (Math.min(Math.max(y, opt.yMin), opt.yMax) - opt.yMin) / (opt.yMax - opt.yMin)) * (h - pad.t - pad.b);
 
     ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
     ctx.strokeStyle = css("--border");
     ctx.fillStyle = css("--text-secondary");
     ctx.lineWidth = 1;
-    for (let y = 0; y <= yMax; y += 40) {
+    for (let y = opt.yMin; y <= opt.yMax; y += opt.yStep) {
       ctx.beginPath(); ctx.moveTo(pad.l, Y(y)); ctx.lineTo(w - pad.r, Y(y)); ctx.stroke();
       ctx.fillText(String(y), 8, Y(y) + 4);
     }
-    opt.xTicks.forEach(([x, label]) => ctx.fillText(label, Math.min(X(x) - 14, w - pad.r - ctx.measureText(label).width), h - 8));
+    (opt.xTicks || []).forEach(([x, label]) => ctx.fillText(label, Math.min(X(x) - 14, w - pad.r - ctx.measureText(label).width), h - 6));
 
-    // MAP 65 reference line
-    ctx.setLineDash([5, 4]);
-    ctx.strokeStyle = css("--state-alarm");
-    ctx.beginPath(); ctx.moveTo(pad.l, Y(65)); ctx.lineTo(w - pad.r, Y(65)); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = css("--state-alarm");
-    ctx.fillText("MAP 65", w - pad.r - 52, Y(65) - 5);
+    if (opt.ref65) {
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = css("--state-alarm");
+      ctx.beginPath(); ctx.moveTo(pad.l, Y(65)); ctx.lineTo(w - pad.r, Y(65)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = css("--state-alarm");
+      ctx.fillText("MAP 65", w - pad.r - 52, Y(65) - 5);
+    }
 
-    const line = (ys, color) => {
-      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+    // Each trace is drawn only up to index `upto` -- nothing after "now".
+    opt.series.forEach((s) => {
+      ctx.strokeStyle = css(s.color); ctx.lineWidth = 2; ctx.beginPath();
       let pen = false;
-      for (let i = 0; i <= opt.upto && i < ys.length; i++) {
-        const v = ys[i];
+      for (let i = 0; i <= opt.upto && i < s.ys.length; i++) {
+        const v = s.ys[i];
         if (v === null || v === undefined || Number.isNaN(v)) { pen = false; continue; }
         if (!pen) { ctx.moveTo(X(opt.xs[i]), Y(v)); pen = true; } else ctx.lineTo(X(opt.xs[i]), Y(v));
       }
       ctx.stroke();
-    };
-    line(opt.map, css("--trace-map"));
-    line(opt.hr, css("--trace-hr"));
-    line(opt.pp, css("--trace-pp"));
+    });
 
     // Legend in words, not color alone
     let lx = pad.l;
-    [["MAP (mmHg)", "--trace-map"], ["Heart rate (bpm)", "--trace-hr"], ["Pulse pressure (mmHg)", "--trace-pp"]].forEach(([label, v]) => {
-      ctx.fillStyle = css(v); ctx.fillRect(lx, 8, 14, 3);
-      ctx.fillStyle = css("--text"); ctx.fillText(label, lx + 18, 13);
-      lx += ctx.measureText(label).width + 36;
+    opt.series.forEach((s) => {
+      ctx.fillStyle = css(s.color); ctx.fillRect(lx, 8, 14, 3);
+      ctx.fillStyle = css("--text"); ctx.fillText(s.label, lx + 18, 13);
+      lx += ctx.measureText(s.label).width + 36;
     });
 
-    // Event markers, only once their moment has been reached
+    // Event markers (callers only pass markers whose moment has been reached)
     (opt.markers || []).forEach((m) => {
       const x = X(m.x);
       ctx.strokeStyle = m.color; ctx.setLineDash([3, 3]);
       ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, h - pad.b); ctx.stroke(); ctx.setLineDash([]);
       ctx.fillStyle = m.color;
-      ctx.beginPath(); ctx.moveTo(x, h - pad.b - 12); ctx.lineTo(x - 7, h - pad.b); ctx.lineTo(x + 7, h - pad.b); ctx.closePath(); ctx.fill();
-      ctx.fillText(m.label, Math.min(x + 6, w - pad.r - ctx.measureText(m.label).width), pad.t + 14 + (m.row || 0) * 15);
+      ctx.beginPath(); ctx.moveTo(x, h - pad.b - 10); ctx.lineTo(x - 6, h - pad.b); ctx.lineTo(x + 6, h - pad.b); ctx.closePath(); ctx.fill();
+      if (opt.markerLabels) ctx.fillText(m.label, Math.min(x + 6, w - pad.r - ctx.measureText(m.label).width), pad.t + 14 + (m.row || 0) * 15);
     });
 
-    // "now" cursor
     if (opt.now !== undefined) {
       ctx.strokeStyle = css("--text-secondary");
       ctx.beginPath(); ctx.moveTo(X(opt.now), pad.t); ctx.lineTo(X(opt.now), h - pad.b); ctx.stroke();
+    }
+  }
+
+  /** Top panel: MAP + pulse pressure (mmHg, MAP 65 line). Bottom panel: heart rate. */
+  function drawChart(topCanvas, hrCanvas, opt) {
+    const common = { xs: opt.xs, x0: opt.x0, x1: opt.x1, upto: opt.upto, markers: opt.markers, now: opt.now };
+    drawPanel(topCanvas, {
+      ...common, yMin: 0, yMax: 160, yStep: 40, ref65: true, markerLabels: true,
+      series: [{ ys: opt.map, color: "--trace-map", label: "MAP (mmHg)" }, { ys: opt.pp, color: "--trace-pp", label: "Pulse pressure (mmHg)" }],
+    });
+    drawPanel(hrCanvas, {
+      ...common, yMin: 40, yMax: 160, yStep: 40, xTicks: opt.xTicks,
+      series: [{ ys: opt.hr, color: "--trace-hr", label: "Heart rate (bpm)" }],
+    });
+  }
+
+  /** Big number with a small unit, built without innerHTML. */
+  function setValue(el, text, unit) {
+    el.textContent = text;
+    if (unit && text !== "—") {
+      const u = document.createElement("span");
+      u.className = "unit";
+      u.textContent = unit;
+      el.appendChild(u);
     }
   }
 
@@ -245,10 +266,11 @@
     const els = {
       play: $("replay-play"), restart: $("replay-restart"), speed: $("replay-speed"), scrub: $("replay-scrubber"),
       time: $("replay-time"), picker: $("case-picker"), banner: $("replay-banner"), note: $("selected-examples-note"),
-      drift: $("drift-banner"), chart: $("replay-chart"), stdMap: $("standard-map"), stdState: $("standard-alarm-state"),
+      drift: $("drift-banner"), chart: $("replay-chart"), chartHr: $("replay-chart-hr"), noteBtn: $("replay-note-btn"), stdMap: $("standard-map"), stdState: $("standard-alarm-state"),
       verdictPanel: $("verdict-panel"), verdict: $("verdict-text"), tAlert: $("timeline-alert-marker"), tStd: $("timeline-standard-marker"),
       hr: $("hr-value"), map: $("map-value"), pp: $("pp-value"), si: $("si-value"),
       gaugeFill: $("risk-gauge-fill"), gaugeText: $("risk-gauge-text"), quality: $("data-quality"), why: $("why-list"),
+      timingAlert: $("timing-alert"), timingStd: $("timing-std"), timingSaved: $("timing-saved"),
     };
     const heart = makeHeart($("heart-icon"));
     let src = null, caseData = null;
@@ -268,6 +290,10 @@
       els.picker.appendChild(og);
     });
     els.note.textContent = `${W.real_data_full} ${W.selected_examples_note}`;
+    els.noteBtn.addEventListener("click", () => {
+      els.note.hidden = !els.note.hidden;
+      els.noteBtn.setAttribute("aria-expanded", String(!els.note.hidden));
+    });
     $("horizon-min").textContent = String(META.horizon_min);
 
     const speed = () => Number(els.speed.value);
@@ -299,10 +325,10 @@
       els.time.textContent = `${mmss(s.pos)} / ${mmss(src.duration)}`;
       els.scrub.value = String(Math.round((s.pos / src.duration) * 1000));
 
-      els.hr.textContent = `${fmtInt(s.hr)} bpm`;
-      els.map.textContent = `${fmtInt(s.map)} mmHg`;
-      els.pp.textContent = `${fmtInt(s.pp)} mmHg`;
-      els.si.textContent = fmt1(s.si);
+      setValue(els.hr, fmtInt(s.hr), "bpm");
+      setValue(els.map, fmtInt(s.map), "mmHg");
+      setValue(els.pp, fmtInt(s.pp), "mmHg");
+      setValue(els.si, fmt1(s.si));
       heart.set(s.hr);
 
       const mf = missingFraction(c, s.i);
@@ -327,6 +353,16 @@
       }
 
       const stdOn = c.standard_alarm_t !== null && t >= c.standard_alarm_t;
+
+      // Timing panel: same timestamps as the chart markers, each revealed
+      // only once playback has reached it (nothing from the future).
+      const alertSeen = c.alert_t !== null && t >= c.alert_t;
+      els.timingAlert.textContent = alertSeen ? mmss(c.alert_t - t0) : "—";
+      els.timingStd.textContent = stdOn ? mmss(c.standard_alarm_t - t0) : "—";
+      if (!stdOn) els.timingSaved.textContent = "—";
+      else if (alertSeen && c.alert_t < c.standard_alarm_t) els.timingSaved.textContent = `${((c.standard_alarm_t - c.alert_t) / 60).toFixed(1)} min`;
+      else els.timingSaved.textContent = "None";
+
       els.stdMap.textContent = `MAP ${fmtInt(s.map)} mmHg`;
       els.stdState.textContent = stdOn ? W.standard_alarm_triggered : W.standard_alarm_not_triggered;
       els.stdState.classList.toggle("triggered", stdOn);
@@ -342,11 +378,11 @@
       }
 
       const markers = [];
-      if (c.alert_t !== null && t >= c.alert_t) markers.push({ x: c.alert_t, color: css("--state-alert"), label: "Early alert", row: 0 });
+      if (c.alert_t !== null && t >= c.alert_t) markers.push({ x: c.alert_t, color: css("--state-alert"), label: META.alert_name, row: 0 });
       if (stdOn) markers.push({ x: c.standard_alarm_t, color: css("--state-alarm"), label: "Standard alarm", row: 1 });
       const ticks = [];
       for (let m = 0; m * 60 <= src.duration; m += 10) ticks.push([t0 + m * 60, `${m} min`]);
-      drawChart(els.chart, { xs: c.t, x0: t0, x1: c.t[c.t.length - 1], upto: s.i, map: c.map, hr: c.hr, pp: c.pp, markers, xTicks: ticks, now: t });
+      drawChart(els.chart, els.chartHr, { xs: c.t, x0: t0, x1: c.t[c.t.length - 1], upto: s.i, map: c.map, hr: c.hr, pp: c.pp, markers, xTicks: ticks, now: t });
     }
 
     function load(i) {
@@ -392,10 +428,11 @@
     const m = SIM.meta;
     const els = {
       slider: $("sim-f-slider"), fOut: $("sim-f-readout"), play: $("sim-play"), profile: $("sim-profile"), blunted: $("sim-blunted"),
-      reset: $("sim-reset"), disclaimer: $("sim-disclaimer"), drift: $("sim-drift-banner"), chart: $("sim-chart"),
+      reset: $("sim-reset"), disclaimer: $("sim-disclaimer"), drift: $("sim-drift-banner"), chart: $("sim-chart"), chartHr: $("sim-chart-hr"),
       stdMap: $("sim-standard-map"), stdState: $("sim-standard-alarm-state"), verdict: $("sim-verdict-text"),
       hr: $("sim-hr-value"), map: $("sim-map-value"), pp: $("sim-pp-value"), si: $("sim-si-value"),
       gaugeFill: $("sim-gauge-fill"), gaugeText: $("sim-gauge-text"),
+      timingAlert: $("sim-timing-alert"), timingStd: $("sim-timing-std"), timingSaved: $("sim-timing-saved"),
     };
     const heart = makeHeart($("sim-heart-icon"));
     const src = new SimulatedSource(SIM);
@@ -422,10 +459,10 @@
       const f = sm.pos, pct = (x) => `${Math.round(x * 100)}%`;
       els.fOut.textContent = pct(f);
       els.slider.value = String(f * 100);
-      els.hr.textContent = `${fmtInt(sm.hr)} bpm`;
-      els.map.textContent = `${fmtInt(sm.map)} mmHg`;
-      els.pp.textContent = `${fmtInt(sm.pp)} mmHg`;
-      els.si.textContent = fmt1(sm.si);
+      setValue(els.hr, fmtInt(sm.hr), "bpm");
+      setValue(els.map, fmtInt(sm.map), "mmHg");
+      setValue(els.pp, fmtInt(sm.pp), "mmHg");
+      setValue(els.si, fmt1(sm.si));
       heart.set(sm.hr);
 
       const sc = score(sm.hr, sm.pp);
@@ -434,16 +471,24 @@
       const stdOn = kp.map65F !== null && f >= kp.map65F;
       setBanner(els.drift, alertOn ? "alert" : "monitoring",
         alertOn ? "DRIFT ALERT (rule score) · Heart rate rising, pulse pressure narrowing. Check the patient." : W.monitoring_banner);
-      setGauge(els.gaugeFill, els.gaugeText, sc / 100, `${Math.round(sc)} / 100 (alert at ${m.drift_score_alert_threshold})`, alertOn);
+      setGauge(els.gaugeFill, els.gaugeText, sc / 100, String(Math.round(sc)), alertOn, `/ 100 · alert at ${m.drift_score_alert_threshold}`);
 
       els.stdMap.textContent = `MAP ${fmtInt(sm.map)} mmHg`;
       els.stdState.textContent = stdOn ? W.standard_alarm_triggered : W.standard_alarm_not_triggered;
       els.stdState.classList.toggle("triggered", stdOn);
 
+      // Timing panel: the verdict sentence's own numbers, each shown only once
+      // the slider has reached that point.
+      const warnedFirst = kp.alertF !== null && kp.map65F !== null && kp.alertF < kp.map65F;
+      const marginPts = () => Math.round((kp.map65F - kp.alertF) * 100);
+      els.timingAlert.textContent = alertOn ? pct(kp.alertF) : "—";
+      els.timingStd.textContent = stdOn ? pct(kp.map65F) : "—";
+      els.timingSaved.textContent = !stdOn ? "—" : warnedFirst ? `${marginPts()} pts` : "None";
+
       if (stdOn || f >= m.f_max - 1e-9) {
-        if (kp.alertF !== null && kp.map65F !== null && kp.alertF < kp.map65F) {
+        if (warnedFirst) {
           els.verdict.textContent = `Drift alert at ${pct(kp.alertF)} blood lost. Standard alarm at ${pct(kp.map65F)}. ` +
-            `That is ${Math.round((kp.map65F - kp.alertF) * 100)} percentage points of blood volume of warning.`;
+            `That is ${marginPts()} percentage points of blood volume of warning.`;
         } else if (kp.map65F !== null) {
           els.verdict.textContent = "No warning before collapse in this setting.";
         } else {
@@ -461,7 +506,7 @@
       const s = src.series();
       const ticks = [];
       for (let p = 0; p <= m.f_max * 100 + 1e-9; p += 5) ticks.push([p, `${p}%`]);
-      drawChart(els.chart, { xs: SIM.f.map((x) => x * 100), x0: 0, x1: m.f_max * 100, upto: sm.i, map: s.map, hr: s.hr, pp: s.pp, markers, xTicks: ticks, now: f * 100 });
+      drawChart(els.chart, els.chartHr, { xs: SIM.f.map((x) => x * 100), x0: 0, x1: m.f_max * 100, upto: sm.i, map: s.map, hr: s.hr, pp: s.pp, markers, xTicks: ticks, now: f * 100 });
     }
 
     src.onSample(render);
@@ -554,8 +599,16 @@
   $("drawer-close").addEventListener("click", closeDrawer);
   backdrop.addEventListener("click", closeDrawer);
 
+  // Metric tooltips: CSS shows them on hover/focus; a tap toggles them on touch screens.
+  const closeTips = (except) => document.querySelectorAll(".tip-btn.open").forEach((b) => { if (b !== except) b.classList.remove("open"); });
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".tip-btn");
+    closeTips(btn);
+    if (btn) btn.classList.toggle("open");
+  });
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { closeDrawer(); return; }
+    if (e.key === "Escape") { closeDrawer(); closeTips(null); return; }
     const tag = (e.target.tagName || "").toLowerCase();
     if (tag === "select" || tag === "input" || tag === "button" || !drawer.hidden) return;
     const active = mode === "replay" ? replay : sim;

@@ -434,22 +434,24 @@ WORDING_SELECTED_EXAMPLES_NOTE = (
     "Results across all test cases are in Proof and method."
 )
 
-# Honest-reframing wording (Phase 4 iteration round 3 user instruction,
-# 2026-10-24): across v2, Experiment 2, and round 3, nothing beat a plain
-# MAP-only model, so the shipped alert is labeled for what it actually is
-# -- an early MAP-based alert -- never "drift-based" or implying the richer
-# HR/pulse-pressure dynamics originally hypothesized. See MODEL_CARD.md.
-WORDING_ALERT_NAME = "Early MAP-based alert"
+# Alert naming. Round 3 (2026-10-24) labeled the shipped real-data alert
+# "Early MAP-based alert" because nothing beat a plain MAP-only model.
+# User decision 2026-10-25 (UI polish, Group 2): both demo tabs use the
+# product name "Drift alert". The real-data model is UNCHANGED -- still
+# MAP-only -- and the honesty note below, the banner detail text, the
+# header tagline and MODEL_CARD.md all say so. See MODEL_CARD.md.
+WORDING_ALERT_NAME = "Drift alert"
 WORDING_MONITORING_BANNER = "Monitoring · no alert"
 WORDING_ALERT_BANNER = (
-    "EARLY MAP-BASED ALERT · Mean arterial pressure trending low. Check the patient."
+    "DRIFT ALERT · Mean arterial pressure trending low. Check the patient."
 )
 WORDING_INSUFFICIENT_DATA_BANNER = "Not enough data to assess"
 WORDING_STANDARD_ALARM_NOT_TRIGGERED = "Standard alarm: not triggered"
 WORDING_STANDARD_ALARM_TRIGGERED = "STANDARD ALARM · MAP below 65"
 WORDING_METHOD_HONESTY_NOTE = (
-    "This alert is a calibrated, early MAP-based threshold, not a distinct "
-    "‘drift’ signal. We tested whether heart-rate, pulse-pressure and "
+    "Both tabs call their alert a ‘Drift alert’ for consistency. On real "
+    "surgical data, it is a calibrated, early MAP-based threshold, not a "
+    "distinct ‘drift’ signal. We tested whether heart-rate, pulse-pressure and "
     "shock-index dynamics add value beyond MAP alone, under a pre-registered "
     "protocol with cross-validation and a held-out test set, across three "
     "rounds of iteration. They did not. A simple tuned MAP-only threshold "

@@ -4470,7 +4470,7 @@ window.DRIFT_CASES = [
     "standard_alarm_t": 3750.0,
     "event_t": 3750.0,
     "top_features_at_alert": [],
-    "verdict": "Missed: the early MAP-based alert gave no warning before this event.",
+    "verdict": "Missed: the Drift alert gave no warning before this event.",
     "is_true_insufficient": null
   },
   {
@@ -5314,7 +5314,7 @@ window.DRIFT_CASES = [
     "standard_alarm_t": 5250.0,
     "event_t": 5250.0,
     "top_features_at_alert": [],
-    "verdict": "Missed: the early MAP-based alert gave no warning before this event.",
+    "verdict": "Missed: the Drift alert gave no warning before this event.",
     "is_true_insufficient": null
   },
   {

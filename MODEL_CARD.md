@@ -382,6 +382,10 @@ At 0.5 FA/hr (val threshold) the model's test sensitivity over all tiers is 95.3
 - **Doesn't:** it doesn't catch *more* collapses than a well-tuned MAP cutoff (both are near the ceiling), and it says nothing about real patients. On real surgical data (Rounds 1–3) MAP alone matched these features, consistent with the published debate over whether the Hypotension Prediction Index adds anything beyond MAP. The simulation can't settle which world real trauma patients live in; that needs data with real bleed labels.
 <!-- ROUND4_RESULTS:END -->
 
+## Alert naming (2026-10-25)
+
+In the web demo, both tabs now call their alert a **"Drift alert"**: a product name chosen for consistency, by the user's decision during the UI polish pass. It replaces the earlier label "Early MAP-based alert". **The model behind the real-data alert is unchanged:** it is still the MAP-only, calibrated logistic model (`b2_alone`), and heart-rate, pulse-pressure and shock-index trends are still not shown to add value on real data. To keep that visible, the alert's detail text ("Mean arterial pressure trending low"), the header tagline ("MAP-based early warning"), the Proof drawer's honesty note and its table label ("shipped model, MAP only") all still say it is MAP-based. In the Simulated tab, the "Drift alert" is the transparent heart-rate / pulse-pressure rule score.
+
 ## What this is not
 
 Not clinically validated. Not a device. A research prototype trained on surgical

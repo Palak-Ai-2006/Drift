@@ -20,7 +20,7 @@ It has two parts:
 |---|---|---|---|
 | B1 (standard alarm, MAP<65/60s) | 100.0% | 0.0 min | 0.00 |
 | B2 (tuned early-MAP threshold) | 60.1% | 4.4 min | 1.15 |
-| Drift (shipped model, early MAP-based alert) | 57.4% | 4.3 min | 0.97 |
+| Drift alert (shipped model, MAP only) | 57.4% | 4.3 min | 0.97 |
 | Drift, fresh never-touched holdout (175 cases) | 52.5% | 5.2 min | 0.77 |
 
 Calibration (shipped model, test set): Brier 0.103, AUROC 0.705.
@@ -38,7 +38,7 @@ Pre-registered target (≥ 95.0% at ≤ 1 false alarm/hr on T1 and T2): T1 97.6%
 <!-- NUMBERS:RESULTS:END -->
 
 **How to read this.**
-- **Real surgical data:** heart-rate and pulse-pressure trends did not beat blood pressure alone, under a pre-registered protocol across three rounds of testing. So the shipped alert on real data is honestly labeled an *early MAP-based alert*. This matches the published debate over whether commercial hypotension predictors add anything beyond MAP itself.
+- **Real surgical data:** heart-rate and pulse-pressure trends did not beat blood pressure alone, under a pre-registered protocol across three rounds of testing. The demo calls its alert a *Drift alert*, but on real data it is a MAP-only model, and the page says so. This matches the published debate over whether commercial hypotension predictors add anything beyond MAP itself.
 - **Simulation, where bleeding causes textbook compensation:** the trend-based model warns about twice as early as a MAP cutoff. It does not catch more collapses.
 - **What the gap means:** the difference between these two results is the argument for testing on trauma data with real bleeding labels. Details: [MODEL_CARD.md](MODEL_CARD.md), [SYNTHETIC_PLAN.md](SYNTHETIC_PLAN.md), [LIMITATIONS.md](LIMITATIONS.md).
 

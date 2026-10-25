@@ -151,7 +151,7 @@ def top_features_at_alert(map_value: float) -> list[dict]:
 
 def verdict_text(kind: str, lead_s: float | None, standard_alarm_s: float | None, is_true_insufficient: bool = True) -> str:
     if kind == "miss":
-        return "Missed: the early MAP-based alert gave no warning before this event."
+        return f"Missed: the {config.WORDING_ALERT_NAME} gave no warning before this event."
     if kind == "false_alarm":
         return f"False alarm: pressure stayed above 65 for the next {config.HORIZON_MIN_PRIMARY} minutes."
     if kind == "insufficient":
